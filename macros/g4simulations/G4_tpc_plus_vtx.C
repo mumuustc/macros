@@ -2,6 +2,8 @@
 // with what is used in this macro
 Min_si_layer = 0;
 Max_si_layer = 62;
+inner_cage_radius = 30.;
+string tpcgas = "G4_Ar";
 
 void SvtxInit()
 {
@@ -47,7 +49,6 @@ double Svtx(PHG4Reco* g4Reco, double radius, const int absorberactive = 0)
 		g4Reco->registerSubsystem( cyl );
 	}
 	
-	double inner_cage_radius = 30.;
 	double n_rad_length_cage = 1.0e-02;
 	double cage_length = 400.;
 	cyl = new PHG4CylinderSubsystem("SVTXSUPPORT", 3);
@@ -62,21 +63,6 @@ double Svtx(PHG4Reco* g4Reco, double radius, const int absorberactive = 0)
 	int npoints = 60;
 	double delta_radius =  ( outer_radius - inner_cage_radius )/( (double)npoints );
 	radius = inner_cage_radius + delta_radius;
-// 	double n_rad_length_tpc = 0.6e-02;
-// 	double n_rad_length_tpc_layer = n_rad_length_tpc/( (double)npoints );
-// 	for(int ilayer=2;ilayer<(2+npoints);++ilayer)
-// 	{
-// 		cyl = new PHG4CylinderSubsystem("SVTX", ilayer);
-// 		cyl->SetRadius(radius);
-// 		cyl->SetLength( cage_length );
-// 		cyl->SetMaterial("G4_Si");
-// 		cyl->SetThickness(  silicon_radiation_length * n_rad_length_tpc_layer );
-// 		cyl->SetActive();
-// 		cyl->SuperDetector("SVTX");
-// 		g4Reco->registerSubsystem( cyl );
-// 		
-// 		radius += delta_radius;
-// 	}
 	
   
 	for(int ilayer=2;ilayer<(2+npoints);++ilayer)
@@ -84,7 +70,7 @@ double Svtx(PHG4Reco* g4Reco, double radius, const int absorberactive = 0)
     cyl = new PHG4CylinderSubsystem("SVTX", ilayer);
     cyl->SetRadius(radius);
     cyl->SetLength( cage_length );
-    cyl->SetMaterial("G4_Ar");
+    cyl->SetMaterial(tpcgas.c_str());
     cyl->SetThickness(  delta_radius - 0.01 );
     cyl->SetActive();
     cyl->SuperDetector("SVTX");
