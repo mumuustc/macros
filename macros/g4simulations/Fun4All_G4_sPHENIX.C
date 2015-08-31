@@ -12,8 +12,8 @@ int Cemc_slats_per_cell = 72; // make it 2*2*2*3*3 so we can try other combinati
 int Cemc_spacal_configuration = -1;
 
 int Fun4All_G4_sPHENIX(
-		       const int nEvents = 10,
-		       const char * inputFile = "mu-",
+		       const int nEvents = 1,
+		       const char * inputFile = "e-",
 		       const char * outputFile = "G4sPHENIXCells.root"
 		       )
 {
@@ -36,9 +36,9 @@ int Fun4All_G4_sPHENIX(
   // What to run
   //======================
 
-  bool do_pipe = true;
+  bool do_pipe = false;
   
-  bool do_svtx = true;
+  bool do_svtx = false;
   bool do_svtx_cell = false;
   bool do_svtx_track = false;
   bool do_svtx_eval = false;
@@ -51,15 +51,15 @@ int Fun4All_G4_sPHENIX(
   bool do_cemc_cluster = false;
   bool do_cemc_eval = false;//true;
 
-  bool do_hcalin = true;
+  bool do_hcalin = false;
   bool do_hcalin_cell = false;
   bool do_hcalin_twr = false;
   bool do_hcalin_cluster = false;
   bool do_hcalin_eval = false;//true;
 
-  bool do_magnet = true;
+  bool do_magnet = false;
   
-  bool do_hcalout = true;
+  bool do_hcalout = false;
   bool do_hcalout_cell = false;
   bool do_hcalout_twr = false;
   bool do_hcalout_cluster = false;
@@ -92,8 +92,8 @@ int Fun4All_G4_sPHENIX(
 
   int absorberactive = 1; // set to 1 to make all absorbers active volumes
 
-  //  const string magfield = "1.5"; // if like float -> solenoidal field in T, if string use as fieldmap name (including path)
-  const string magfield = "/phenix/upgrades/decadal/fieldmaps/sPHENIX.2d.root"; // if like float -> solenoidal field in T, if string use as fieldmap name (including path)
+    const string magfield = "0"; // if like float -> solenoidal field in T, if string use as fieldmap name (including path)
+//  const string magfield = "/phenix/upgrades/decadal/fieldmaps/sPHENIX.2d.root"; // if like float -> solenoidal field in T, if string use as fieldmap name (including path)
 
   //---------------
   // Fun4All server
@@ -147,14 +147,14 @@ int Fun4All_G4_sPHENIX(
 					       PHG4SimpleEventGenerator::Uniform,
 					       PHG4SimpleEventGenerator::Uniform);
 	gen->set_vertex_distribution_mean(0.0,0.0,0.0);
-	gen->set_vertex_distribution_width(0.0,0.0,5.0);
+	gen->set_vertex_distribution_width(0.0,0.0,0.0);
       }
       gen->set_vertex_size_function(PHG4SimpleEventGenerator::Uniform);
       gen->set_vertex_size_parameters(0.0,0.0);
-      gen->set_eta_range(-1, 1);
+      gen->set_eta_range(0.01, 0.01);
 //      gen->set_phi_range(-TMath::Pi(), 1.0*TMath::Pi());
-      gen->set_phi_range(0, TMath::Pi()*2);
-      gen->set_pt_range(10, 10);
+      gen->set_phi_range(TMath::Pi()/2, TMath::Pi()/2);
+      gen->set_pt_range(8, 8);
       gen->set_embedflag(1);
       gen->set_seed(uniqueseed);
       gen->set_verbosity(0);
@@ -279,8 +279,12 @@ int Fun4All_G4_sPHENIX(
   //-----------------
   if (nEvents < 0)
     {
-      return;
+      PHG4Reco *g4 = (PHG4Reco *) se->getSubsysReco("PHG4RECO");
+      g4->ApplyCommand("/control/execute vis.mac");
+      se->run(1);
     }
+  else
+    {
   // if we run the particle generator and use 0 it'll run forever
   if (nEvents == 0 && !readhits && !readhepmc)
     {
@@ -305,6 +309,7 @@ int Fun4All_G4_sPHENIX(
   std::cout << "All done" << std::endl;
   delete se;
   gSystem->Exit(0);
+    }
 }
 
 int Get_Min_cemc_layer()
@@ -355,4 +360,12 @@ int Get_Min_preshower_layer()
 int Get_Max_preshower_layer()
 {
   return Max_preshower_layer;
+}
+
+void
+G4Cmd(const char * cmd)
+{
+  Fun4AllServer *se = Fun4AllServer::instance();
+  PHG4Reco *g4 = (PHG4Reco *) se->getSubsysReco("PHG4RECO");
+  g4->ApplyCommand(cmd);
 }
