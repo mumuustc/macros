@@ -27,7 +27,7 @@
 # list of available graphics systems at some point.
 #/vis/open OGLIX
 /vis/open OGLSX 1600x900-0+0
-/vis/viewer/set/viewpointThetaPhi 20 0
+/vis/viewer/set/viewpointThetaPhi 0 0
 # our world is 4x4 meters, the detector is about 1m across
 # zooming by 4 makes it fill the display
 /vis/viewer/zoom 1.5
@@ -90,6 +90,9 @@
 /vis/modeling/trajectories/drawByParticleID-0/set muon- yellow
 #
 /vis/scene/endOfEventAction accumulate
+
+/vis/viewer/set/background white
+
 #
 # At end of each run, an automatic flush causes graphical output.
 #/run/beamOn 1

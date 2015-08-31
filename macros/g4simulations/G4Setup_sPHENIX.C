@@ -8,7 +8,7 @@ int Min_hcal_out_layer = 1;
 int Max_hcal_out_layer = 1;
 
 double no_overlapp = 0.0001; // added to radii to avoid overlapping volumes
-bool overlapcheck = false; // set to true if you want to check for overlaps
+bool overlapcheck = true; // set to true if you want to check for overlaps
 
 void G4Init(bool do_svtx = true,
 	    bool do_preshower = false,

@@ -37,17 +37,6 @@ CEmc(PHG4Reco* g4Reco, double radius, const int crossings,
   //---------------
   // Load libraries
   //---------------
-    double emc_inner_radius = 130.; // emc inner radius from engineering drawing
-
-  // 1.5cm thick teflon as an approximation for EMCAl light collection + electronics (10% X0 total estimated)
-  PHG4CylinderSubsystem *cyl = new PHG4CylinderSubsystem("CEMC_ELECTRONICS", 0);
-  cyl->SuperDetector("CEMC_ELECTRONICS");
-  cyl->SetRadius(radius);
-  cyl->SetMaterial("G4_Al"); // plastic
-  cyl->SetThickness(0.5);
-  cyl->OverlapCheck(overlapcheck);
-  if (absorberactive)  cyl->SetActive();
-  g4Reco->registerSubsystem( cyl );
 
 
   int ilayer = Min_cemc_layer;
@@ -62,6 +51,7 @@ CEmc(PHG4Reco* g4Reco, double radius, const int crossings,
 //  cemc->get_geom().set_radius(radius);
 //  cemc->get_geom().set_thickness(cemcthickness);
   cemc->get_geom().set_construction_verbose(2);
+//  cemc ->get_geom().set_virualize_fiber(true);
 
   cemc->SetActive();
   cemc->SuperDetector("CEMC");
@@ -71,11 +61,29 @@ CEmc(PHG4Reco* g4Reco, double radius, const int crossings,
 
   g4Reco->registerSubsystem(cemc);
 
-  if (ilayer > Max_cemc_layer)
-    {
-      cout << "layer discrepancy, current layer " << ilayer
-          << " max cemc layer: " << Max_cemc_layer << endl;
-    }
+   radius = cemc->get_geom().get_radius();
+
+    PHG4CylinderSubsystem *cyl = new PHG4CylinderSubsystem("CEMC_SPT", 0);
+    cyl->SuperDetector("CEMC_SPT");
+    cyl->SetRadius(radius-2);
+    cyl->SetMaterial("G4_Al"); //
+    cyl->SetThickness(0.5);
+    cyl->OverlapCheck(overlapcheck);
+    if (absorberactive)  cyl->SetActive();
+    g4Reco->registerSubsystem( cyl );
+
+    radius = cemc->get_geom().get_radius() + cemc->get_geom().get_thickness();
+
+    PHG4CylinderSubsystem *cyl = new PHG4CylinderSubsystem("CEMC_ELECTRONICS", 0);
+    cyl->SuperDetector("CEMC_ELECTRONICS");
+    cyl->SetRadius(radius + 5);
+    cyl->SetMaterial("G4_TEFLON"); //
+    cyl->SetThickness(1.5);
+    cyl->OverlapCheck(overlapcheck);
+    if (absorberactive)  cyl->SetActive();
+    g4Reco->registerSubsystem( cyl );
+
+
 
   return 200;
 }
