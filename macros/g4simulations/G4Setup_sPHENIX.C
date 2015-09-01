@@ -83,6 +83,7 @@ int G4Setup(const int absorberactive = 0,
   if (decayType != TPythia6Decayer::kAll) {
     g4Reco->set_force_decay(decayType);
   }
+  g4Reco->SetPhysicsList("QGSP_BERT_HP");
   
   double fieldstrength;
   istringstream stringline(field);
