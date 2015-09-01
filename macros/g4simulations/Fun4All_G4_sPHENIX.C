@@ -13,7 +13,7 @@ int Cemc_spacal_configuration = -1;
 
 int Fun4All_G4_sPHENIX(
 		       const int nEvents = 1,
-		       const char * inputFile = "kaon-",
+		       const char * inputFile = "mu-",
 		       const char * outputFile = "G4sPHENIXCells.root"
 		       )
 {
@@ -164,11 +164,12 @@ int Fun4All_G4_sPHENIX(
       const double mom = 8;
 
       PHG4ParticleGenerator *gen = new PHG4ParticleGenerator();
+      gen->set_seed(uniqueseed);
       gen->set_name(inputFile);
       gen->set_vtx(0, 120., 0);
       gen->set_z_range(-2.1,-1.5);
       gen->set_eta_range(eta-0.02,eta+0.02);
-      gen->set_phi_range(90/180.*TMath::Pi(),90/180.*TMath::Pi());
+      gen->set_phi_range(90/180.*TMath::Pi()-0.02,90/180.*TMath::Pi()+0.02);
       gen->set_mom_range(mom, mom);
       se->registerSubsystem(gen);
 
