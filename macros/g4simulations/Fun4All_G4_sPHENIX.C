@@ -12,11 +12,14 @@ int Cemc_slats_per_cell = 72; // make it 2*2*2*3*3 so we can try other combinati
 int Cemc_spacal_configuration = -1;
 
 int Fun4All_G4_sPHENIX(
-		       const int nEvents = 1,
-		       const char * inputFile = "mu-",
-		       const char * outputFile = "G4sPHENIXCells.root"
+		       const int nEvents = 10,
+		       const char * inputFile = "/direct/phenix+sim02/phnxreco/ePHENIX/jinhuang/sPHENIX_work/SPACAL_TestBeam_8GeV/Sum_eneg.lst"
 		       )
 {
+  TString soutputFile = TString(inputFile) + "_Process.root";
+
+  const char * outputFile = soutputFile. Data();
+
   //===============
   // Input options
   //===============
@@ -25,7 +28,7 @@ int Fun4All_G4_sPHENIX(
   // read previously generated g4-hits files, in this case it opens a DST and skips
   // the simulations step completely. The G4Setup macro is only loaded to get information
   // about the number of layers used for the cell reco code
-  const bool readhits = false;
+  const bool readhits = true;
   // Or:
   // read files in HepMC format (typically output from event generators like hijing or pythia)
   const bool readhepmc = false; // read HepMC files
@@ -46,8 +49,8 @@ int Fun4All_G4_sPHENIX(
   bool do_preshower = false;
   
   bool do_cemc = true;
-  bool do_cemc_cell = false;
-  bool do_cemc_twr = false;
+  bool do_cemc_cell = true;
+  bool do_cemc_twr = true;
   bool do_cemc_cluster = false;
   bool do_cemc_eval = false;//true;
 
@@ -252,7 +255,8 @@ int Fun4All_G4_sPHENIX(
     {
       // Hits file
       Fun4AllInputManager *hitsin = new Fun4AllDstInputManager("DSTin");
-      hitsin->fileopen(inputFile);
+//      hitsin->fileopen(inputFile);
+      hitsin-> AddListFile(inputFile);
       se->registerInputManager(hitsin);
     }
   if (readhepmc)
@@ -289,8 +293,8 @@ int Fun4All_G4_sPHENIX(
           );
     }
 
-   Fun4AllDstOutputManager *out = new Fun4AllDstOutputManager("DSTOUT", outputFile);
-   se->registerOutputManager(out);
+//   Fun4AllDstOutputManager *out = new Fun4AllDstOutputManager("DSTOUT", outputFile);
+//   se->registerOutputManager(out);
 
   //-----------------
   // Event processing
