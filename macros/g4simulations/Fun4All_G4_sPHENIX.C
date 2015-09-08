@@ -90,7 +90,7 @@ int Fun4All_G4_sPHENIX(
 //  Cemc_spacal_configuration = PHG4CylinderGeom_Spacalv1::k1DProjectiveSpacal; //1D azimuthal projective SPACAL, also macro default
   Cemc_spacal_configuration = PHG4CylinderGeom_Spacalv1::k2DProjectiveSpacal; //2D full projective SPACAL
 
-  int absorberactive = 1; // set to 1 to make all absorbers active volumes
+  int absorberactive = 0; // set to 1 to make all absorbers active volumes
 
     const string magfield = "0"; // if like float -> solenoidal field in T, if string use as fieldmap name (including path)
 //  const string magfield = "/phenix/upgrades/decadal/fieldmaps/sPHENIX.2d.root"; // if like float -> solenoidal field in T, if string use as fieldmap name (including path)
@@ -161,7 +161,10 @@ int Fun4All_G4_sPHENIX(
 //      se->registerSubsystem(gen);
 
       const double eta = 0.3;
-      const double mom = 8;
+//      const double mom = 8;
+//      const double mom_spread = mom*2.4e-2;
+      const double mom = 4;
+      const double mom_spread = mom*2.7e-2;
 
       PHG4ParticleGenerator *gen = new PHG4ParticleGenerator();
       gen->set_seed(uniqueseed);
@@ -170,7 +173,7 @@ int Fun4All_G4_sPHENIX(
       gen->set_z_range(-2.1,-1.5);
       gen->set_eta_range(eta-0.02,eta+0.02);
       gen->set_phi_range(90/180.*TMath::Pi()-0.02,90/180.*TMath::Pi()+0.02);
-      gen->set_mom_range(mom, mom);
+      gen->set_mom_range(mom, mom, mom_spread);
       se->registerSubsystem(gen);
 
 
