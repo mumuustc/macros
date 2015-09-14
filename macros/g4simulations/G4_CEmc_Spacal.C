@@ -3,6 +3,12 @@
 Min_cemc_layer = 1;
 Max_cemc_layer = 1;
 
+  // set a default value for SPACAL configuration
+//  // 1D azimuthal projective SPACAL (fast)
+int Cemc_spacal_configuration = PHG4CylinderGeom_Spacalv1::k1DProjectiveSpacal;
+//   2D azimuthal projective SPACAL (slow)
+// int Cemc_spacal_configuration = PHG4CylinderGeom_Spacalv1::k2DProjectiveSpacal;
+
 #include <iostream>
 
 // just a dummy parameter used by the tilted plate geom
@@ -10,12 +16,6 @@ void CEmcInit(const int nslats = 1)
 {
   Min_cemc_layer = 1;
   Max_cemc_layer = 1;
-
-  // set a default value for SPACAL configuraiton. This may be overwritten in the main Fun4All macros
-  Cemc_spacal_configuration = PHG4CylinderGeom_Spacalv1::k1DProjectiveSpacal; //1D azimuthal projective SPACAL
-//  Cemc_spacal_configuration = PHG4CylinderGeom_Spacalv1::k2DProjectiveSpacal; //2D full projective SPACAL
-
-//  Spacal_Tilt = 0;
 }
 
 //! EMCal main setup macro
@@ -90,7 +90,7 @@ CEmc_1DProjectiveSpacal(PHG4Reco* g4Reco, double radius, const int crossings, co
 
 
   int ilayer = Min_cemc_layer;
-  PHG4SpacalSubsystem *cemc; // sorry the tilted slats are called HCal
+  PHG4SpacalSubsystem *cemc;
   cemc = new PHG4SpacalSubsystem("CEMC", ilayer);
 
   cemc ->get_geom().set_radius(emc_inner_radius);
@@ -191,7 +191,7 @@ CEmc_2DProjectiveSpacal(PHG4Reco* g4Reco, double radius, const int crossings,
   //---------------
 
   int ilayer = Min_cemc_layer;
-  PHG4SpacalSubsystem *cemc; // sorry the tilted slats are called HCal
+  PHG4SpacalSubsystem *cemc;
   cemc = new PHG4SpacalSubsystem("CEMC", ilayer);
 
   cemc->get_geom().set_config(
@@ -256,7 +256,7 @@ CEmc_Proj(PHG4Reco* g4Reco, double radius, const int crossings, const int absorb
   radius = emc_outer_radius;
   
   int ilayer = Min_cemc_layer;
-  PHG4SpacalSubsystem *cemc; // sorry the tilted slats are called HCal
+  PHG4SpacalSubsystem *cemc;
   cemc = new PHG4SpacalSubsystem("CEMC", ilayer);
 
   cemc ->get_geom().set_radius(emc_inner_radius);
@@ -331,7 +331,7 @@ CEmc_Vis(PHG4Reco* g4Reco, double radius, const int crossings, const int absorbe
   radius = emc_inner_radius;
 
   int ilayer = Min_cemc_layer;
-  PHG4SpacalSubsystem *cemc; // sorry the tilted slats are called HCal
+  PHG4SpacalSubsystem *cemc;
   cemc = new PHG4SpacalSubsystem("CEMC", ilayer);
 
   cemc ->get_geom().set_radius(emc_inner_radius);
@@ -373,13 +373,37 @@ void CEMC_Cells(int verbosity = 0) {
   gSystem->Load("libg4detectors.so");
   Fun4AllServer *se = Fun4AllServer::instance();
   
-  PHG4CylinderCellReco *cemc_cells = new PHG4CylinderCellReco("CEMCCYLCELLRECO");
-  cemc_cells->Detector("CEMC");
-  cemc_cells->Verbosity(verbosity);
-  for (int i = Min_cemc_layer; i <= Max_cemc_layer; i++) {
-    cemc_cells->etaphisize(i, 0.024, 0.024);
-  }
-  se->registerSubsystem(cemc_cells);
+
+
+  if (Cemc_spacal_configuration
+      == PHG4CylinderGeom_Spacalv1::k1DProjectiveSpacal)
+    {
+      PHG4CylinderCellReco *cemc_cells = new PHG4CylinderCellReco("CEMCCYLCELLRECO");
+      cemc_cells->Detector("CEMC");
+      cemc_cells->Verbosity(verbosity);
+      for (int i = Min_cemc_layer; i <= Max_cemc_layer; i++) {
+        cemc_cells->etaphisize(i, 0.024, 0.024);
+      }
+      se->registerSubsystem(cemc_cells);
+
+    }
+  else if (Cemc_spacal_configuration
+      == PHG4CylinderGeom_Spacalv1::k2DProjectiveSpacal)
+    {
+      PHG4FullProjSpacalCellReco *cemc_cells = new PHG4FullProjSpacalCellReco("CEMCCYLCELLRECO");
+      cemc_cells->Detector("CEMC");
+      cemc_cells->Verbosity(verbosity);
+      se->registerSubsystem(cemc_cells);
+
+    }
+  else
+    {
+      std::cout
+          << "G4_CEmc_Spacal.C::CEmc - Fatal Error - unrecognized SPACAL configuration #"
+          << Cemc_spacal_configuration<<". Force exiting..." << std::endl;
+      exit(-1);
+      return ;
+    }
 
   return;
 }
@@ -392,9 +416,35 @@ void CEMC_Towers(int verbosity = 0) {
   
   RawTowerBuilder *TowerBuilder = new RawTowerBuilder("EmcRawTowerBuilder");
   TowerBuilder->Detector("CEMC");
+  TowerBuilder->set_sim_tower_node_prefix("SIM");
+  if (Cemc_spacal_configuration
+      == PHG4CylinderGeom_Spacalv1::k1DProjectiveSpacal)
+    TowerBuilder->set_tower_energy_src(RawTowerBuilder::kEnergyDeposition);
   TowerBuilder->Verbosity(verbosity);
   se->registerSubsystem( TowerBuilder );
-      
+
+  static const double sampling_fraction = 0.02244;//from production: /gpfs02/phenix/prod/sPHENIX/preCDR/pro.1-beta.3/single_particle/spacal2d/zerofield/G4Hits_sPHENIX_e-_eta0_8GeV.root
+  static const double photoelectron_per_GeV = 500;//500 photon per total GeV deposition
+
+  RawTowerDigitizer *TowerDigitizer = new RawTowerDigitizer("EmcRawTowerDigitizer");
+  TowerDigitizer->Detector("CEMC");
+  TowerDigitizer->Verbosity(verbosity);
+  TowerDigitizer->set_digi_algorithm(RawTowerDigitizer::kSimple_photon_digitalization);
+  TowerDigitizer->set_pedstal_central_ADC(0);
+  TowerDigitizer->set_pedstal_width_ADC(8);// eRD1 test beam setting
+  TowerDigitizer->set_photonelec_ADC(1);//not simulating ADC discretization error
+  TowerDigitizer->set_photonelec_yield_visible_GeV( photoelectron_per_GeV/sampling_fraction );
+  TowerDigitizer->set_zero_suppression_ADC(16); // eRD1 test beam setting
+  se->registerSubsystem( TowerDigitizer );
+
+  RawTowerCalibration *TowerCalibration = new RawTowerCalibration("EmcRawTowerCalibration");
+  TowerCalibration->Detector("CEMC");
+  TowerCalibration->Verbosity(verbosity);
+  TowerCalibration->set_calib_algorithm(RawTowerCalibration::kSimple_linear_calibration);
+  TowerCalibration->set_calib_const_GeV_ADC(1./photoelectron_per_GeV);
+  TowerCalibration->set_pedstal_ADC(0);
+  se->registerSubsystem( TowerCalibration );
+
   return;
 }
 
@@ -417,10 +467,9 @@ void CEMC_Eval(std::string outputfile, int verbosity = 0) {
   gSystem->Load("libfun4all.so");
   gSystem->Load("libg4eval.so");
   Fun4AllServer *se = Fun4AllServer::instance();
-    
-  PHG4CalEvaluator* eval = new PHG4CalEvaluator("PHG4CEMCEVALUATOR", outputfile.c_str());
-  eval->Verbosity(0);
-  eval->Detector("CEMC");
+
+  CaloEvaluator* eval = new CaloEvaluator("CEMCEVALUATOR", "CEMC", outputfile.c_str());
+  eval->Verbosity(verbosity);
   se->registerSubsystem( eval );
       
   return;

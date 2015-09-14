@@ -37,9 +37,8 @@ double HCalOuter(PHG4Reco* g4Reco,
 
   radius = outer_hcal_outer_radius;
   
-  if (verbosity >= 0) {
+  if (verbosity > 0) {
     cout << "==================== G4_HcalOut_ref.C::HCalOuter() ========================" << endl;
-    cout << " CVS Version: $Id: G4_HcalOut_ref.C,v 1.2 2015/04/14 23:19:30 mccumber Exp $" << endl;
     cout << " HCALOUT Material Description:" << endl;
     cout << "  outer radius = " << outer_hcal_outer_radius << " cm" << endl;
     cout << "===========================================================================" << endl;
@@ -72,9 +71,23 @@ void HCALOuter_Towers(int verbosity = 0) {
   
   RawTowerBuilder* TowerBuilder = new RawTowerBuilder("HcalOutRawTowerBuilder");
   TowerBuilder->Detector("HCALOUT");
+  TowerBuilder->set_sim_tower_node_prefix("SIM");
   TowerBuilder->Verbosity(verbosity);
   se->registerSubsystem( TowerBuilder );
-  
+
+  RawTowerDigitizer *TowerDigitizer = new RawTowerDigitizer("HcalOutRawTowerDigitizer");
+  TowerDigitizer->Detector("HCALOUT");
+  TowerDigitizer->Verbosity(verbosity);
+  TowerDigitizer->set_digi_algorithm(RawTowerDigitizer::kNo_digitalization);
+  se->registerSubsystem( TowerDigitizer );
+
+  RawTowerCalibration *TowerCalibration = new RawTowerCalibration("HcalOutRawTowerCalibration");
+  TowerCalibration->Detector("HCALOUT");
+  TowerCalibration->Verbosity(verbosity);
+  TowerCalibration->set_calib_algorithm(RawTowerCalibration::kSimple_linear_calibration);
+  TowerCalibration->set_calib_const_GeV_ADC(1./0.0305);// muon sampling fraction from Abhisek Sen, 2015 SBU simulation workfest
+  TowerCalibration->set_pedstal_ADC(0);
+  se->registerSubsystem( TowerCalibration );
   return;
 }
 
@@ -97,10 +110,9 @@ void HCALOuter_Eval(std::string outputfile, int verbosity = 0) {
   gSystem->Load("libfun4all.so");
   gSystem->Load("libg4eval.so");
   Fun4AllServer *se = Fun4AllServer::instance();
-  
-  PHG4CalEvaluator* eval = new PHG4CalEvaluator("PHG4HCALOUTEVALUATOR", outputfile.c_str());
+
+  CaloEvaluator* eval = new CaloEvaluator("HCALOUTEVALUATOR", "HCALOUT", outputfile.c_str());
   eval->Verbosity(verbosity);
-  eval->Detector("HCALOUT");
   se->registerSubsystem( eval );
   
   return;
