@@ -11,8 +11,8 @@ int Max_si_layer = -1;
 int Cemc_slats_per_cell = 72; // make it 2*2*2*3*3 so we can try other combinations
 
 int Fun4All_G4_sPHENIX(
-		       const int nEvents = 1,
-		       const char * inputFile = "mu-",
+		       const int nEvents = 10,
+		       const char * inputFile = "e-",
            const char * outputFile = "G4sPHENIXCells.root"
 		       )
 {
@@ -132,8 +132,8 @@ int Fun4All_G4_sPHENIX(
     {
       // toss low multiplicity dummy events
       PHG4SimpleEventGenerator *gen = new PHG4SimpleEventGenerator();
-      gen->add_particles("e-",5); // mu+,e+,proton,pi+,Upsilon
-      gen->add_particles("e+",5); // mu-,e-,anti_proton,pi-
+      gen->add_particles(inputFile,1); // mu+,e+,proton,pi+,Upsilon
+//      gen->add_particles("e+",5); // mu-,e-,anti_proton,pi-
       if (readhepmc) {
 	gen->set_reuse_existing_vertex(true);
 	gen->set_existing_vertex_offset_vector(0.0,0.0,0.0);
