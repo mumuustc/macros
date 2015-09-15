@@ -78,16 +78,27 @@ void HCALOuter_Towers(int verbosity = 0) {
   RawTowerDigitizer *TowerDigitizer = new RawTowerDigitizer("HcalOutRawTowerDigitizer");
   TowerDigitizer->Detector("HCALOUT");
   TowerDigitizer->Verbosity(verbosity);
-  TowerDigitizer->set_digi_algorithm(RawTowerDigitizer::kNo_digitalization);
+  TowerDigitizer->set_digi_algorithm(RawTowerDigitizer::kSimple_photon_digitalization);
+  TowerDigitizer->set_pedstal_central_ADC(0);
+  TowerDigitizer->set_pedstal_width_ADC(0);// eRD1 test beam setting
+  TowerDigitizer->set_photonelec_ADC(1);//not simulating ADC discretization error
+  TowerDigitizer->set_photonelec_yield_visible_GeV( 500. );
+  TowerDigitizer->set_zero_suppression_ADC(1); // eRD1 test beam setting
   se->registerSubsystem( TowerDigitizer );
 
   RawTowerCalibration *TowerCalibration = new RawTowerCalibration("HcalOutRawTowerCalibration");
   TowerCalibration->Detector("HCALOUT");
+//  TowerCalibration->Verbosity(verbosity);
+//  TowerCalibration->set_calib_algorithm(RawTowerCalibration::kSimple_linear_calibration);
+//  TowerCalibration->set_calib_const_GeV_ADC(1./0.0305);// muon sampling fraction from Abhisek Sen, 2015 SBU simulation workfest
+//  TowerCalibration->set_pedstal_ADC(0);
+//  se->registerSubsystem( TowerCalibration );
   TowerCalibration->Verbosity(verbosity);
   TowerCalibration->set_calib_algorithm(RawTowerCalibration::kSimple_linear_calibration);
-  TowerCalibration->set_calib_const_GeV_ADC(1./0.0305);// muon sampling fraction from Abhisek Sen, 2015 SBU simulation workfest
+  TowerCalibration->set_calib_const_GeV_ADC(1./500. / 0.0305 );
   TowerCalibration->set_pedstal_ADC(0);
   se->registerSubsystem( TowerCalibration );
+
   return;
 }
 
