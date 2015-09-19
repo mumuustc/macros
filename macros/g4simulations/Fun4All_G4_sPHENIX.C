@@ -162,7 +162,7 @@ int Fun4All_G4_sPHENIX(
       gen->set_vertex_size_parameters(10.0,0.0);
       gen->set_eta_range(-0.1, 0.1);
       gen->set_phi_range(-1.0*TMath::Pi(), 1.0*TMath::Pi());
-      gen->set_pt_range(10, 10.0);
+      gen->set_pt_range(24, 24);
       gen->Embed(1);
       gen->Verbosity(0);
       se->registerSubsystem(gen);
