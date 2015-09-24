@@ -45,7 +45,7 @@ int Fun4All_G4_sPHENIX(
   bool do_svtx = true;
   bool do_svtx_cell = true;
   bool do_svtx_track = true;
-  bool do_svtx_eval = false;
+  bool do_svtx_eval = true;
 
   bool do_preshower = false;
   
@@ -53,7 +53,7 @@ int Fun4All_G4_sPHENIX(
   bool do_cemc_cell = true;
   bool do_cemc_twr = true;
   bool do_cemc_cluster = true;
-  bool do_cemc_eval = false;
+  bool do_cemc_eval = true;
 
   bool do_hcalin = true;
   bool do_hcalin_cell = true;
