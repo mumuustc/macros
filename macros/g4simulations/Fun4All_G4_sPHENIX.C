@@ -13,7 +13,8 @@ int Cemc_slats_per_cell = 72; // make it 2*2*2*3*3 so we can try other combinati
 int Fun4All_G4_sPHENIX(
 		       const int nEvents = 10,
 		       const char * inputFile = "gamma",
-           const char * outputFile = "G4sPHENIXCells.root"
+           const char * outputFile = "G4sPHENIXCells.root",
+           const char * embed_input_file = "/direct/phenix+sim02/phnxreco/ePHENIX/jinhuang/sPHENIX_work/sHijing/spacal1d.lst" // or NULL if not embedding
 		       )
 {
   //===============
@@ -51,13 +52,13 @@ int Fun4All_G4_sPHENIX(
   bool do_cemc_cell = true;
   bool do_cemc_twr = true;
   bool do_cemc_cluster = true;
-  bool do_cemc_eval = true;
+  bool do_cemc_eval = false;
 
   bool do_hcalin = true;
   bool do_hcalin_cell = true;
   bool do_hcalin_twr = true;
   bool do_hcalin_cluster = true;
-  bool do_hcalin_eval = true;
+  bool do_hcalin_eval = false;
 
   bool do_magnet = true;
   
@@ -65,13 +66,13 @@ int Fun4All_G4_sPHENIX(
   bool do_hcalout_cell = true;
   bool do_hcalout_twr = true;
   bool do_hcalout_cluster = true;
-  bool do_hcalout_eval = true;
+  bool do_hcalout_eval = false;
   
   bool do_global = true;
   bool do_global_fastsim = false;
   
-  bool do_jet_reco = true;
-  bool do_jet_eval = true;
+  bool do_jet_reco = false;
+  bool do_jet_eval = false;
 
   //Option to convert DST to human command readable TTree for quick poke around the outputs
   bool do_DSTReader = true;
@@ -122,6 +123,13 @@ int Fun4All_G4_sPHENIX(
     {
       // Get the hits from a file
       // The input manager is declared later
+
+      if (embed_input_file)
+        {
+          cout <<"Do not support read hits and embed background"<<endl;
+          exit(1);
+        }
+
     }
   else if (readhepmc)
     {
@@ -148,7 +156,7 @@ int Fun4All_G4_sPHENIX(
       PHG4SimpleEventGenerator *gen = new PHG4SimpleEventGenerator();
       gen->add_particles(inputFile,1); // mu+,e+,proton,pi+,Upsilon
 //      gen->add_particles("e+",5); // mu-,e-,anti_proton,pi-
-      if (readhepmc) {
+      if (readhepmc /* || embed_input_file*/) {
 	gen->set_reuse_existing_vertex(true);
 	gen->set_existing_vertex_offset_vector(0.0,0.0,0.0);
       } else {
@@ -257,6 +265,16 @@ int Fun4All_G4_sPHENIX(
       Fun4AllInputManager *hitsin = new Fun4AllDstInputManager("DSTin");
       hitsin->fileopen(inputFile);
       se->registerInputManager(hitsin);
+    }
+  if (embed_input_file)
+    {
+
+      Fun4AllDstInputManager *in1 = new Fun4AllNoSyncDstInputManager("DSTin1",
+          "DST");
+//      in1->AddFile(embed_input_file);
+      in1->AddListFile(embed_input_file);
+      se->registerInputManager(in1);
+
     }
   if (readhepmc)
     {
