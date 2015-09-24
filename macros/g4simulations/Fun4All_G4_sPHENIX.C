@@ -11,7 +11,7 @@ int Max_si_layer = -1;
 int Cemc_slats_per_cell = 72; // make it 2*2*2*3*3 so we can try other combinations
 
 int Fun4All_G4_sPHENIX(
-		       const int nEvents = 10,
+		       const int nEvents = 1,
 		       const char * inputFile = "gamma",
            const char * outputFile = "G4sPHENIXCells.root",
            const char * embed_input_file = "/direct/phenix+sim02/phnxreco/ePHENIX/jinhuang/sPHENIX_work/sHijing/spacal1d.lst" // or NULL if not embedding
@@ -102,7 +102,7 @@ int Fun4All_G4_sPHENIX(
   //---------------
 
   Fun4AllServer *se = Fun4AllServer::instance();
-  se->Verbosity(0); 
+  se->Verbosity(10);
   // just if we set some flags somewhere in this macro
   recoConsts *rc = recoConsts::instance();
   // By default every random number generator uses
@@ -168,9 +168,9 @@ int Fun4All_G4_sPHENIX(
       }
       gen->set_vertex_size_function(PHG4SimpleEventGenerator::Uniform);
       gen->set_vertex_size_parameters(10.0,0.0);
-      gen->set_eta_range(-0.1, 0.1);
+      gen->set_eta_range(-0, 1);
       gen->set_phi_range(-1.0*TMath::Pi(), 1.0*TMath::Pi());
-      gen->set_pt_range(24, 24);
+      gen->set_p_range(24, 24);
       gen->Embed(1);
       gen->Verbosity(0);
       se->registerSubsystem(gen);
@@ -269,8 +269,7 @@ int Fun4All_G4_sPHENIX(
   if (embed_input_file)
     {
 
-      Fun4AllDstInputManager *in1 = new Fun4AllNoSyncDstInputManager("DSTin1",
-          "DST");
+      Fun4AllDstInputManager *in1 = new Fun4AllNoSyncDstInputManager("DSTin1");
 //      in1->AddFile(embed_input_file);
       in1->AddListFile(embed_input_file);
       se->registerInputManager(in1);
@@ -327,7 +326,6 @@ int Fun4All_G4_sPHENIX(
       cout << "it will run forever, so I just return without running anything" << endl;
       return;
     }
-
   se->run(nEvents);
 
   //-----

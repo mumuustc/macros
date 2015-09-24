@@ -488,6 +488,8 @@ void CEMC_Eval(std::string outputfile, int verbosity = 0) {
 
   CaloEvaluator* eval = new CaloEvaluator("CEMCEVALUATOR", "CEMC", outputfile.c_str());
   eval->Verbosity(verbosity);
+  eval->set_truth_tracing_energy_threshold(2);
+  eval->set_reco_tracing_energy_threshold(2);
   se->registerSubsystem( eval );
       
   return;
