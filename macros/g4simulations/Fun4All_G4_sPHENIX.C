@@ -12,9 +12,10 @@ int Cemc_slats_per_cell = 72; // make it 2*2*2*3*3 so we can try other combinati
 
 int Fun4All_G4_sPHENIX(
 		       const int nEvents = 1,
-		       const char * inputFile = "gamma",
+		       const char * inputFile = "e-",
            const char * outputFile = "G4sPHENIXCells.root",
            const char * embed_input_file = "/direct/phenix+sim02/phnxreco/ePHENIX/jinhuang/sPHENIX_work/sHijing/spacal1d.lst" // or NULL if not embedding
+//               const char * embed_input_file = "/direct/phenix+sim02/phnxreco/ePHENIX/jinhuang/sPHENIX_work/single_particle/prod_zerofield_eneg.lst" // or NULL if not embedding
 		       )
 {
   //===============
@@ -44,7 +45,7 @@ int Fun4All_G4_sPHENIX(
   bool do_svtx = true;
   bool do_svtx_cell = true;
   bool do_svtx_track = true;
-  bool do_svtx_eval = true;
+  bool do_svtx_eval = false;
 
   bool do_preshower = false;
   
@@ -156,7 +157,7 @@ int Fun4All_G4_sPHENIX(
       PHG4SimpleEventGenerator *gen = new PHG4SimpleEventGenerator();
       gen->add_particles(inputFile,1); // mu+,e+,proton,pi+,Upsilon
 //      gen->add_particles("e+",5); // mu-,e-,anti_proton,pi-
-      if (readhepmc /* || embed_input_file*/) {
+      if (readhepmc  || embed_input_file) {
 	gen->set_reuse_existing_vertex(true);
 	gen->set_existing_vertex_offset_vector(0.0,0.0,0.0);
       } else {
