@@ -11,11 +11,11 @@ int Max_si_layer = -1;
 int Cemc_slats_per_cell = 72; // make it 2*2*2*3*3 so we can try other combinations
 
 int Fun4All_G4_sPHENIX(
-		       const int nEvents = 100,
+		       const int nEvents = 10,
 		       const char * inputFile = "e-",
            const char * outputFile = "G4sPHENIXCells.root",
            const char * embed_input_file = "/direct/phenix+sim02/phnxreco/ePHENIX/jinhuang/sPHENIX_work/sHijing/spacal1d.lst" // or NULL if not embedding
-//               const char * embed_input_file = "/direct/phenix+sim02/phnxreco/ePHENIX/jinhuang/sPHENIX_work/single_particle/prod_zerofield_eneg.lst" // or NULL if not embedding
+//               const char * embed_input_file = "/direct/phenix+sim02/phnxreco/ePHENIX/jinhuang/sPHENIX_work/single_particle/prod_spacal1d_fieldmap_muonneg.lst" // or NULL if not embedding
 		       )
 {
   //===============
@@ -103,7 +103,7 @@ int Fun4All_G4_sPHENIX(
   //---------------
 
   Fun4AllServer *se = Fun4AllServer::instance();
-  se->Verbosity(10);
+  se->Verbosity(0);
   // just if we set some flags somewhere in this macro
   recoConsts *rc = recoConsts::instance();
   // By default every random number generator uses
@@ -165,10 +165,10 @@ int Fun4All_G4_sPHENIX(
 					       PHG4SimpleEventGenerator::Uniform,
 					       PHG4SimpleEventGenerator::Uniform);
 	gen->set_vertex_distribution_mean(0.0,0.0,0.0);
-	gen->set_vertex_distribution_width(0.0,0.0,5.0);
+	gen->set_vertex_distribution_width(0.0,0.0,0.0);
       }
       gen->set_vertex_size_function(PHG4SimpleEventGenerator::Uniform);
-      gen->set_vertex_size_parameters(10.0,0.0);
+      gen->set_vertex_size_parameters(0.0,0.0);
       gen->set_eta_range(-0, 1);
       gen->set_phi_range(-1.0*TMath::Pi(), 1.0*TMath::Pi());
       gen->set_p_range(24, 24);
@@ -310,8 +310,8 @@ int Fun4All_G4_sPHENIX(
           );
     }
 
-  // Fun4AllDstOutputManager *out = new Fun4AllDstOutputManager("DSTOUT", outputFile);
-  // se->registerOutputManager(out);
+//   Fun4AllDstOutputManager *out = new Fun4AllDstOutputManager("DSTOUT", outputFile);
+//   se->registerOutputManager(out);
 
   //-----------------
   // Event processing
