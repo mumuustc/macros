@@ -14,8 +14,8 @@ int Fun4All_G4_sPHENIX(
 		       const int nEvents = 2,
 		       const char * inputFile = "e-",
            const char * outputFile = "G4sPHENIXCells.root",
-//           const char * embed_input_file = "/direct/phenix+sim02/phnxreco/ePHENIX/jinhuang/sPHENIX_work/sHijing/spacal1d.lst" // or NULL if not embedding
-               const char * embed_input_file = "/direct/phenix+sim02/phnxreco/ePHENIX/jinhuang/sPHENIX_work/single_particle/prod_spacal1d_fieldmap_muonneg.lst" // or NULL if not embedding
+           const char * embed_input_file = "G4sPHENIXCells_2e_24GeV.lst" // or NULL if not embedding
+//               const char * embed_input_file = "/direct/phenix+sim02/phnxreco/ePHENIX/jinhuang/sPHENIX_work/single_particle/prod_spacal1d_fieldmap_muonneg.lst" // or NULL if not embedding
 		       )
 {
   //===============
@@ -38,7 +38,7 @@ int Fun4All_G4_sPHENIX(
   // What to run
   //======================
 
-  bool do_bbc = true;
+  bool do_bbc = false;
   
   bool do_pipe = true;
   
@@ -69,7 +69,7 @@ int Fun4All_G4_sPHENIX(
   bool do_hcalout_cluster = true;
   bool do_hcalout_eval = false;
   
-  bool do_global = true;
+  bool do_global = false;
   bool do_global_fastsim = false;
   
   bool do_jet_reco = false;
@@ -88,6 +88,7 @@ int Fun4All_G4_sPHENIX(
   gSystem->Load("libg4hough.so");
   gSystem->Load("libcemc.so");
   gSystem->Load("libg4eval.so");
+  gSystem->Load("libg4vertex.so");
 
   // establish the geometry and reconstruction setup
   gROOT->LoadMacro("G4Setup_sPHENIX.C");
