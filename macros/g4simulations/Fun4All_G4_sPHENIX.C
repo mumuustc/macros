@@ -14,8 +14,8 @@ int Fun4All_G4_sPHENIX(
 		       const int nEvents = 2,
 		       const char * inputFile = "e-",
            const char * outputFile = "G4sPHENIXCells.root",
-           const char * embed_input_file = "G4sPHENIXCells_2e_24GeV.lst" // or NULL if not embedding
-//               const char * embed_input_file = "/direct/phenix+sim02/phnxreco/ePHENIX/jinhuang/sPHENIX_work/single_particle/prod_spacal1d_fieldmap_muonneg.lst" // or NULL if not embedding
+//           const char * embed_input_file = "G4sPHENIXCells_2e_24GeV.lst" // or NULL if not embedding
+               const char * embed_input_file = "/direct/phenix+sim02/phnxreco/ePHENIX/jinhuang/sPHENIX_work/sHijing/spacal2d.lst" // or NULL if not embedding
 		       )
 {
   //===============
@@ -43,30 +43,30 @@ int Fun4All_G4_sPHENIX(
   bool do_pipe = true;
   
   bool do_svtx = true;
-  bool do_svtx_cell = true;
-  bool do_svtx_track = true;
-  bool do_svtx_eval = true;
+  bool do_svtx_cell = false;
+  bool do_svtx_track = false;
+  bool do_svtx_eval = false;
 
   bool do_preshower = false;
   
   bool do_cemc = true;
-  bool do_cemc_cell = true;
-  bool do_cemc_twr = true;
-  bool do_cemc_cluster = true;
-  bool do_cemc_eval = true;
+  bool do_cemc_cell = false;
+  bool do_cemc_twr = false;
+  bool do_cemc_cluster = false;
+  bool do_cemc_eval = false;
 
   bool do_hcalin = true;
-  bool do_hcalin_cell = true;
-  bool do_hcalin_twr = true;
-  bool do_hcalin_cluster = true;
+  bool do_hcalin_cell = false;
+  bool do_hcalin_twr = false;
+  bool do_hcalin_cluster = false;
   bool do_hcalin_eval = false;
 
   bool do_magnet = true;
   
   bool do_hcalout = true;
-  bool do_hcalout_cell = true;
-  bool do_hcalout_twr = true;
-  bool do_hcalout_cluster = true;
+  bool do_hcalout_cell = false;
+  bool do_hcalout_twr = false;
+  bool do_hcalout_cluster = false;
   bool do_hcalout_eval = false;
   
   bool do_global = false;
@@ -76,7 +76,7 @@ int Fun4All_G4_sPHENIX(
   bool do_jet_eval = false;
 
   //Option to convert DST to human command readable TTree for quick poke around the outputs
-  bool do_DSTReader = true;
+  bool do_DSTReader = false;
   //---------------
   // Load libraries
   //---------------
@@ -104,7 +104,7 @@ int Fun4All_G4_sPHENIX(
   //---------------
 
   Fun4AllServer *se = Fun4AllServer::instance();
-  se->Verbosity(0);
+  se->Verbosity(10);
   // just if we set some flags somewhere in this macro
   recoConsts *rc = recoConsts::instance();
   // By default every random number generator uses
@@ -170,7 +170,7 @@ int Fun4All_G4_sPHENIX(
       }
       gen->set_vertex_size_function(PHG4SimpleEventGenerator::Uniform);
       gen->set_vertex_size_parameters(0.0,0.0);
-      gen->set_eta_range(-0, 1);
+      gen->set_eta_range(-0, .1);
       gen->set_phi_range(-1.0*TMath::Pi(), 1.0*TMath::Pi());
       gen->set_p_range(24, 24);
       gen->Embed(1);
@@ -312,6 +312,22 @@ int Fun4All_G4_sPHENIX(
     }
 
    Fun4AllDstOutputManager *out = new Fun4AllDstOutputManager("DSTOUT", outputFile);
+  out->StripNode("G4HIT_ABSORBER_HCALIN");
+//  out->StripNode("G4HIT_HCALIN");
+  out->StripNode("G4HIT_ABSORBER_HCALOUT");
+//  out->StripNode("G4HIT_HCALOUT");
+//  out->StripNode("G4HIT_PIPE");
+//  out->StripNode("G4HIT_SVTX");
+  out->StripNode("G4HIT_SVTXSUPPORT");
+  out->StripNode("G4HIT_CEMC_ELECTRONICS");
+//  out->StripNode("G4HIT_CEMC");
+  out->StripNode("G4HIT_ABSORBER_CEMC");
+  out->StripNode("G4HIT_CEMC_SPT");
+  out->StripNode("G4HIT_HCALIN_SPT");
+  out->StripNode("G4HIT_MAGNET");
+  out->StripNode("G4HIT_BH_1");
+  out->StripNode("G4HIT_BH_FORWARD_PLUS");
+  out->StripNode("G4HIT_BH_FORWARD_NEG");
    se->registerOutputManager(out);
 
   //-----------------
