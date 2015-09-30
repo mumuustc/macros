@@ -14,9 +14,9 @@ int Fun4All_G4_sPHENIX(
 		       const int nEvents = 2,
 		       const char * inputFile = "e-",
            const char * outputFile = "G4sPHENIXCells.root",
-           const char * embed_input_file = "G4sPHENIXCells_2e_24GeV.lst" // or NULL if not embedding
-//               const char * embed_input_file = "/direct/phenix+sim02/phnxreco/ePHENIX/jinhuang/sPHENIX_work/single_particle/prod_spacal1d_fieldmap_muonneg.lst" // or NULL if not embedding
-		       )
+//           const char * embed_input_file = "G4sPHENIXCells_2e_24GeV.lst" // or NULL if not embedding
+           const char * embed_input_file = "/direct/phenix+sim02/phnxreco/ePHENIX/jinhuang/sPHENIX_work/sHijing/spacal1d.lst" // or NULL if not embedding
+               )
 {
   //===============
   // Input options
