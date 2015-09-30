@@ -5,9 +5,9 @@ Max_cemc_layer = 1;
 
   // set a default value for SPACAL configuration
 //  // 1D azimuthal projective SPACAL (fast)
-int Cemc_spacal_configuration = PHG4CylinderGeom_Spacalv1::k1DProjectiveSpacal;
+//int Cemc_spacal_configuration = PHG4CylinderGeom_Spacalv1::k1DProjectiveSpacal;
 //   2D azimuthal projective SPACAL (slow)
-// int Cemc_spacal_configuration = PHG4CylinderGeom_Spacalv1::k2DProjectiveSpacal;
+ int Cemc_spacal_configuration = PHG4CylinderGeom_Spacalv1::k2DProjectiveSpacal;
 
 #include <iostream>
 
@@ -489,6 +489,8 @@ void CEMC_Eval(std::string outputfile, int verbosity = 0) {
   Fun4AllServer *se = Fun4AllServer::instance();
 
   CaloEvaluator* eval = new CaloEvaluator("CEMCEVALUATOR", "CEMC", outputfile.c_str());
+  eval->set_reco_tracing_energy_threshold(2);
+  eval->set_truth_tracing_energy_threshold(2);
   eval->Verbosity(verbosity);
   se->registerSubsystem( eval );
       

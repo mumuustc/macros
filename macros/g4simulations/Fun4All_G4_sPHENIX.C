@@ -12,7 +12,7 @@ int Cemc_slats_per_cell = 72; // make it 2*2*2*3*3 so we can try other combinati
 
 int Fun4All_G4_sPHENIX(
 		       const int nEvents = 5,
-		       const char * inputFile = "./G4Hits_sPHENIX_e-_eta0_8GeV.root"
+		       const char * inputFile = "/direct/phenix+sim02/phnxreco/ePHENIX/jinhuang/sPHENIX_work/sHijing/embedd_eta0_24GeV/Sim1020_gamma.root"
 //		           const char * inputFile ="./G4Hits_sPHENIX_pi-_eta0_32GeV.root"
 		       )
 {
@@ -48,7 +48,7 @@ int Fun4All_G4_sPHENIX(
   bool do_svtx = true;
   bool do_svtx_cell = true;
   bool do_svtx_track = true;
-  bool do_svtx_eval = true;
+  bool do_svtx_eval = false;
 
   bool do_preshower = false;
   
@@ -62,7 +62,7 @@ int Fun4All_G4_sPHENIX(
   bool do_hcalin_cell = true;
   bool do_hcalin_twr = true;
   bool do_hcalin_cluster = true;
-  bool do_hcalin_eval = true;
+  bool do_hcalin_eval = false;
 
   bool do_magnet = true;
   
@@ -70,7 +70,7 @@ int Fun4All_G4_sPHENIX(
   bool do_hcalout_cell = true;
   bool do_hcalout_twr = true;
   bool do_hcalout_cluster = true;
-  bool do_hcalout_eval = true;
+  bool do_hcalout_eval = false;
   
   bool do_global = true;
   bool do_global_fastsim = false;
