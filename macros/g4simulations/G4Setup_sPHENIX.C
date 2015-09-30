@@ -186,6 +186,7 @@ int G4Setup(const int absorberactive = 0,
   g4Reco->registerSubsystem(blackhole);
 
   PHG4TruthSubsystem *truth = new PHG4TruthSubsystem();
+  truth->SetSaveOnlyEmbeded(true);
   g4Reco->registerSubsystem(truth);
   se->registerSubsystem( g4Reco );
 }
