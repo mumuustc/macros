@@ -172,7 +172,7 @@ int Fun4All_G4_sPHENIX(
       gen->set_vertex_size_parameters(0.0,0.0);
       gen->set_eta_range(-0, .1);
       gen->set_phi_range(-1.0*TMath::Pi(), 1.0*TMath::Pi());
-      gen->set_p_range(24, 24);
+      gen->set_p_range(4, 4);
       gen->Embed(1);
       gen->Verbosity(0);
       se->registerSubsystem(gen);
@@ -319,7 +319,7 @@ int Fun4All_G4_sPHENIX(
 //  out->StripNode("G4HIT_PIPE");
 //  out->StripNode("G4HIT_SVTX");
   out->StripNode("G4HIT_SVTXSUPPORT");
-  out->StripNode("G4HIT_CEMC_ELECTRONICS");
+//  out->StripNode("G4HIT_CEMC_ELECTRONICS");
 //  out->StripNode("G4HIT_CEMC");
   out->StripNode("G4HIT_ABSORBER_CEMC");
   out->StripNode("G4HIT_CEMC_SPT");
