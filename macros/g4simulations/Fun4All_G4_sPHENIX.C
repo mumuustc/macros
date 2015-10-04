@@ -11,11 +11,11 @@ int Max_si_layer = -1;
 int Cemc_slats_per_cell = 72; // make it 2*2*2*3*3 so we can try other combinations
 
 int Fun4All_G4_sPHENIX(
-		       const int nEvents = 2,
-		       const char * inputFile = "gamma",
-           const char * outputFile = "G4sPHENIXCells.root"
+		       const int nEvents = 2
 		       )
 {
+  const char * outputFile = "G4sPHENIXCells.root";
+
   //===============
   // Input options
   //===============
@@ -30,13 +30,13 @@ int Fun4All_G4_sPHENIX(
   const bool readhepmc = false; // read HepMC files
   // Or:
   // Use particle generator
-  const bool runpythia = false;
+  const bool runpythia = true;
 
   //======================
   // What to run
   //======================
 
-  bool do_bbc = true;
+  bool do_bbc = false;
   
   bool do_pipe = true;
   
@@ -74,7 +74,7 @@ int Fun4All_G4_sPHENIX(
   bool do_jet_eval = false;
 
   //Option to convert DST to human command readable TTree for quick poke around the outputs
-  bool do_DSTReader = true;
+  bool do_DSTReader = false;
   //---------------
   // Load libraries
   //---------------
@@ -134,10 +134,25 @@ int Fun4All_G4_sPHENIX(
     {
       gSystem->Load("libPHPythia8.so");
       
+
+      PHPy8ParticleTrigger *theTrigger = new PHPy8ParticleTrigger();
+//      theTrigger->Verbosity(10);
+      theTrigger->AddParticles(11);
+      theTrigger->AddParticles(-11);
+      theTrigger->SetEtaHighLow(1,-1);
+      theTrigger->AddParents(553);
+
       PHPythia8* pythia8 = new PHPythia8();
       // see coresoftware/generators/PHPythia8 for example config
       pythia8->set_config_file("phpythia8.cfg"); 
+
+      pythia8->beam_vertex_parameters(0,0,0,0,0,5);
+      pythia8->register_trigger(theTrigger);
+//      pythia8->set_trigger_AND();
+
       se->registerSubsystem(pythia8);
+      pythia8->print_config();
+//      pythia8->Verbosity(10);
 
       HepMCNodeReader *hr = new HepMCNodeReader();
       se->registerSubsystem(hr);
@@ -315,7 +330,7 @@ int Fun4All_G4_sPHENIX(
   //-----
   // Exit
   //-----
-
+  gSystem->Exec("ps -o sid,ppid,pid,user,comm,vsize,rssize,time");
   se->End();
   std::cout << "All done" << std::endl;
   delete se;
