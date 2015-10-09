@@ -12,11 +12,11 @@ int Cemc_slats_per_cell = 72; // make it 2*2*2*3*3 so we can try other combinati
 
 int Fun4All_G4_sPHENIX(
 		       const int nEvents = 2,
-		       const char * inputFile = "gamma",
+		       const char * inputFile = "e-",
            const char * outputFile = "G4sPHENIXCells.root",
 //           const char * embed_input_file = "G4sPHENIXCells_2e_24GeV.lst" // or NULL if not embedding
-           const char * embed_input_file = "/direct/phenix+sim02/phnxreco/ePHENIX/jinhuang/sPHENIX_work/sHijing/spacal1d.lst" // or NULL if not embedding
-//               const char * embed_input_file = "/direct/phenix+sim02/phnxreco/ePHENIX/jinhuang/sPHENIX_work/sHijing/spacal2d.lst" // or NULL if not embedding
+//           const char * embed_input_file = "/direct/phenix+sim02/phnxreco/ePHENIX/jinhuang/sPHENIX_work/sHijing/spacal1d.lst" // or NULL if not embedding
+               const char * embed_input_file = "/direct/phenix+sim02/phnxreco/ePHENIX/jinhuang/sPHENIX_work/sHijing/spacal2d.lst" // or NULL if not embedding
 		       )
 {
   //===============
@@ -171,11 +171,11 @@ int Fun4All_G4_sPHENIX(
       }
       gen->set_vertex_size_function(PHG4SimpleEventGenerator::Uniform);
       gen->set_vertex_size_parameters(0.0,0.0);
-//      gen->set_eta_range(-0, .1);
-      gen->set_eta_range(.9, 1);
+      gen->set_eta_range(-0, .1);
+//      gen->set_eta_range(.9, 1);
       gen->set_phi_range(-1.0*TMath::Pi(), 1.0*TMath::Pi());
-//      gen->set_p_range(4, 4);
-      gen->set_p_range(6, 6);
+      gen->set_p_range(4, 4);
+//      gen->set_p_range(6, 6);
       gen->Embed(1);
       gen->Verbosity(0);
       se->registerSubsystem(gen);
