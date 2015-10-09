@@ -15,7 +15,8 @@ int Fun4All_G4_sPHENIX(
 		       const char * inputFile = "gamma",
            const char * outputFile = "G4sPHENIXCells.root",
 //           const char * embed_input_file = "G4sPHENIXCells_2e_24GeV.lst" // or NULL if not embedding
-               const char * embed_input_file = "/direct/phenix+sim02/phnxreco/ePHENIX/jinhuang/sPHENIX_work/sHijing/spacal2d.lst" // or NULL if not embedding
+           const char * embed_input_file = "/direct/phenix+sim02/phnxreco/ePHENIX/jinhuang/sPHENIX_work/sHijing/spacal1d.lst" // or NULL if not embedding
+//               const char * embed_input_file = "/direct/phenix+sim02/phnxreco/ePHENIX/jinhuang/sPHENIX_work/sHijing/spacal2d.lst" // or NULL if not embedding
 		       )
 {
   //===============
