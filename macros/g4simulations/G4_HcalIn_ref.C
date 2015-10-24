@@ -113,35 +113,36 @@ void HCALInner_Towers(int verbosity = 0) {
   gSystem->Load("libfun4all.so");
   gSystem->Load("libg4detectors.so");
   Fun4AllServer *se = Fun4AllServer::instance();
-  
+
+  static const double photoelectron_per_GeV = 43.9/1.37e-3;//Ron Belmont, https://indico.bnl.gov/conferenceDisplay.py?confId=1502
+  static const double sampling_fraction = 0.067;//muon sampling fraction from Abhisek Sen, 2015 SBU simulation workfest
+
+  // SIM Tower = Sum of light_yield()
   RawTowerBuilder *TowerBuilder = new RawTowerBuilder("HcalInRawTowerBuilder");
   TowerBuilder->Detector("HCALIN");
   TowerBuilder->set_sim_tower_node_prefix("SIM");
   TowerBuilder->Verbosity(verbosity);
   se->registerSubsystem( TowerBuilder );
 
+  // RAW tower = Poission(SIM Tower / photonelec_yield_visible_GeV)/photonelec_ADC
+  //             + Gauss(pedstal_central_ADC, pedstal_width_ADC)
   RawTowerDigitizer *TowerDigitizer = new RawTowerDigitizer("HcalInRawTowerDigitizer");
   TowerDigitizer->Detector("HCALIN");
   TowerDigitizer->Verbosity(verbosity);
   TowerDigitizer->set_digi_algorithm(RawTowerDigitizer::kSimple_photon_digitalization);
+  TowerDigitizer->set_photonelec_ADC(1);//NOT simulating ADC discretization error, 1 ADC = 1 p.e.
   TowerDigitizer->set_pedstal_central_ADC(0);
-  TowerDigitizer->set_pedstal_width_ADC(0);// eRD1 test beam setting
-  TowerDigitizer->set_photonelec_ADC(1);//not simulating ADC discretization error
-  TowerDigitizer->set_photonelec_yield_visible_GeV( 500. );
-  TowerDigitizer->set_zero_suppression_ADC(1); // eRD1 test beam setting
+  TowerDigitizer->set_pedstal_width_ADC(8);// Jin - Give a guess 8 p.e.?
+  TowerDigitizer->set_photonelec_yield_visible_GeV( photoelectron_per_GeV );
+  TowerDigitizer->set_zero_suppression_ADC(16); // suppress at 16 ADC, 2 x pedestal sigma
   se->registerSubsystem( TowerDigitizer );
 
+  // Calibrated Tower = (RAW tower - pedstal_ADC) * calib_const_GeV_ADC
   RawTowerCalibration *TowerCalibration = new RawTowerCalibration("HcalInRawTowerCalibration");
   TowerCalibration->Detector("HCALIN");
-//  TowerCalibration->Verbosity(verbosity);
-//  TowerCalibration->set_calib_algorithm(RawTowerCalibration::kSimple_linear_calibration);
-//  TowerCalibration->set_calib_const_GeV_ADC(1./0.067);// muon sampling fraction from Abhisek Sen, 2015 SBU simulation workfest
-//  TowerCalibration->set_pedstal_ADC(0);
-//  se->registerSubsystem( TowerCalibration );
-
   TowerCalibration->Verbosity(verbosity);
   TowerCalibration->set_calib_algorithm(RawTowerCalibration::kSimple_linear_calibration);
-  TowerCalibration->set_calib_const_GeV_ADC(1./500. / 0.067 );
+  TowerCalibration->set_calib_const_GeV_ADC(1. / photoelectron_per_GeV / sampling_fraction);
   TowerCalibration->set_pedstal_ADC(0);
   se->registerSubsystem( TowerCalibration );
 
