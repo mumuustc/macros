@@ -11,12 +11,8 @@ int Max_si_layer = -1;
 int Cemc_slats_per_cell = 72; // make it 2*2*2*3*3 so we can try other combinations
 
 int Fun4All_G4_sPHENIX(
-		       const int nEvents = 10,
-<<<<<<< HEAD
-		       const char * inputFile = "G4Hits_sPHENIX_pi-_eta0_32GeV.root",
-=======
-		       const char * inputFile = "/gpfs02/phenix/prod/sPHENIX/preCDR/pro.1-beta.5/single_particle/spacal1d/fieldmap/G4Hits_sPHENIX_e-_eta0_16GeV.root",
->>>>>>> origin/master
+		       const int nEvents = 100,
+		       const char * inputFile = "G4Hits_sPHENIX_pi-_eta0_24GeV.root",
 		       const char * outputFile = "G4sPHENIXCells.root"
 		       )
 {
@@ -78,7 +74,7 @@ int Fun4All_G4_sPHENIX(
   bool do_jet_eval = true;
 
   //Option to convert DST to human command readable TTree for quick poke around the outputs
-  bool do_DSTReader = true;
+  bool do_DSTReader = false;
   //---------------
   // Load libraries
   //---------------
