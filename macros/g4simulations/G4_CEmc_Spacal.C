@@ -232,14 +232,14 @@ CEmc_Proj(PHG4Reco* g4Reco, double radius, const int crossings, const int absorb
   double emc_inner_radius = 95.; // emc inner radius from engineering drawing
   double cemcthickness = 12.9+1.5;
   double emc_outer_radius = emc_inner_radius + cemcthickness; // outer radius
-  
+
   if (radius > emc_inner_radius) {
-    cout << "inconsistency: preshower radius+thickness: " << radius 
+    cout << "inconsistency: preshower radius+thickness: " << radius
 	 << " larger than emc inner radius: " <<  emc_inner_radius
 	 << endl;
     gSystem->Exit(-1);
   }
-  
+
   //---------------
   // Load libraries
   //---------------
@@ -254,7 +254,7 @@ CEmc_Proj(PHG4Reco* g4Reco, double radius, const int crossings, const int absorb
   // double cemcthickness = 12.9+1.5;
   //  double emc_outer_radius = emc_inner_radius + cemcthickness; // outer radius
   radius = emc_outer_radius;
-  
+
   int ilayer = Min_cemc_layer;
   PHG4SpacalSubsystem *cemc;
   cemc = new PHG4SpacalSubsystem("CEMC", ilayer);
@@ -312,14 +312,14 @@ CEmc_Vis(PHG4Reco* g4Reco, double radius, const int crossings, const int absorbe
   double emc_inner_radius = 95.; // emc inner radius from engineering drawing
   double cemcthickness = 12.7;
   double emc_outer_radius = emc_inner_radius + cemcthickness; // outer radius
-  
+
   if (radius > emc_inner_radius) {
-    cout << "inconsistency: preshower radius+thickness: " << radius 
+    cout << "inconsistency: preshower radius+thickness: " << radius
 	 << " larger than emc inner radius: " <<  emc_inner_radius
 	 << endl;
     gSystem->Exit(-1);
   }
-  
+
   //---------------
   // Load libraries
   //---------------
@@ -354,7 +354,7 @@ CEmc_Vis(PHG4Reco* g4Reco, double radius, const int crossings, const int absorbe
 
   radius += cemcthickness;
   radius += no_overlapp;
-  
+
   PHG4CylinderSubsystem *cyl = new PHG4CylinderSubsystem("EMCELECTRONICS", 0);
   cyl->SetRadius(radius);
   cyl->SetMaterial("G4_TEFLON"); // plastic
@@ -363,7 +363,7 @@ CEmc_Vis(PHG4Reco* g4Reco, double radius, const int crossings, const int absorbe
   g4Reco->registerSubsystem( cyl );
   radius += 0.5;
   radius += no_overlapp;
-  
+
   return radius;
 }
 
@@ -382,7 +382,9 @@ void CEMC_Cells(int verbosity = 0) {
       cemc_cells->Detector("CEMC");
       cemc_cells->Verbosity(verbosity);
       for (int i = Min_cemc_layer; i <= Max_cemc_layer; i++) {
-        cemc_cells->etaphisize(i, 0.024, 0.024);
+//          cemc_cells->etaphisize(i, 0.024, 0.024);
+          const double radius = 95;
+          cemc_cells->cellsize(i,  2*TMath::Pi()/256. * radius, 2*TMath::Pi()/256. * radius);
       }
       se->registerSubsystem(cemc_cells);
 
@@ -417,13 +419,30 @@ void CEMC_Towers(int verbosity = 0) {
   RawTowerBuilder *TowerBuilder = new RawTowerBuilder("EmcRawTowerBuilder");
   TowerBuilder->Detector("CEMC");
   TowerBuilder->set_sim_tower_node_prefix("SIM");
-  if (Cemc_spacal_configuration
-      == PHG4CylinderGeom_Spacalv1::k1DProjectiveSpacal)
-    TowerBuilder->set_tower_energy_src(RawTowerBuilder::kEnergyDeposition);
   TowerBuilder->Verbosity(verbosity);
   se->registerSubsystem( TowerBuilder );
 
-  static const double sampling_fraction = 0.02244;//from production: /gpfs02/phenix/prod/sPHENIX/preCDR/pro.1-beta.3/single_particle/spacal2d/zerofield/G4Hits_sPHENIX_e-_eta0_8GeV.root
+  double sampling_fraction = 1;
+  if (Cemc_spacal_configuration
+      == PHG4CylinderGeom_Spacalv1::k1DProjectiveSpacal)
+    {
+      sampling_fraction = 0.0234335; //from production:/gpfs02/phenix/prod/sPHENIX/preCDR/pro.1-beta.3/single_particle/spacal1d/zerofield/G4Hits_sPHENIX_e-_eta0_8GeV.root
+    }
+  else if (Cemc_spacal_configuration
+      == PHG4CylinderGeom_Spacalv1::k2DProjectiveSpacal)
+    {
+//      sampling_fraction = 0.02244; //from production: /gpfs02/phenix/prod/sPHENIX/preCDR/pro.1-beta.3/single_particle/spacal2d/zerofield/G4Hits_sPHENIX_e-_eta0_8GeV.root
+      sampling_fraction = 2.36081e-02;//from production: /gpfs02/phenix/prod/sPHENIX/preCDR/pro.1-beta.5/single_particle/spacal2d/zerofield/G4Hits_sPHENIX_e-_eta0_8GeV.root
+    }
+  else
+    {
+      std::cout
+          << "G4_CEmc_Spacal.C::G4_CEmc_Spacal - Fatal Error - unrecognized SPACAL configuration #"
+          << Cemc_spacal_configuration<<". Force exiting..." << std::endl;
+      exit(-1);
+      return ;
+    }
+
   static const double photoelectron_per_GeV = 500;//500 photon per total GeV deposition
 
   RawTowerDigitizer *TowerDigitizer = new RawTowerDigitizer("EmcRawTowerDigitizer");
