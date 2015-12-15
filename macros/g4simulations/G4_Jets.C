@@ -69,6 +69,12 @@ void Jet_Reco(int verbosity = 0) {
   trackjetreco->Verbosity(verbosity);
   se->registerSubsystem(trackjetreco); 
 
+  // flow jet module
+
+  gSystem->Load("libPHFlowJetMaker.so");
+  PHFlowJetMaker *ana = new PHFlowJetMaker(outputFile);
+  se->registerSubsystem(ana);
+
   return; 
 }
 
