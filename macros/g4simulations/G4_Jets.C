@@ -72,7 +72,7 @@ void Jet_Reco(int verbosity = 0) {
   // flow jet module
 
   gSystem->Load("libPHFlowJetMaker.so");
-  PHFlowJetMaker *ana = new PHFlowJetMaker(outputFile);
+  PHFlowJetMaker *ana = new PHFlowJetMaker("PHFlowJetMaker_eval.root");
   se->registerSubsystem(ana);
 
   return; 
@@ -86,7 +86,7 @@ void Jet_Eval(std::string outfilename = "g4jets_eval.root",
   Fun4AllServer *se = Fun4AllServer::instance();
 
   JetEvaluator* eval = new JetEvaluator("JETEVALUATOR",
-   					"AntiKt_Tower_r0.3",
+   					"AntiKt_Flow_r0.3",
    					"AntiKt_Truth_r0.3",
    					outfilename);
   eval->Verbosity(verbosity);
