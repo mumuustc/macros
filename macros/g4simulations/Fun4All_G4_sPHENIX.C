@@ -1,7 +1,7 @@
 
 int Fun4All_G4_sPHENIX(
-		       const int nEvents = 3,
-		           const char * inputFile ="./G4Hits_sPHENIX_anti_proton_eta0_8GeV-0000.root"
+		       const int nEvents = 100,
+		           const char * inputFile ="./G4Hits_sPHENIX_gamma_eta0_8GeV-0000.root"
 		       )
 {
 
@@ -287,18 +287,17 @@ int Fun4All_G4_sPHENIX(
           );
     }
 
-  gSystem->Load("libemcal_ana.so");
-  EMCalAna * emcal_ana = new EMCalAna(
-      string(inputFile) + string("_EMCalAna.root"));
-  emcal_ana->set_flag(EMCalAna::kProcessTrk);
+  gSystem->Load("libemcal_calib.so");
+  EMCalCalib * emcal_ana = new EMCalCalib(
+      string(inputFile) + string("_EMCalCalib.root"));
+  emcal_ana->set_flag(EMCalCalib::kProcessMCPhoton);
 //  emcal_ana->Verbosity(5);
   se->registerSubsystem(emcal_ana);
 
   Fun4AllDstOutputManager *out = new Fun4AllDstOutputManager("DSTOUT",
       outputFile);
   out->AddNode("Sync");
-  out->AddNode("UpsilonPair");
-  out->AddNode("EMCalTrk");
+  out->AddNode("MCPhoton");
   out->AddNode("GlobalVertexMap");
   se->registerOutputManager(out);
 
@@ -319,7 +318,7 @@ int Fun4All_G4_sPHENIX(
 
   gSystem->ListLibraries();
 
-//  se->Verbosity(10);
+//  se->Verbosity(10); // enable to spill out lots of debug info
   se->run(nEvents);
 //  se->dumpHistos(string(inputFile) + string("_hist.root"),"recreate");
 
