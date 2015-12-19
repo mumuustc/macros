@@ -110,6 +110,18 @@ G4DSTreader( const char * outputFile = "G4sPHENIXCells.root",//
       ana->AddTower("CALIB_HCALOUT");
     }
 
+  ana->AddTower("SIM_FHCAL");
+  ana->AddTower("SIM_FEMC");
+  ana->AddTower("RAW_FHCAL");
+  ana->AddTower("RAW_FEMC");
+  ana->AddTower("CALIB_FHCAL");
+  ana->AddTower("CALIB_FEMC");
+
+  ana->AddNode("FEMC");
+  ana->AddNode("FHCAL");
+
+
+
   // Jets disabled for now
 //  if (do_jet_reco)
 //    {
