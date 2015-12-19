@@ -70,12 +70,13 @@ int Fun4All_G4_fsPHENIX(
   bool do_global = true;
   bool do_global_fastsim = false;
   
-  bool do_jet_reco = true;
-  bool do_jet_eval = true; 
+  bool do_jet_reco = false;
+  bool do_jet_eval = false; 
 
-  // ePHENIX/fsPHENIX geometry
-  bool do_EEMC = false;
-  bool do_EEMC_twr = false;
+  bool do_fwd_jet_reco = false;
+  bool do_fwd_jet_eval = false; 
+
+  // fsPHENIX geometry
 
   bool do_FEMC = true; 
   bool do_FEMC_cell = true; 
@@ -104,7 +105,7 @@ int Fun4All_G4_fsPHENIX(
   // establish the geometry and reconstruction setup
   gROOT->LoadMacro("G4Setup_fsPHENIX.C");
   G4Init(do_svtx,do_preshower,do_cemc,do_hcalin,do_magnet,do_hcalout,do_pipe,do_bbc,
-	 do_EEMC,do_FEMC,do_FHCAL);
+	 do_FEMC,do_FHCAL);
 
   int absorberactive = 0; // set to 1 to make all absorbers active volumes
   //  const string magfield = "1.5"; // if like float -> solenoidal field in T, if string use as fieldmap name (including path)
@@ -176,11 +177,10 @@ int Fun4All_G4_fsPHENIX(
       }
       gen->set_vertex_size_function(PHG4SimpleEventGenerator::Uniform);
       gen->set_vertex_size_parameters(0.0,0.0);
-      //gen->set_eta_range(1.4, 4.0);
-      gen->set_eta_range(3.0, 3.0); //fsPHENIX FWD
-      //gen->set_eta_range(0.2, 0.2); //sPHENIX
-      //gen->set_phi_range(-1.0*TMath::Pi(), 1.0*TMath::Pi());
-      gen->set_phi_range(TMath::Pi()/2-0.1, TMath::Pi()/2-0.1);
+      gen->set_eta_range(1.4, 4.0);
+      //gen->set_eta_range(3.0, 3.0); //fsPHENIX FWD
+      gen->set_phi_range(-1.0*TMath::Pi(), 1.0*TMath::Pi());
+      //gen->set_phi_range(TMath::Pi()/2-0.1, TMath::Pi()/2-0.1);
       gen->set_p_range(30.0, 30.0);
       gen->Embed(1);
       gen->Verbosity(0);
@@ -195,7 +195,7 @@ int Fun4All_G4_fsPHENIX(
 
       G4Setup(absorberactive, magfield, TPythia6Decayer::kAll,
 	      do_svtx, do_preshower, do_cemc, do_hcalin, do_magnet, do_hcalout, do_pipe, do_bbc,
-	      do_EEMC, do_FEMC, do_FHCAL,
+	      do_FEMC, do_FHCAL,
 	      magfield_rescale);
       
     }
@@ -238,8 +238,6 @@ int Fun4All_G4_fsPHENIX(
   if (do_hcalout_twr) HCALOuter_Towers();
   if (do_hcalout_cluster) HCALOuter_Clusters();
 
-  if (do_EEMC_twr) EEMC_Towers();
-
   if (do_FEMC_twr) FEMC_Towers();
   if (do_FEMC_cluster) FEMC_Clusters();
 
@@ -265,6 +263,8 @@ int Fun4All_G4_fsPHENIX(
 
   if (do_jet_reco) Jet_Reco();
 
+  if (do_fwd_jet_reco) Jet_FwdReco();
+
   //----------------------
   // Simulation evaluation
   //----------------------
@@ -278,6 +278,8 @@ int Fun4All_G4_fsPHENIX(
   if (do_hcalout_eval) HCALOuter_Eval("g4hcalout_eval.root");
 
   if (do_jet_eval) Jet_Eval("g4jet_eval.root");
+
+  if (do_fwd_jet_eval) Jet_FwdEval("g4fwdjet_eval.root");
 
   //-------------- 
   // IO management
@@ -307,9 +309,9 @@ int Fun4All_G4_fsPHENIX(
   if (do_DSTReader)
     {
       //Convert DST to human command readable TTree for quick poke around the outputs
-      gROOT->LoadMacro("G4_DSTReader.C");
+      gROOT->LoadMacro("G4_DSTReader_fsPHENIX.C");
 
-      G4DSTreader( outputFile, //
+      G4DSTreader_fsPHENIX( outputFile, //
           /*int*/ absorberactive ,
           /*bool*/ do_svtx ,
           /*bool*/ do_preshower ,
@@ -320,7 +322,11 @@ int Fun4All_G4_fsPHENIX(
           /*bool*/ do_cemc_twr ,
           /*bool*/ do_hcalin_twr ,
           /*bool*/ do_magnet  ,
-          /*bool*/ do_hcalout_twr
+	  /*bool*/ do_hcalout_twr,
+	  /*bool*/ do_FHCAL,
+	  /*bool*/ do_FHCAL_twr,
+	  /*bool*/ do_FEMC,
+	  /*bool*/ do_FEMC_twr
           );
     }
 
