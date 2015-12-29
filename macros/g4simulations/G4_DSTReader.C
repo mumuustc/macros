@@ -32,6 +32,9 @@ G4DSTreader( const char * outputFile = "G4sPHENIXCells.root",//
   //! save raw g4 hits
   const bool save_g4_raw = true;
 
+  //! save jets
+  const bool do_jet_reco = true;
+
   // save a comprehensive  evaluation file
   PHG4DSTReader* ana = new PHG4DSTReader(
       string(outputFile) + string("_DSTReader.root"));
@@ -111,16 +114,12 @@ G4DSTreader( const char * outputFile = "G4sPHENIXCells.root",//
     }
 
   // Jets disabled for now
-//  if (do_jet_reco)
-//    {
-//
-//      ana->AddJet("AntiKt06JetsInPerfect");
-//      ana->AddJet("G4TowerJets_6");
-//    }
-//  if (embed_input_file && do_jet_reco)
-//    {
-//      ana->AddJet("G4TowerJets_combined_6");
-//    }
+  if (do_jet_reco)
+    {
+
+      ana->AddJet("AntiKt_Truth_r07");
+      ana->AddJet("G4TowerJets_6");
+    }
 
   Fun4AllServer *se = Fun4AllServer::instance();
   se->registerSubsystem(ana);

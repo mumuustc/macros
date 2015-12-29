@@ -125,7 +125,7 @@ int Fun4All_G4_sPHENIX(
       
 
       PHPy8JetTrigger *theTrigger = new PHPy8JetTrigger();
-      theTrigger->Verbosity(10);
+//      theTrigger->Verbosity(10);
       theTrigger->SetEtaHighLow(-1, 1);
       theTrigger->SetJetR(.7);
       theTrigger->SetMinJetPt(30);
