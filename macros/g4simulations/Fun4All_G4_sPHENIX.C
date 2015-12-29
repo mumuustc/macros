@@ -25,45 +25,45 @@ int Fun4All_G4_sPHENIX(
   // What to run
   //======================
 
-  bool do_bbc = false;
+  bool do_bbc = true;
   
   bool do_pipe = true;
   
   bool do_svtx = true;
-  bool do_svtx_cell = false;
-  bool do_svtx_track = false;
+  bool do_svtx_cell = true;
+  bool do_svtx_track = true;
   bool do_svtx_eval = false;
 
   bool do_preshower = false;
   
   bool do_cemc = true;
-  bool do_cemc_cell = false;
-  bool do_cemc_twr = false;
-  bool do_cemc_cluster = false;
+  bool do_cemc_cell = true;
+  bool do_cemc_twr = true;
+  bool do_cemc_cluster = true;
   bool do_cemc_eval = false;
 
   bool do_hcalin = true;
-  bool do_hcalin_cell = false;
-  bool do_hcalin_twr = false;
-  bool do_hcalin_cluster = false;
+  bool do_hcalin_cell = true;
+  bool do_hcalin_twr = true;
+  bool do_hcalin_cluster = true;
   bool do_hcalin_eval = false;
 
   bool do_magnet = true;
   
   bool do_hcalout = true;
-  bool do_hcalout_cell = false;
-  bool do_hcalout_twr = false;
-  bool do_hcalout_cluster = false;
+  bool do_hcalout_cell = true;
+  bool do_hcalout_twr = true;
+  bool do_hcalout_cluster = true;
   bool do_hcalout_eval = false;
   
-  bool do_global = false;
+  bool do_global = true;
   bool do_global_fastsim = false;
   
-  bool do_jet_reco = false;
-  bool do_jet_eval = false;
+  bool do_jet_reco = true;
+  bool do_jet_eval = true;
 
   //Option to convert DST to human command readable TTree for quick poke around the outputs
-  bool do_DSTReader = false;
+  bool do_DSTReader = true;
   //---------------
   // Load libraries
   //---------------
@@ -124,12 +124,11 @@ int Fun4All_G4_sPHENIX(
       gSystem->Load("libPHPythia8.so");
       
 
-      PHPy8ParticleTrigger *theTrigger = new PHPy8ParticleTrigger();
-//      theTrigger->Verbosity(10);
-      theTrigger->AddParticles(11);
-      theTrigger->AddParticles(-11);
-      theTrigger->SetEtaHighLow(1,-1);
-      theTrigger->AddParents(553);
+      PHPy8JetTrigger *theTrigger = new PHPy8JetTrigger();
+      theTrigger->Verbosity(10);
+      theTrigger->SetEtaHighLow(-1, 1);
+      theTrigger->SetJetR(.7);
+      theTrigger->SetMinJetPt(30);
 
       PHPythia8* pythia8 = new PHPythia8();
       // see coresoftware/generators/PHPythia8 for example config
