@@ -1,7 +1,6 @@
-// these are defined in the Fun4All macro, here we just override the values
-// with what is used in this macro
-Min_cemc_layer = 1;
-Max_cemc_layer = 1;
+
+int Min_cemc_layer = 1;
+int Max_cemc_layer = 1;
 
   // set a default value for SPACAL configuration
 //  // 1D azimuthal projective SPACAL (fast)
@@ -386,6 +385,7 @@ void CEMC_Cells(int verbosity = 0) {
           const double radius = 95;
           cemc_cells->cellsize(i,  2*TMath::Pi()/256. * radius, 2*TMath::Pi()/256. * radius);
       }
+      cemc_cells->set_timing_window_size(60);
       se->registerSubsystem(cemc_cells);
 
     }
@@ -395,6 +395,7 @@ void CEMC_Cells(int verbosity = 0) {
       PHG4FullProjSpacalCellReco *cemc_cells = new PHG4FullProjSpacalCellReco("CEMCCYLCELLRECO");
       cemc_cells->Detector("CEMC");
       cemc_cells->Verbosity(verbosity);
+      cemc_cells->set_timing_window_size(60);
       se->registerSubsystem(cemc_cells);
 
     }
@@ -422,6 +423,7 @@ void CEMC_Towers(int verbosity = 0) {
   TowerBuilder->Verbosity(verbosity);
   se->registerSubsystem( TowerBuilder );
 
+
   double sampling_fraction = 1;
   if (Cemc_spacal_configuration
       == PHG4CylinderGeom_Spacalv1::k1DProjectiveSpacal)
@@ -431,7 +433,8 @@ void CEMC_Towers(int verbosity = 0) {
   else if (Cemc_spacal_configuration
       == PHG4CylinderGeom_Spacalv1::k2DProjectiveSpacal)
     {
-      sampling_fraction = 0.02244; //from production: /gpfs02/phenix/prod/sPHENIX/preCDR/pro.1-beta.3/single_particle/spacal2d/zerofield/G4Hits_sPHENIX_e-_eta0_8GeV.root
+//      sampling_fraction = 0.02244; //from production: /gpfs02/phenix/prod/sPHENIX/preCDR/pro.1-beta.3/single_particle/spacal2d/zerofield/G4Hits_sPHENIX_e-_eta0_8GeV.root
+      sampling_fraction = 2.36081e-02;//from production: /gpfs02/phenix/prod/sPHENIX/preCDR/pro.1-beta.5/single_particle/spacal2d/zerofield/G4Hits_sPHENIX_e-_eta0_8GeV.root
     }
   else
     {
