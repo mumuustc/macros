@@ -283,12 +283,24 @@ int Fun4All_G4_sPHENIX(
 
   // remove hit level info
   PHG4DstCompressReco * dst_compress  =new PHG4DstCompressReco();
-  dst_compress->AddCellContainer("G4CELL_HCALIN");
-  dst_compress->AddCellContainer("G4CELL_HCALOUT");
-  dst_compress->AddCellContainer("G4CELL_CEMC");
-  dst_compress->AddTowerContainer("TOWER_SIM_HCALIN");
-  dst_compress->AddTowerContainer("TOWER_SIM_HCALOUT");
-  dst_compress->AddTowerContainer("TOWER_SIM_CEMC");
+//  dst_compress->AddTowerContainer("TOWER_SIM_HCALIN");
+//  dst_compress->AddTowerContainer("TOWER_SIM_HCALOUT");
+//  dst_compress->AddTowerContainer("TOWER_SIM_CEMC");
+  dst_compress->AddHitContainer("G4HIT_PIPE");
+  dst_compress->AddHitContainer("G4HIT_CEMC_ELECTRONICS");
+  dst_compress->AddHitContainer("G4HIT_SVTXSUPPORT");
+  dst_compress->AddHitContainer("G4HIT_CEMC");
+  dst_compress->AddHitContainer("G4HIT_ABSORBER_CEMC");
+  dst_compress->AddHitContainer("G4HIT_CEMC_SPT");
+  dst_compress->AddHitContainer("G4HIT_ABSORBER_HCALIN");
+  dst_compress->AddHitContainer("G4HIT_HCALIN");
+  dst_compress->AddHitContainer("G4HIT_HCALIN_SPT");
+  dst_compress->AddHitContainer("G4HIT_MAGNET");
+  dst_compress->AddHitContainer("G4HIT_ABSORBER_HCALOUT");
+  dst_compress->AddHitContainer("G4HIT_HCALOUT");
+  dst_compress->AddHitContainer("G4HIT_BH_1");
+  dst_compress->AddHitContainer("G4HIT_BH_FORWARD_PLUS");
+  dst_compress->AddHitContainer("G4HIT_BH_FORWARD_NEG");
   se->registerSubsystem(dst_compress);
 
    Fun4AllDstOutputManager *out = new Fun4AllDstOutputManager("DSTOUT", outputFile);
@@ -298,6 +310,10 @@ int Fun4All_G4_sPHENIX(
    out->StripNode("TOWER_CALIB_HCALOUT");
    out->StripNode("TOWER_RAW_CEMC");
    out->StripNode("TOWER_CALIB_CEMC");
+
+   out->StripNode("G4CELL_HCALIN");
+   out->StripNode("G4CELL_HCALOUT");
+   out->StripNode("G4CELL_CEMC");
 
    out->StripNode("G4HIT_PIPE");
    out->StripNode("G4HIT_CEMC_ELECTRONICS");
