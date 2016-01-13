@@ -37,22 +37,22 @@ int Fun4All_G4_sPHENIX(
   bool do_preshower = false;
   
   bool do_cemc = true;
-  bool do_cemc_cell = false;
-  bool do_cemc_twr = false;
+  bool do_cemc_cell = true;
+  bool do_cemc_twr = true;
   bool do_cemc_cluster = false;
   bool do_cemc_eval = false;
 
   bool do_hcalin = true;
-  bool do_hcalin_cell = false;
-  bool do_hcalin_twr = false;
+  bool do_hcalin_cell = true;
+  bool do_hcalin_twr = true;
   bool do_hcalin_cluster = false;
   bool do_hcalin_eval = false;
 
   bool do_magnet = true;
   
   bool do_hcalout = true;
-  bool do_hcalout_cell = false;
-  bool do_hcalout_twr = false;
+  bool do_hcalout_cell = true;
+  bool do_hcalout_twr = true;
   bool do_hcalout_cluster = false;
   bool do_hcalout_eval = false;
   
@@ -281,7 +281,39 @@ int Fun4All_G4_sPHENIX(
           );
     }
 
+  // remove hit level info
+  PHG4DstCompressReco * dst_compress  =new PHG4DstCompressReco();
+  dst_compress->AddCellContainer("G4CELL_HCALIN");
+  dst_compress->AddCellContainer("G4CELL_HCALOUT");
+  dst_compress->AddCellContainer("G4CELL_CEMC");
+  dst_compress->AddTowerContainer("TOWER_SIM_HCALIN");
+  dst_compress->AddTowerContainer("TOWER_SIM_HCALOUT");
+  dst_compress->AddTowerContainer("TOWER_SIM_CEMC");
+  se->registerSubsystem(dst_compress);
+
    Fun4AllDstOutputManager *out = new Fun4AllDstOutputManager("DSTOUT", outputFile);
+   out->StripNode("TOWER_RAW_HCALIN");
+   out->StripNode("TOWER_CALIB_HCALIN");
+   out->StripNode("TOWER_RAW_HCALOUT");
+   out->StripNode("TOWER_CALIB_HCALOUT");
+   out->StripNode("TOWER_RAW_CEMC");
+   out->StripNode("TOWER_CALIB_CEMC");
+
+   out->StripNode("G4HIT_PIPE");
+   out->StripNode("G4HIT_CEMC_ELECTRONICS");
+   out->StripNode("G4HIT_SVTXSUPPORT");
+   out->StripNode("G4HIT_CEMC");
+   out->StripNode("G4HIT_ABSORBER_CEMC");
+   out->StripNode("G4HIT_CEMC_SPT");
+   out->StripNode("G4HIT_ABSORBER_HCALIN");
+   out->StripNode("G4HIT_HCALIN");
+   out->StripNode("G4HIT_HCALIN_SPT");
+   out->StripNode("G4HIT_MAGNET");
+   out->StripNode("G4HIT_ABSORBER_HCALOUT");
+   out->StripNode("G4HIT_HCALOUT");
+   out->StripNode("G4HIT_BH_1");
+   out->StripNode("G4HIT_BH_FORWARD_PLUS");
+   out->StripNode("G4HIT_BH_FORWARD_NEG");
    se->registerOutputManager(out);
 
   //-----------------
