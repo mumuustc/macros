@@ -1,6 +1,6 @@
 
 int Fun4All_G4_sPHENIX(
-		       const int nEvents = 10,
+		       const int nEvents = 2,
 		       const char * inputFile = "/gpfs02/phenix/prod/sPHENIX/preCDR/pro.1-beta.5/single_particle/spacal1d/fieldmap/G4Hits_sPHENIX_e-_eta0_16GeV.root",
 		       const char * outputFile = "G4sPHENIXCells.root"
 		       )
@@ -90,7 +90,7 @@ int Fun4All_G4_sPHENIX(
   //---------------
 
   Fun4AllServer *se = Fun4AllServer::instance();
-  se->Verbosity(0); 
+  se->Verbosity(0);
   // just if we set some flags somewhere in this macro
   recoConsts *rc = recoConsts::instance();
   // By default every random number generator uses
@@ -280,6 +280,21 @@ int Fun4All_G4_sPHENIX(
           /*bool*/ do_hcalout_twr
           );
     }
+
+  //temp lines for QA modules
+  {
+
+    gSystem->Load("libqa_modules");
+
+    QAG4SimulationCalorimeter * calo_qa = new QAG4SimulationCalorimeter("CEMC");
+    calo_qa->Verbosity(10);
+    se->registerSubsystem(calo_qa );
+    se->registerSubsystem( new QAG4SimulationCalorimeter("HCALIN") );
+    se->registerSubsystem( new QAG4SimulationCalorimeter("HCALOUT") );
+
+    QAHistManagerDef::saveQARootFile("qa.root");
+
+  }
 
   // Fun4AllDstOutputManager *out = new Fun4AllDstOutputManager("DSTOUT", outputFile);
   // se->registerOutputManager(out);
