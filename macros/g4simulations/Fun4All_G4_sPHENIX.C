@@ -1,6 +1,6 @@
 
 int Fun4All_G4_sPHENIX(
-		       const int nEvents = 2
+		       const int nEvents = 50
 		       )
 {
   const char * outputFile = "G4sPHENIXCells.root";
@@ -30,40 +30,42 @@ int Fun4All_G4_sPHENIX(
   bool do_pipe = true;
   
   bool do_svtx = true;
-  bool do_svtx_cell = true;
-  bool do_svtx_track = true;
+  bool do_svtx_cell = false;
+  bool do_svtx_track = false;
   bool do_svtx_eval = false;
 
   bool do_preshower = false;
   
   bool do_cemc = true;
-  bool do_cemc_cell = true;
-  bool do_cemc_twr = true;
-  bool do_cemc_cluster = true;
+  bool do_cemc_cell = false;
+  bool do_cemc_twr = false;
+  bool do_cemc_cluster = false;
   bool do_cemc_eval = false;
 
   bool do_hcalin = true;
-  bool do_hcalin_cell = true;
-  bool do_hcalin_twr = true;
-  bool do_hcalin_cluster = true;
+  bool do_hcalin_cell = false;
+  bool do_hcalin_twr = false;
+  bool do_hcalin_cluster = false;
   bool do_hcalin_eval = false;
 
   bool do_magnet = true;
   
   bool do_hcalout = true;
-  bool do_hcalout_cell = true;
-  bool do_hcalout_twr = true;
-  bool do_hcalout_cluster = true;
+  bool do_hcalout_cell = false;
+  bool do_hcalout_twr = false;
+  bool do_hcalout_cluster = false;
   bool do_hcalout_eval = false;
   
-  bool do_global = true;
+  bool do_global = false;
   bool do_global_fastsim = false;
   
-  bool do_jet_reco = true;
-  bool do_jet_eval = true;
+  bool do_jet_reco = false;
+  bool do_jet_eval = false;
+
+  bool do_dst_compress = false;
 
   //Option to convert DST to human command readable TTree for quick poke around the outputs
-  bool do_DSTReader = true;
+  bool do_DSTReader = false;
   //---------------
   // Load libraries
   //---------------
@@ -217,6 +219,8 @@ int Fun4All_G4_sPHENIX(
   if (do_hcalout_twr) HCALOuter_Towers();
   if (do_hcalout_cluster) HCALOuter_Clusters();
 
+  if (do_dst_compress) ShowerCompress();
+
   //--------------
   // SVTX tracking
   //--------------
@@ -265,7 +269,7 @@ int Fun4All_G4_sPHENIX(
     {
       Fun4AllInputManager *in = new Fun4AllHepMCInputManager( "DSTIN");
       se->registerInputManager( in );
-      se->fileopen( in->Name(), inputFile );
+      se->fileopen( in->Name().c_str(), inputFile );
     }
   else
     {
@@ -296,6 +300,7 @@ int Fun4All_G4_sPHENIX(
     }
 
    Fun4AllDstOutputManager *out = new Fun4AllDstOutputManager("DSTOUT", outputFile);
+   if (do_dst_compress) DstCompress(out);
    se->registerOutputManager(out);
 
   //-----------------
