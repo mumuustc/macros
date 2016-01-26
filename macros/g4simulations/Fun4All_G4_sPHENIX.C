@@ -1,7 +1,9 @@
 
 int Fun4All_G4_sPHENIX(
-		       const int nEvents = 100,
-		       const char * inputFile = "G4sPHENIXCells_100pi24GeV.root",
+		       const int nEvents = 20,
+//		       const char * inputFile = "G4sPHENIXCells_250jets25GeV.root",
+	          const char * inputFile = "G4sPHENIXCells_100pi24GeV.root",
+
 		       const char * outputFile = "G4sPHENIXCells.root"
 		       )
 {
