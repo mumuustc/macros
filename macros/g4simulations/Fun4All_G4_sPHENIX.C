@@ -1,8 +1,9 @@
 
 int Fun4All_G4_sPHENIX(
-		       const int nEvents = 20,
+		       const int nEvents = 20000,
 //		       const char * inputFile = "G4sPHENIXCells_250jets25GeV.root",
-	          const char * inputFile = "G4sPHENIXCells_100pi24GeV.root",
+           const char * inputFile = "G4sPHENIXCells_1000pi24GeV.root",
+//            const char * inputFile = "G4sPHENIXCells_100e24GeV.root",
 
 		       const char * outputFile = "G4sPHENIXCells.root"
 		       )
@@ -34,7 +35,7 @@ int Fun4All_G4_sPHENIX(
   bool do_svtx = true;
   bool do_svtx_cell = true;
   bool do_svtx_track = true;
-  bool do_svtx_eval = true;
+  bool do_svtx_eval = false;
 
   bool do_preshower = false;
   
@@ -42,13 +43,13 @@ int Fun4All_G4_sPHENIX(
   bool do_cemc_cell = true;
   bool do_cemc_twr = true;
   bool do_cemc_cluster = true;
-  bool do_cemc_eval = true;
+  bool do_cemc_eval = false;
 
   bool do_hcalin = true;
   bool do_hcalin_cell = true;
   bool do_hcalin_twr = true;
   bool do_hcalin_cluster = true;
-  bool do_hcalin_eval = true;
+  bool do_hcalin_eval = false;
 
   bool do_magnet = true;
   
@@ -56,13 +57,13 @@ int Fun4All_G4_sPHENIX(
   bool do_hcalout_cell = true;
   bool do_hcalout_twr = true;
   bool do_hcalout_cluster = true;
-  bool do_hcalout_eval = true;
+  bool do_hcalout_eval = false;
   
   bool do_global = true;
   bool do_global_fastsim = false;
   
   bool do_jet_reco = true;
-  bool do_jet_eval = true;
+  bool do_jet_eval = false;
 
   bool do_dst_compress = false;
 
@@ -293,7 +294,7 @@ int Fun4All_G4_sPHENIX(
     gSystem->Load("libqa_modules");
 
     QAG4SimulationCalorimeter * calo_qa = new QAG4SimulationCalorimeter("CEMC");
-    calo_qa->Verbosity(10);
+//    calo_qa->Verbosity(10);
     se->registerSubsystem(calo_qa );
     se->registerSubsystem( new QAG4SimulationCalorimeter("HCALIN") );
     se->registerSubsystem( new QAG4SimulationCalorimeter("HCALOUT") );
@@ -325,7 +326,7 @@ int Fun4All_G4_sPHENIX(
   //temp lines for QA modules
   {
 
-    QAHistManagerDef::saveQARootFile("qa.root");
+    QAHistManagerDef::saveQARootFile(string(inputFile) + "_qa.root");
 
   }
 
