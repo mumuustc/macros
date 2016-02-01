@@ -1,9 +1,10 @@
 
 int Fun4All_G4_sPHENIX(
-		       const int nEvents = 20000,
-//		       const char * inputFile = "G4sPHENIXCells_250jets25GeV.root",
-           const char * inputFile = "G4sPHENIXCells_1000pi24GeV.root",
+		       const int nEvents = 20,
+		       const char * inputFile = "G4sPHENIXCells_250jets25GeV.root",
+//           const char * inputFile = "G4sPHENIXCells_1000pi24GeV.root",
 //            const char * inputFile = "G4sPHENIXCells_100e24GeV.root",
+//                       const char * inputFile = "G4Hits_sPHENIX_e-_eta0_8GeV-0000.root",
 
 		       const char * outputFile = "G4sPHENIXCells.root"
 		       )
@@ -63,12 +64,12 @@ int Fun4All_G4_sPHENIX(
   bool do_global_fastsim = false;
   
   bool do_jet_reco = true;
-  bool do_jet_eval = false;
+  bool do_jet_eval = true;
 
   bool do_dst_compress = false;
 
   //Option to convert DST to human command readable TTree for quick poke around the outputs
-  bool do_DSTReader = false;
+  bool do_DSTReader = true;
   //---------------
   // Load libraries
   //---------------
@@ -289,18 +290,19 @@ int Fun4All_G4_sPHENIX(
     }
 
   //temp lines for QA modules
-  {
-
-    gSystem->Load("libqa_modules");
-
-    QAG4SimulationCalorimeter * calo_qa = new QAG4SimulationCalorimeter("CEMC");
-//    calo_qa->Verbosity(10);
-    se->registerSubsystem(calo_qa );
-    se->registerSubsystem( new QAG4SimulationCalorimeter("HCALIN") );
-    se->registerSubsystem( new QAG4SimulationCalorimeter("HCALOUT") );
-
-
-  }
+//  {
+//
+//    gSystem->Load("libqa_modules");
+//
+//    QAG4SimulationCalorimeter * calo_qa = new QAG4SimulationCalorimeter("CEMC");
+////    calo_qa->Verbosity(10);
+//    se->registerSubsystem(calo_qa );
+//    se->registerSubsystem( new QAG4SimulationCalorimeter("HCALIN") );
+//    se->registerSubsystem( new QAG4SimulationCalorimeter("HCALOUT") );
+//
+//
+//
+//  }
 
   // Fun4AllDstOutputManager *out = new Fun4AllDstOutputManager("DSTOUT", outputFile);
   // if (do_dst_compress) DstCompress(out);
@@ -324,11 +326,11 @@ int Fun4All_G4_sPHENIX(
   se->run(nEvents);
 
   //temp lines for QA modules
-  {
-
-    QAHistManagerDef::saveQARootFile(string(inputFile) + "_qa.root");
-
-  }
+//  {
+//    gSystem->Load("libqa_modules");
+//    QAHistManagerDef::saveQARootFile(string(inputFile) + "_qa.root");
+//
+//  }
 
 
   //-----
