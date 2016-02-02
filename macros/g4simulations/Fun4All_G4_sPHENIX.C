@@ -1,6 +1,6 @@
 
 int Fun4All_G4_sPHENIX(
-		       const int nEvents = 20,
+		       const int nEvents = 1200,
 		       const char * inputFile = "G4sPHENIXCells_250jets25GeV.root",
 //           const char * inputFile = "G4sPHENIXCells_1000pi24GeV.root",
 //            const char * inputFile = "G4sPHENIXCells_100e24GeV.root",
@@ -64,12 +64,12 @@ int Fun4All_G4_sPHENIX(
   bool do_global_fastsim = false;
   
   bool do_jet_reco = true;
-  bool do_jet_eval = true;
+  bool do_jet_eval = false;
 
   bool do_dst_compress = false;
 
   //Option to convert DST to human command readable TTree for quick poke around the outputs
-  bool do_DSTReader = true;
+  bool do_DSTReader = false;
   //---------------
   // Load libraries
   //---------------
@@ -290,19 +290,37 @@ int Fun4All_G4_sPHENIX(
     }
 
   //temp lines for QA modules
-//  {
-//
-//    gSystem->Load("libqa_modules");
-//
-//    QAG4SimulationCalorimeter * calo_qa = new QAG4SimulationCalorimeter("CEMC");
-////    calo_qa->Verbosity(10);
-//    se->registerSubsystem(calo_qa );
-//    se->registerSubsystem( new QAG4SimulationCalorimeter("HCALIN") );
-//    se->registerSubsystem( new QAG4SimulationCalorimeter("HCALOUT") );
-//
-//
-//
-//  }
+  {
+
+    gSystem->Load("libqa_modules");
+
+    QAG4SimulationCalorimeter * calo_qa = new QAG4SimulationCalorimeter("CEMC");
+//    calo_qa->Verbosity(10);
+    se->registerSubsystem(calo_qa );
+    se->registerSubsystem( new QAG4SimulationCalorimeter("HCALIN") );
+    se->registerSubsystem( new QAG4SimulationCalorimeter("HCALOUT") );
+
+
+    QAG4SimulationJet * calo_jet7 = new QAG4SimulationJet("AntiKt_Truth_r07");
+    calo_jet7->add_reco_jet("AntiKt_Tower_r07");
+    calo_jet7->add_reco_jet("AntiKt_Cluster_r07");
+    calo_jet7->add_reco_jet("AntiKt_Track_r07");
+//    calo_jet7->Verbosity(2);
+    se->registerSubsystem(calo_jet7);
+
+    QAG4SimulationJet * calo_jet7 = new QAG4SimulationJet("AntiKt_Truth_r04");
+    calo_jet7->add_reco_jet("AntiKt_Tower_r04");
+    calo_jet7->add_reco_jet("AntiKt_Cluster_r04");
+    calo_jet7->add_reco_jet("AntiKt_Track_r04");
+    se->registerSubsystem(calo_jet7);
+
+    QAG4SimulationJet * calo_jet7 = new QAG4SimulationJet("AntiKt_Truth_r02");
+    calo_jet7->add_reco_jet("AntiKt_Tower_r02");
+    calo_jet7->add_reco_jet("AntiKt_Cluster_r02");
+    calo_jet7->add_reco_jet("AntiKt_Track_r02");
+    se->registerSubsystem(calo_jet7);
+
+  }
 
   // Fun4AllDstOutputManager *out = new Fun4AllDstOutputManager("DSTOUT", outputFile);
   // if (do_dst_compress) DstCompress(out);
@@ -326,11 +344,11 @@ int Fun4All_G4_sPHENIX(
   se->run(nEvents);
 
   //temp lines for QA modules
-//  {
-//    gSystem->Load("libqa_modules");
-//    QAHistManagerDef::saveQARootFile(string(inputFile) + "_qa.root");
-//
-//  }
+  {
+    gSystem->Load("libqa_modules");
+    QAHistManagerDef::saveQARootFile(string(inputFile) + "_qa.root");
+
+  }
 
 
   //-----
