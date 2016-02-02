@@ -38,7 +38,8 @@ void G4Init(bool do_svtx = true,
 
   if (do_cemc)
     {
-      gROOT->LoadMacro("G4_CEmc_Spacal.C");
+//      gROOT->LoadMacro("G4_CEmc_Spacal.C");// this is production default
+      gROOT->LoadMacro("G4_CEmc_BlackHole.C"); // this is for fast calorimeter simulation
       CEmcInit(72); // make it 2*2*2*3*3 so we can try other combinations
     }
 
