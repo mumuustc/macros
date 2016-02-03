@@ -11,7 +11,7 @@
 #include <string>
 
 void
-G4DSTreader( const char * outputFile = "G4sPHENIXCells.root",//
+G4DSTreader_fsPHENIX( const char * outputFile = "G4sPHENIXCells.root",//
     int absorberactive = 1, //
     bool do_svtx = true, //
     bool do_preshower = false, //
@@ -22,7 +22,11 @@ G4DSTreader( const char * outputFile = "G4sPHENIXCells.root",//
     bool do_cemc_twr = true, //
     bool do_hcalin_twr = true, //
     bool do_magnet = true, //
-    bool do_hcalout_twr = true //
+    bool do_hcalout_twr = true, //
+    bool do_FHCAL = true, //
+    bool do_FHCAL_twr = true, //
+    bool do_FEMC = true, //
+    bool do_FEMC_twr = true //
     )
 {
 
@@ -83,6 +87,20 @@ G4DSTreader( const char * outputFile = "G4sPHENIXCells.root",//
             ana->AddNode("ABSORBER_HCALOUT");
         }
 
+      if (do_FHCAL)
+        {
+          ana->AddNode("FHCAL");
+          if (absorberactive)
+            ana->AddNode("ABSORBER_FHCAL");
+        }
+
+      if (do_FEMC)
+        {
+          ana->AddNode("FEMC");
+          if (absorberactive)
+            ana->AddNode("ABSORBER_FEMC");
+        }
+
 
       ana->AddNode("BH_1");
       ana->AddNode("BH_FORWARD_PLUS");
@@ -108,6 +126,18 @@ G4DSTreader( const char * outputFile = "G4sPHENIXCells.root",//
       ana->AddTower("SIM_HCALOUT");
       ana->AddTower("RAW_HCALOUT");
       ana->AddTower("CALIB_HCALOUT");
+    }
+  if (do_FHCAL_twr)
+    {
+      ana->AddTower("SIM_FHCAL");
+      ana->AddTower("RAW_FHCAL");
+      ana->AddTower("CALIB_FHCAL");
+    }
+  if (do_FEMC_twr)
+    {
+      ana->AddTower("SIM_FEMC");
+      ana->AddTower("RAW_FEMC");
+      ana->AddTower("CALIB_FEMC");
     }
 
   // Jets disabled for now
