@@ -1,10 +1,12 @@
 
 int Fun4All_G4_sPHENIX(
-		       const int nEvents = 100000,
-		       const char * inputFile = "data/G4sPHENIXCells_250jets25GeV.root",
+		       const int nEvents = 20,
+		                  const char * inputFile = "data/G4sPHENIXCells_2000jets25GeV_test.root",
+//		                  const char * inputFile = "data/G4sPHENIXCells_250jets25GeV.root",
 //           const char * inputFile = "data/G4sPHENIXCells_1000pi24GeV.root",
-//            const char * inputFile = "G4sPHENIXCells_100e24GeV.root",
-//                       const char * inputFile = "data/G4Hits_sPHENIX_e-_eta0_8GeV-0000.root",
+		       //            const char * inputFile = "data/G4sPHENIXCells_100e24GeV.root",
+//           const char * inputFile = "data/G4Hits_sPHENIX_e-_eta0_24GeV-0000.root",
+//           const char * inputFile = "data/G4Hits_sPHENIX_pi-_eta0_24GeV-0000.root",
 
 		       const char * outputFile = "G4sPHENIXCells.root"
 		       )
@@ -309,11 +311,13 @@ int Fun4All_G4_sPHENIX(
 
     gSystem->Load("libqa_modules");
 
-    QAG4SimulationCalorimeter * calo_qa = new QAG4SimulationCalorimeter("CEMC");
-//    calo_qa->Verbosity(10);
-    se->registerSubsystem(calo_qa );
+    se->registerSubsystem( new QAG4SimulationCalorimeter("CEMC") );
     se->registerSubsystem( new QAG4SimulationCalorimeter("HCALIN") );
     se->registerSubsystem( new QAG4SimulationCalorimeter("HCALOUT") );
+
+//    QAG4SimulationCalorimeterSum * calo_qa = new QAG4SimulationCalorimeterSum();
+////    calo_qa->Verbosity(10);
+//    se->registerSubsystem(calo_qa );
 
       if (do_jet_reco)
         {
@@ -322,7 +326,7 @@ int Fun4All_G4_sPHENIX(
           calo_jet7->add_reco_jet("AntiKt_Tower_r07");
           calo_jet7->add_reco_jet("AntiKt_Cluster_r07");
           calo_jet7->add_reco_jet("AntiKt_Track_r07");
-//    calo_jet7->Verbosity(2);
+//    calo_jet7->Verbosity(20);
           se->registerSubsystem(calo_jet7);
 
           QAG4SimulationJet * calo_jet7 = new QAG4SimulationJet(
