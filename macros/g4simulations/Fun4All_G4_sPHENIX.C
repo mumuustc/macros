@@ -1,12 +1,12 @@
 
 int Fun4All_G4_sPHENIX(
-		       const int nEvents = 20,
-		                  const char * inputFile = "data/G4sPHENIXCells_2000jets25GeV_test.root",
+		       const int nEvents = 110,
+//		                  const char * inputFile = "data/G4sPHENIXCells_2000jets25GeV_test.root",
 //		                  const char * inputFile = "data/G4sPHENIXCells_250jets25GeV.root",
 //           const char * inputFile = "data/G4sPHENIXCells_1000pi24GeV.root",
 		       //            const char * inputFile = "data/G4sPHENIXCells_100e24GeV.root",
 //           const char * inputFile = "data/G4Hits_sPHENIX_e-_eta0_24GeV-0000.root",
-//           const char * inputFile = "data/G4Hits_sPHENIX_pi-_eta0_24GeV-0000.root",
+           const char * inputFile = "data/G4Hits_sPHENIX_pi-_eta0_24GeV-0000.root",
 
 		       const char * outputFile = "G4sPHENIXCells.root"
 		       )
@@ -65,7 +65,7 @@ int Fun4All_G4_sPHENIX(
   bool do_global = true;
   bool do_global_fastsim = false;
   
-  bool do_jet_reco = true;
+  bool do_jet_reco = false;
   bool do_jet_eval = false;
 
   bool do_dst_compress = false;
@@ -96,9 +96,9 @@ int Fun4All_G4_sPHENIX(
   //---------------
   // Fun4All server
   //---------------
-
   Fun4AllServer *se = Fun4AllServer::instance();
-//  se->Verbosity(10);
+  se->Verbosity(Fun4AllServer::VERBOSITY_SOME); // In interactive root running, print some useful info to show progress, including log-scale event counter
+//  se->Verbosity(Fun4AllServer::VERBOSITY_MAX);
   // just if we set some flags somewhere in this macro
   recoConsts *rc = recoConsts::instance();
   // By default every random number generator uses
@@ -178,7 +178,7 @@ int Fun4All_G4_sPHENIX(
   //---------
   // BBC Reco
   //---------
-  
+
   if (do_bbc) 
     {
       gROOT->LoadMacro("G4_Bbc.C");
@@ -315,9 +315,9 @@ int Fun4All_G4_sPHENIX(
     se->registerSubsystem( new QAG4SimulationCalorimeter("HCALIN") );
     se->registerSubsystem( new QAG4SimulationCalorimeter("HCALOUT") );
 
-//    QAG4SimulationCalorimeterSum * calo_qa = new QAG4SimulationCalorimeterSum();
-////    calo_qa->Verbosity(10);
-//    se->registerSubsystem(calo_qa );
+    QAG4SimulationCalorimeterSum * calo_qa = new QAG4SimulationCalorimeterSum();
+//    calo_qa->Verbosity(10);
+    se->registerSubsystem(calo_qa );
 
       if (do_jet_reco)
         {
