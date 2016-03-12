@@ -77,6 +77,8 @@ int Fun4All_G4_fsPHENIX(
   bool do_FHCAL_twr = true; 
   bool do_FHCAL_cluster = true; 
 
+  bool do_dst_compress = false;
+  
   //Option to convert DST to human command readable TTree for quick poke around the outputs
   bool do_DSTReader = true;
   //---------------
@@ -93,8 +95,7 @@ int Fun4All_G4_fsPHENIX(
 
   // establish the geometry and reconstruction setup
   gROOT->LoadMacro("G4Setup_fsPHENIX.C");
-  G4Init(do_svtx,do_preshower,do_cemc,do_hcalin,do_magnet,do_hcalout,do_pipe,do_bbc,
-	 do_FEMC,do_FHCAL);
+  G4Init(do_svtx,do_preshower,do_cemc,do_hcalin,do_magnet,do_hcalout,do_pipe,do_FEMC,do_FHCAL);
 
   int absorberactive = 0; // set to 1 to make all absorbers active volumes
   //  const string magfield = "1.5"; // if like float -> solenoidal field in T, if string use as fieldmap name (including path)
@@ -183,7 +184,7 @@ int Fun4All_G4_fsPHENIX(
       //---------------------
 
       G4Setup(absorberactive, magfield, TPythia6Decayer::kAll,
-	      do_svtx, do_preshower, do_cemc, do_hcalin, do_magnet, do_hcalout, do_pipe, do_bbc,
+	      do_svtx, do_preshower, do_cemc, do_hcalin, do_magnet, do_hcalout, do_pipe,
 	      do_FEMC, do_FHCAL,
 	      magfield_rescale);
       
@@ -193,7 +194,12 @@ int Fun4All_G4_fsPHENIX(
   // BBC Reco
   //---------
   
-  if (do_bbc) Bbc_Reco();
+  if (do_bbc) 
+    {
+      gROOT->LoadMacro("G4_Bbc.C");
+      BbcInit();
+      Bbc_Reco();
+    }
   
   //------------------
   // Detector Division
@@ -233,6 +239,8 @@ int Fun4All_G4_fsPHENIX(
   if (do_FHCAL_twr) FHCAL_Towers();
   if (do_FHCAL_cluster) FHCAL_Clusters();
 
+  if (do_dst_compress) ShowerCompress();
+  
   //--------------
   // SVTX tracking
   //--------------
@@ -243,17 +251,33 @@ int Fun4All_G4_fsPHENIX(
   // Global Vertexing
   //-----------------
 
-  if (do_global) Global_Reco();
-  else if (do_global_fastsim) Global_FastSim();
+  if (do_global) 
+    {
+      gROOT->LoadMacro("G4_Global.C");
+      Global_Reco();
+    }
+
+  else if (do_global_fastsim) 
+    {
+      gROOT->LoadMacro("G4_Global.C");
+      Global_FastSim();
+    }  
   
   //---------
   // Jet reco
   //---------
 
-  if (do_jet_reco) Jet_Reco();
-
-  if (do_fwd_jet_reco) Jet_FwdReco();
-
+  if (do_jet_reco) 
+    {
+      gROOT->LoadMacro("G4_Jets.C");
+      Jet_Reco();
+    }
+ 
+  if (do_fwd_jet_reco)
+    {
+      gROOT->LoadMacro("G4_FwdJets.C");
+      Jet_FwdReco();
+    }
   //----------------------
   // Simulation evaluation
   //----------------------
@@ -320,6 +344,7 @@ int Fun4All_G4_fsPHENIX(
     }
 
   //Fun4AllDstOutputManager *out = new Fun4AllDstOutputManager("DSTOUT", outputFile);
+  //if (do_dst_compress) DstCompress(out);
   //se->registerOutputManager(out);
 
   if (nEvents == 0 && !readhits && !readhepmc)

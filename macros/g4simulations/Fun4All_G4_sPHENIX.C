@@ -66,6 +66,8 @@ int Fun4All_G4_sPHENIX(
   bool do_jet_reco = false;
   bool do_jet_eval = false;
 
+  bool do_dst_compress = false;
+
   //Option to convert DST to human command readable TTree for quick poke around the outputs
   bool do_DSTReader = false;
   //---------------
@@ -83,7 +85,7 @@ int Fun4All_G4_sPHENIX(
 
   // establish the geometry and reconstruction setup
   gROOT->LoadMacro("G4Setup_sPHENIX.C");
-  G4Init(do_svtx,do_preshower,do_cemc,do_hcalin,do_magnet,do_hcalout,do_pipe,do_bbc);
+  G4Init(do_svtx,do_preshower,do_cemc,do_hcalin,do_magnet,do_hcalout,do_pipe);
 
   int absorberactive = 1; // set to 1 to make all absorbers active volumes
   //  const string magfield = "1.5"; // if like float -> solenoidal field in T, if string use as fieldmap name (including path)
@@ -178,16 +180,19 @@ int Fun4All_G4_sPHENIX(
       //---------------------
 
       G4Setup(absorberactive, magfield, TPythia6Decayer::kAll,
-	      do_svtx, do_preshower, do_cemc, do_hcalin, do_magnet, do_hcalout, do_pipe, do_bbc,
-	      magfield_rescale);
+	      do_svtx, do_preshower, do_cemc, do_hcalin, do_magnet, do_hcalout, do_pipe, magfield_rescale);
     }
 
   //---------
   // BBC Reco
   //---------
   
-  if (do_bbc) Bbc_Reco();
-  
+  if (do_bbc) 
+    {
+      gROOT->LoadMacro("G4_Bbc.C");
+      BbcInit();
+      Bbc_Reco();
+    }
   //------------------
   // Detector Division
   //------------------
@@ -217,6 +222,8 @@ int Fun4All_G4_sPHENIX(
   if (do_hcalout_twr) HCALOuter_Towers();
   if (do_hcalout_cluster) HCALOuter_Clusters();
 
+  if (do_dst_compress) ShowerCompress();
+
   //--------------
   // SVTX tracking
   //--------------
@@ -227,15 +234,27 @@ int Fun4All_G4_sPHENIX(
   // Global Vertexing
   //-----------------
 
-  if (do_global) Global_Reco();
-  else if (do_global_fastsim) Global_FastSim();
-  
+  if (do_global) 
+    {
+      gROOT->LoadMacro("G4_Global.C");
+      Global_Reco();
+    }
+
+  else if (do_global_fastsim) 
+    {
+      gROOT->LoadMacro("G4_Global.C");
+      Global_FastSim();
+    }  
+
   //---------
   // Jet reco
   //---------
 
-  if (do_jet_reco) Jet_Reco();
-
+  if (do_jet_reco) 
+    {
+      gROOT->LoadMacro("G4_Jets.C");
+      Jet_Reco();
+    }
   //----------------------
   // Simulation evaluation
   //----------------------
@@ -304,24 +323,10 @@ int Fun4All_G4_sPHENIX(
           );
     }
 
-   Fun4AllDstOutputManager *out = new Fun4AllDstOutputManager("DSTOUT", outputFile);
-  out->StripNode("G4HIT_ABSORBER_HCALIN");
-//  out->StripNode("G4HIT_HCALIN");
-  out->StripNode("G4HIT_ABSORBER_HCALOUT");
-//  out->StripNode("G4HIT_HCALOUT");
-//  out->StripNode("G4HIT_PIPE");
-//  out->StripNode("G4HIT_SVTX");
-  out->StripNode("G4HIT_SVTXSUPPORT");
-//  out->StripNode("G4HIT_CEMC_ELECTRONICS");
-//  out->StripNode("G4HIT_CEMC");
-  out->StripNode("G4HIT_ABSORBER_CEMC");
-  out->StripNode("G4HIT_CEMC_SPT");
-  out->StripNode("G4HIT_HCALIN_SPT");
-  out->StripNode("G4HIT_MAGNET");
-  out->StripNode("G4HIT_BH_1");
-  out->StripNode("G4HIT_BH_FORWARD_PLUS");
-  out->StripNode("G4HIT_BH_FORWARD_NEG");
-   se->registerOutputManager(out);
+
+  Fun4AllDstOutputManager *out = new Fun4AllDstOutputManager("DSTOUT", outputFile);
+  if (do_dst_compress) DstCompress(out);
+  se->registerOutputManager(out);
 
   //-----------------
   // Event processing

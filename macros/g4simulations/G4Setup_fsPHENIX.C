@@ -9,55 +9,64 @@ void G4Init(bool do_svtx = true,
 	    bool do_magnet = true,
 	    bool do_hcalout = true,
 	    bool do_pipe = true,
-	    bool do_bbc = true,
-	    bool do_global = true,
 	    bool do_FEMC = true,
 	    bool do_FHCAL = true) {
 
-  gROOT->LoadMacro("G4_Bbc.C");
-  if (do_bbc) BbcInit();
-  
-  gROOT->LoadMacro("G4_Pipe.C");
-  if (do_pipe) PipeInit();
-  
-  // load detector macros and execute Init() function
-  gROOT->LoadMacro("G4_Svtx.C");           // default
-  //gROOT->LoadMacro("G4_Svtx_ladders.C"); // testing
-  //gROOT->LoadMacro("G4_Svtx_ITS.C");     // testing
-  if (do_svtx) SvtxInit();
+  // load detector/material macros and execute Init() function
 
-  if (do_preshower) {
-    gROOT->LoadMacro("G4_PreShower.C");   // testing
-    PreShowerInit();
-  }
+  if (do_pipe)
+    {
+      gROOT->LoadMacro("G4_Pipe.C");
+      PipeInit();
+    }
+  if (do_svtx)
+    {
+      gROOT->LoadMacro("G4_Svtx.C");
+      //gROOT->LoadMacro("G4_Svtx_ladders.C"); // testing
+      //gROOT->LoadMacro("G4_Svtx_ITS.C");     // testing
+      SvtxInit();
+    }
 
-  gROOT->LoadMacro("G4_CEmc_Spacal.C");    //
-  if (do_cemc) CEmcInit(72); // make it 2*2*2*3*3 so we can try other combinations
-  
-  //gROOT->LoadMacro("G4_Hcal_ref.C");     // deprecated
-  //gROOT->LoadMacro("G4_Hcal_cross.C");   // deprecated
+  if (do_preshower) 
+    {
+      gROOT->LoadMacro("G4_PreShower.C");
+      PreShowerInit();
+    }
 
-  gROOT->LoadMacro("G4_HcalIn_ref.C");       // default 
-  if (do_hcalin) HCalInnerInit();
+  if (do_cemc)
+    {
+      gROOT->LoadMacro("G4_CEmc_Spacal.C");
+      CEmcInit(72); // make it 2*2*2*3*3 so we can try other combinations
+    }  
 
-  gROOT->LoadMacro("G4_Magnet.C");
-  if (do_magnet) MagnetInit();
+  if (do_hcalin) 
+    {
+      gROOT->LoadMacro("G4_HcalIn_ref.C");
+      HCalInnerInit();
+    }
 
-  gROOT->LoadMacro("G4_HcalOut_ref.C");       // default 
-  if (do_hcalout) HCalOuterInit();
+  if (do_magnet)
+    {
+      gROOT->LoadMacro("G4_Magnet.C");
+      MagnetInit();
+    }
+  if (do_hcalout)
+    {
+      gROOT->LoadMacro("G4_HcalOut_ref.C");
+      HCalOuterInit();
+    }
 
-  gROOT->LoadMacro("G4_Global.C");
-  
-  gROOT->LoadMacro("G4_Jets.C");
+  if (do_FEMC)
+    {
+      gROOT->LoadMacro("G4_FEMC.C");
+      FEMCInit();
+    }
 
-  gROOT->LoadMacro("G4_FwdJets.C");
-
-  gROOT->LoadMacro("G4_FEMC.C");
-  if ( do_FEMC ) FEMCInit();
-
-  gROOT->LoadMacro("G4_FHCAL.C");
-  if ( do_FHCAL ) FHCALInit();
-
+  if (do_FHCAL) 
+    {
+      gROOT->LoadMacro("G4_FHCAL.C");
+      FHCALInit();
+    }
 }
 
 
@@ -71,7 +80,6 @@ int G4Setup(const int absorberactive = 0,
 	    const bool do_magnet = true,
 	    const bool do_hcalout = true,
 	    const bool do_pipe = true,
-	    const bool do_bbc = true,
 	    const bool do_FEMC = false,
 	    const bool do_FHCAL = false,
      	    const float magfield_rescale = 1.0) {
@@ -230,3 +238,89 @@ int G4Setup(const int absorberactive = 0,
   g4Reco->registerSubsystem(truth);
   se->registerSubsystem( g4Reco );
 }
+
+
+void ShowerCompress(int verbosity = 0) {
+
+  gSystem->Load("libfun4all.so");
+  gSystem->Load("libg4eval.so");
+
+  Fun4AllServer *se = Fun4AllServer::instance();
+  
+  PHG4DstCompressReco* compress = new PHG4DstCompressReco("PHG4DstCompressReco");
+  compress->AddHitContainer("G4HIT_PIPE");
+  compress->AddHitContainer("G4HIT_SVTXSUPPORT");
+  compress->AddHitContainer("G4HIT_CEMC_ELECTRONICS");
+  compress->AddHitContainer("G4HIT_CEMC");
+  compress->AddHitContainer("G4HIT_ABSORBER_CEMC");
+  compress->AddHitContainer("G4HIT_CEMC_SPT");
+  compress->AddHitContainer("G4HIT_ABSORBER_HCALIN");
+  compress->AddHitContainer("G4HIT_HCALIN");
+  compress->AddHitContainer("G4HIT_HCALIN_SPT");
+  compress->AddHitContainer("G4HIT_MAGNET");
+  compress->AddHitContainer("G4HIT_ABSORBER_HCALOUT");
+  compress->AddHitContainer("G4HIT_HCALOUT");
+  compress->AddHitContainer("G4HIT_BH_1");
+  compress->AddHitContainer("G4HIT_BH_FORWARD_PLUS");
+  compress->AddHitContainer("G4HIT_BH_FORWARD_NEG");
+  compress->AddCellContainer("G4CELL_CEMC");
+  compress->AddCellContainer("G4CELL_HCALIN");
+  compress->AddCellContainer("G4CELL_HCALOUT");
+  compress->AddTowerContainer("TOWER_SIM_CEMC");
+  compress->AddTowerContainer("TOWER_RAW_CEMC");
+  compress->AddTowerContainer("TOWER_CALIB_CEMC");
+  compress->AddTowerContainer("TOWER_SIM_HCALIN");
+  compress->AddTowerContainer("TOWER_RAW_HCALIN");
+  compress->AddTowerContainer("TOWER_CALIB_HCALIN");
+  compress->AddTowerContainer("TOWER_SIM_HCALOUT");
+  compress->AddTowerContainer("TOWER_RAW_HCALOUT");
+  compress->AddTowerContainer("TOWER_CALIB_HCALOUT");
+
+  compress->AddHitContainer("G4HIT_FEMC");
+  compress->AddHitContainer("G4HIT_ABSORBER_FEMC");
+  compress->AddHitContainer("G4HIT_FHCAL");
+  compress->AddHitContainer("G4HIT_ABSORBER_FHCAL"); 
+  compress->AddCellContainer("G4CELL_FEMC");
+  compress->AddCellContainer("G4CELL_FHCAL");
+  compress->AddTowerContainer("TOWER_SIM_FEMC");
+  compress->AddTowerContainer("TOWER_RAW_FEMC");
+  compress->AddTowerContainer("TOWER_CALIB_FEMC");
+  compress->AddTowerContainer("TOWER_SIM_FHCAL");
+  compress->AddTowerContainer("TOWER_RAW_FHCAL");
+  compress->AddTowerContainer("TOWER_CALIB_FHCAL");
+  
+  se->registerSubsystem(compress);
+  
+  return; 
+}
+
+void DstCompress(Fun4AllDstOutputManager* out) {
+  if (out) {
+    out->StripNode("G4HIT_PIPE");
+    out->StripNode("G4HIT_SVTXSUPPORT");
+    out->StripNode("G4HIT_CEMC_ELECTRONICS");
+    out->StripNode("G4HIT_CEMC");
+    out->StripNode("G4HIT_ABSORBER_CEMC");
+    out->StripNode("G4HIT_CEMC_SPT");
+    out->StripNode("G4HIT_ABSORBER_HCALIN");
+    out->StripNode("G4HIT_HCALIN");
+    out->StripNode("G4HIT_HCALIN_SPT");
+    out->StripNode("G4HIT_MAGNET");
+    out->StripNode("G4HIT_ABSORBER_HCALOUT");
+    out->StripNode("G4HIT_HCALOUT");
+    out->StripNode("G4HIT_BH_1");
+    out->StripNode("G4HIT_BH_FORWARD_PLUS");
+    out->StripNode("G4HIT_BH_FORWARD_NEG");
+    out->StripNode("G4CELL_CEMC");
+    out->StripNode("G4CELL_HCALIN");
+    out->StripNode("G4CELL_HCALOUT");
+
+    out->StripNode("G4HIT_FEMC");
+    out->StripNode("G4HIT_ABSORBER_FEMC");
+    out->StripNode("G4HIT_FHCAL");
+    out->StripNode("G4HIT_ABSORBER_FHCAL"); 
+    out->StripNode("G4CELL_FEMC");
+    out->StripNode("G4CELL_FHCAL");
+  }
+}
+
