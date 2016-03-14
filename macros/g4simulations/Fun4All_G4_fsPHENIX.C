@@ -62,8 +62,8 @@ int Fun4All_G4_fsPHENIX(
   bool do_jet_reco = false;
   bool do_jet_eval = false; 
 
-  bool do_fwd_jet_reco = false;
-  bool do_fwd_jet_eval = false; 
+  bool do_fwd_jet_reco = true;
+  bool do_fwd_jet_eval = true;
 
   // fsPHENIX geometry
 
