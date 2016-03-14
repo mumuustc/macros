@@ -1,6 +1,6 @@
 
 int Fun4All_G4_fsPHENIX(
-		       const int nEvents = 10,
+		       const int nEvents = 2,
 		       const char * inputFile = "/gpfs02/phenix/prod/sPHENIX/preCDR/pro.1-beta.5/single_particle/spacal1d/fieldmap/G4Hits_sPHENIX_e-_eta0_16GeV.root",
 		       const char * outputFile = "G4fsPHENIX.root"
 		       )
@@ -19,7 +19,7 @@ int Fun4All_G4_fsPHENIX(
   const bool readhepmc = false; // read HepMC files
   // Or:
   // Use particle generator
-  const bool runpythia = false;
+  const bool runpythia = true;
 
   //======================
   // What to run
@@ -141,10 +141,24 @@ int Fun4All_G4_fsPHENIX(
     {
       gSystem->Load("libPHPythia8.so");
       
+
+      PHPy8JetTrigger *theTrigger = new PHPy8JetTrigger();
+//      theTrigger->Verbosity(10);
+      theTrigger->SetEtaHighLow(1.5, 2.);
+      theTrigger->SetJetR(.7);
+      theTrigger->SetMinJetPt(25);
+
       PHPythia8* pythia8 = new PHPythia8();
       // see coresoftware/generators/PHPythia8 for example config
       pythia8->set_config_file("phpythia8.cfg"); 
+
+      pythia8->beam_vertex_parameters(0,0,0,0,0,5);
+      pythia8->register_trigger(theTrigger);
+//      pythia8->set_trigger_AND();
+
       se->registerSubsystem(pythia8);
+      pythia8->print_config();
+//      pythia8->Verbosity(10);
 
       HepMCNodeReader *hr = new HepMCNodeReader();
       se->registerSubsystem(hr);
