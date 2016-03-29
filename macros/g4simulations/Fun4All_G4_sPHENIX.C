@@ -1,6 +1,6 @@
 
 int Fun4All_G4_sPHENIX(
-		       const int nEvents = 100,
+		       const int nEvents = 30,
            const char * inputFile = "data/test.root",
 		       const char * outputFile = "data/SinglePart_master_qa.root"
 		       )
@@ -33,7 +33,7 @@ int Fun4All_G4_sPHENIX(
   bool do_svtx = true;
   bool do_svtx_cell = true;
   bool do_svtx_track = true;
-  bool do_svtx_eval = false;
+  bool do_svtx_eval = true;
 
   bool do_preshower = false;
   
@@ -165,7 +165,7 @@ int Fun4All_G4_sPHENIX(
       gen->set_vertex_size_parameters(0.0,0.0);
       gen->set_eta_range(-0., 0.1);
       gen->set_phi_range(-1.0*TMath::Pi(), 1.0*TMath::Pi());
-      gen->set_pt_range(0.8, 8.0);
+      gen->set_pt_range(8., 8.0);
       gen->Embed(1);
       gen->Verbosity(0);
       se->registerSubsystem(gen);
@@ -321,9 +321,13 @@ int Fun4All_G4_sPHENIX(
     se->registerSubsystem( new QAG4SimulationCalorimeter("HCALIN") );
     se->registerSubsystem( new QAG4SimulationCalorimeter("HCALOUT") );
 
-    QAG4SimulationCalorimeterSum * calo_qa = new QAG4SimulationCalorimeterSum();
+      if (do_svtx_track)
+        {
+          QAG4SimulationCalorimeterSum * calo_qa =
+              new QAG4SimulationCalorimeterSum();
 //    calo_qa->Verbosity(10);
-    se->registerSubsystem(calo_qa );
+          se->registerSubsystem(calo_qa);
+        }
 
       if (do_jet_reco)
         {
@@ -375,7 +379,7 @@ int Fun4All_G4_sPHENIX(
   //temp lines for QA modules
   {
     gSystem->Load("libqa_modules");
-    QAHistManagerDef::saveQARootFile(string(inputFile) + "_qa.root");
+    QAHistManagerDef::saveQARootFile(string(outputFile) + "_qa.root");
 
   }
 
