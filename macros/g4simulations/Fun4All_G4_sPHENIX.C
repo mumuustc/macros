@@ -1,14 +1,8 @@
 
 int Fun4All_G4_sPHENIX(
-		       const int nEvents = 110,
-//		                  const char * inputFile = "data/G4sPHENIXCells_2000jets25GeV_test.root",
-//		                  const char * inputFile = "data/G4sPHENIXCells_250jets25GeV.root",
-//           const char * inputFile = "data/G4sPHENIXCells_1000pi24GeV.root",
-		       //            const char * inputFile = "data/G4sPHENIXCells_100e24GeV.root",
-//           const char * inputFile = "data/G4Hits_sPHENIX_e-_eta0_24GeV-0000.root",
-           const char * inputFile = "data/G4Hits_sPHENIX_pi-_eta0_24GeV-0000.root",
-
-		       const char * outputFile = "G4sPHENIXCells.root"
+		       const int nEvents = 100,
+           const char * inputFile = "data/test.root",
+		       const char * outputFile = "data/G4sPHENIXCells.root"
 		       )
 {
   //===============
@@ -19,7 +13,7 @@ int Fun4All_G4_sPHENIX(
   // read previously generated g4-hits files, in this case it opens a DST and skips
   // the simulations step completely. The G4Setup macro is only loaded to get information
   // about the number of layers used for the cell reco code
-  const bool readhits = true;
+  const bool readhits = false;
   // Or:
   // read files in HepMC format (typically output from event generators like hijing or pythia)
   const bool readhepmc = false; // read HepMC files
