@@ -1,6 +1,6 @@
 
 int Fun4All_G4_sPHENIX(
-		       const int nEvents = 100,
+		       const int nEvents = 10,
            const char * inputFile = "data/test.root",
 		       const char * outputFile = "data/G4sPHENIXCells.root"
 		       )
