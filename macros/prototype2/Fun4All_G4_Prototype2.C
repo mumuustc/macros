@@ -1,5 +1,9 @@
 int Fun4All_G4_Prototype2(
-			  int nEvents = 1
+    int nEvents = 100, //
+//    int nEvents = 5000, //
+    const char * outputFile = "data/Prototype2_CEMC.root", //
+    const char * particle = "mu-", //
+    const double momentum = 12 //
 			  )
 {
 
@@ -14,35 +18,22 @@ int Fun4All_G4_Prototype2(
   // Make the Server
   //////////////////////////////////////////
   Fun4AllServer *se = Fun4AllServer::instance();
-  //  se->Verbosity(1);
+    se->Verbosity(1);
   recoConsts *rc = recoConsts::instance();
-  rc->set_IntFlag("RANDOMSEED",12345);
+//  rc->set_IntFlag("RANDOMSEED",12345);
 
   // Test beam generator
   PHG4SimpleEventGenerator *gen = new PHG4SimpleEventGenerator();
-  gen->add_particles("pi-", 1); // mu-,e-,anti_proton,pi-
+  gen->add_particles(particle, 1); // mu-,e-,anti_proton,pi-
   gen->set_vertex_distribution_mean(0.0, 0.0, 0);
   gen->set_vertex_distribution_width(0.0, .7, .7); // Rough beam profile size @ 16 GeV measured by Abhisek
   gen->set_vertex_distribution_function(PHG4SimpleEventGenerator::Gaus,
       PHG4SimpleEventGenerator::Gaus, PHG4SimpleEventGenerator::Gaus); // Gauss beam profile
   gen->set_eta_range(-.001, .001); // 1mrad angular divergence
   gen->set_phi_range(-.001, .001); // 1mrad angular divergence
-  const double momentum = 32;
+//  const double momentum = 32;
   gen->set_p_range(momentum,momentum, momentum*2e-2); // 2% momentum smearing
   se->registerSubsystem(gen);
-
-  // Simple single particle generator
-  PHG4ParticleGun *gun = new PHG4ParticleGun();
-  //  gun->set_name("anti_proton");
-  //  gun->set_name("geantino");
-    gun->set_name("proton");
-  gun->set_vtx(0, 0, 0);
-  gun->set_mom(120, 0, 0);
-  // gun->AddParticle("geantino",1.7776,-0.4335,0.);
-  // gun->AddParticle("geantino",1.7709,-0.4598,0.);
-  // gun->AddParticle("geantino",2.5621,0.60964,0.);
-  // gun->AddParticle("geantino",1.8121,0.253,0.);
-//  se->registerSubsystem(gun);
 
   PHG4Reco* g4Reco = new PHG4Reco();
   g4Reco->set_field(0);
@@ -113,7 +104,7 @@ int Fun4All_G4_Prototype2(
   // top
   bh[0] = new PHG4BlockSubsystem("bh1",1);
   bh[0]->SetSize(270.,0.01,165.);
-  bh[0]->SetCenter(270./2.,125./2.,0);
+  bh[0]->SetCenter(270./2 + 1.,125./2. + 1,0);
   // bottom
   bh[1] = new PHG4BlockSubsystem("bh2",2);
   bh[1]->SetSize(270.,0.01,165.);
@@ -124,8 +115,8 @@ int Fun4All_G4_Prototype2(
   bh[2]->SetCenter(270./2.,0.,165./2.);
   // left side
   bh[3] = new PHG4BlockSubsystem("bh4",4);
-  bh[3]->SetSize(270.,125,0.01);
-  bh[3]->SetCenter(270./2.,0.,-165./2.);
+  bh[3]->SetSize(270.-.001,125-.001,0.01-.001);
+  bh[3]->SetCenter(270./2. + 1,0.,-165./2.-1);
   // back
   bh[4] = new PHG4BlockSubsystem("bh5",5);
   bh[4]->SetSize(0.01,125,165);
@@ -382,20 +373,20 @@ int Fun4All_G4_Prototype2(
   //----------------------
   // G4HitNtuple
   //----------------------
-  G4HitNtuple *hit = new G4HitNtuple("G4HitNtuple","g4hitntuple.root");
-  hit->AddNode("HCALIN", 0);
-  hit->AddNode("HCALOUT", 1);
-  hit->AddNode("CRYO", 2);
-  hit->AddNode("BlackHole", 3);
-  hit->AddNode("ABSORBER_HCALIN", 10);
-  hit->AddNode("ABSORBER_HCALOUT", 11);
-  se->registerSubsystem(hit);
+//  G4HitNtuple *hit = new G4HitNtuple("G4HitNtuple","g4hitntuple.root");
+//  hit->AddNode("HCALIN", 0);
+//  hit->AddNode("HCALOUT", 1);
+//  hit->AddNode("CRYO", 2);
+//  hit->AddNode("BlackHole", 3);
+//  hit->AddNode("ABSORBER_HCALIN", 10);
+//  hit->AddNode("ABSORBER_HCALOUT", 11);
+//  se->registerSubsystem(hit);
 
   //----------------------
   // save a comprehensive  evaluation file
   //----------------------
   PHG4DSTReader* ana = new PHG4DSTReader(
-      string("DSTReader.root"));
+      string(outputFile) + string("_DSTReader.root"));
   ana->set_save_particle(true);
   ana->set_load_all_particle(false);
   ana->set_load_active_particle(false);
@@ -443,7 +434,7 @@ int Fun4All_G4_Prototype2(
 
   se->End();
 
-  QAHistManagerDef::saveQARootFile("G4Prototype2_qa.root");
+  QAHistManagerDef::saveQARootFile(string(outputFile) + "_qa.root");
 
 
   //   std::cout << "All done" << std::endl;
