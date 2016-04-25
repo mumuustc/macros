@@ -37,7 +37,7 @@ int Fun4All_G4_Prototype2(
 
   PHG4Reco* g4Reco = new PHG4Reco();
   g4Reco->set_field(0);
-
+  g4Reco->SetPhysicsList("QGSP_BERT_HP");
 
   //----------------------------------------
   // EMCal G4
