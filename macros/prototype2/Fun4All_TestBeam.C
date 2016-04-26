@@ -106,7 +106,7 @@ Fun4All_TestBeam(int nEvents = 100,
   se->registerSubsystem(gunpack);
 
   calib = new CaloCalibration("C1");
-  calib->GetCalibrationParameters().set_int_param("calib_const_scale", 1);
+  calib->GetCalibrationParameters().set_int_param("calib_const_scale", -1);
   se->registerSubsystem(calib);
 
   // more info see https://wiki.bnl.gov/sPHENIX/index.php/T-1044#Cerenkov_Counters
@@ -120,11 +120,6 @@ Fun4All_TestBeam(int nEvents = 100,
 
   calib = new CaloCalibration("C2");
   calib->GetCalibrationParameters().set_int_param("calib_const_scale", 1);
-  calib->GetCalibrationParameters().set_int_param("use_chan_calibration", 1);
-  calib->GetCalibrationParameters().set_double_param("calib_const_column0_row0", +1);
-  calib->GetCalibrationParameters().set_double_param("calib_const_column0_row1", -1);
-  calib->GetCalibrationParameters().set_double_param("calib_const_column0_row10", -1);
-  calib->GetCalibrationParameters().set_double_param("calib_const_column0_row11", +1);
   se->registerSubsystem(calib);
 
 //  John H. : should be 19, 20, 21 and the other channels are a litle permuted from  what I thought
