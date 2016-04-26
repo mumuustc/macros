@@ -108,10 +108,13 @@ Fun4All_TestBeam(int nEvents = 100,
   calib = new CaloCalibration("C1");
   se->registerSubsystem(calib);
 
+  // more info see https://wiki.bnl.gov/sPHENIX/index.php/T-1044#Cerenkov_Counters
   gunpack = new GenericUnpackPRDF("C2");
 // unpack->Verbosity(1);
   gunpack->add_channel(second_packet_id, 25, 0); //25 Cerenkov 2 Inner
   gunpack->add_channel(second_packet_id, 26, 1); //26  Cerenkov 2 Outer
+  gunpack->add_channel(second_packet_id, 22, 10); //Channel 22 C2inner earlier copy added before run 2210
+  gunpack->add_channel(second_packet_id, 23, 11); //Channel 23 C2outer earlier copy added before run 2210
   se->registerSubsystem(gunpack);
 
   calib = new CaloCalibration("C2");
