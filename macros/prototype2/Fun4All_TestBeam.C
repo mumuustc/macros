@@ -50,6 +50,15 @@ Fun4All_TestBeam(int nEvents = 100,
   unpack_run->add_channel("beam_MT5CP2_Psia", 911, i_offset++, 1e-4);
   unpack_run->add_channel("beam_MT6CP2_Psia", 911, i_offset++, 1e-4);
 
+//  rcdaq_client create_device device_filenumbers_delete 9 984 "$HOME/DB_LOGGER_EMCAL_A0_values.txt"
+  unpack_run->add_channel("EMCAL_A0_HighGain", 984, 0, 1); // 1: pre-amp high gain, 0: nominal gain
+
+  //  rcdaq_client create_device device_filenumbers_delete 9 983 "$HOME/DB_LOGGER_EMCAL_GR0.txt"
+  unpack_run->add_channel("EMCAL_GR0_BiasOffset_Tower21", 983, 21-1, 1e-4); // bias offset in mV for tower 21
+
+    // rcdaq_client create_device device_filenumbers_delete 9 982 "$HOME/DB_LOGGER_EMCAL_T0_values.txt"
+  unpack_run->add_channel("EMCAL_T0_Tower21", 982, 21-1, 1e-3); // temperature reading in C for tower 21
+
   se->registerSubsystem(unpack_run);
 
   // ------------------- HCal and EMcal -------------------
@@ -213,6 +222,9 @@ Fun4All_TestBeam(int nEvents = 100,
       string(output_file) + string("_DSTReader.root"));
 
   reader->AddRunInfo("beam_MTNRG_GeV");
+  reader->AddRunInfo("EMCAL_A0_HighGain");
+  reader->AddRunInfo("EMCAL_GR0_BiasOffset_Tower21");
+  reader->AddRunInfo("EMCAL_T0_Tower21");
 
   reader->AddTower("RAW_LG_HCALIN");
   reader->AddTower("RAW_HG_HCALIN");
