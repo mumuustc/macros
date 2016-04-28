@@ -17,6 +17,41 @@ Fun4All_TestBeam(int nEvents = 100,
   recoConsts *rc = recoConsts::instance();
   //rc->set_IntFlag("RUNNUMBER",0);
 
+  // ------------------- Run info -> RUN node -------------------
+  RunInfoUnpackPRDF *unpack_run = new RunInfoUnpackPRDF();
+  unpack_run->Verbosity(RunInfoUnpackPRDF::VERBOSITY_SOME);
+
+  int i_offset = 0;
+
+  //    rcdaq_client create_device device_filenumbers_delete 9 911 "$HOME/beam_values.txt"
+  //  S:MTNRG  =  120   GeV
+  //  F:MT6SC1 =  11127     Cnts
+  //  F:MT6SC2 =  10585     Cnts
+  //  F:MT6SC3 =  10442     Cnts
+  //  F:MT6SC4 =  0         Cnts
+  //  F:MT6SC5 =  20251     Cnts
+  //  E:2CH    =  981.9 mm
+  //  E:2CV    =  93.17 mm
+  //  E:2CMT6T =  76.11 F
+  //  E:2CMT6H =  18.09 %Hum
+  //  F:MT5CP2 =  .0301 Psia
+  //  F:MT6CP2 =  .6905 Psia
+  i_offset = 0;
+  unpack_run->add_channel("beam_MTNRG_GeV", 911, i_offset++, 1e-5);
+  unpack_run->add_channel("beam_MT6SC1_Cnts", 911, i_offset++, 1e-5);
+  unpack_run->add_channel("beam_MT6SC2_Cnts", 911, i_offset++, 1e-5);
+  unpack_run->add_channel("beam_MT6SC3_Cnts", 911, i_offset++, 1e-5);
+  unpack_run->add_channel("beam_MT6SC4_Cnts", 911, i_offset++, 1e-5);
+  unpack_run->add_channel("beam_MT6SC5_Cnts", 911, i_offset++, 1e-5);
+  unpack_run->add_channel("beam_2CH_mm", 911, i_offset++, 1e-5);
+  unpack_run->add_channel("beam_2CV_mm", 911, i_offset++, 1e-5);
+  unpack_run->add_channel("beam_2CMT6T_F", 911, i_offset++, 1e-5);
+  unpack_run->add_channel("beam_2CMT6H_RH", 911, i_offset++, 1e-5);
+  unpack_run->add_channel("beam_MT5CP2_Psia", 911, i_offset++, 1e-5);
+  unpack_run->add_channel("beam_MT6CP2_Psia", 911, i_offset++, 1e-5);
+
+  se->registerSubsystem(unpack_run);
+
   // ------------------- HCal and EMcal -------------------
   SubsysReco *unpack = new CaloUnpackPRDF();
 // unpack->Verbosity(1);
@@ -176,6 +211,9 @@ Fun4All_TestBeam(int nEvents = 100,
   //alternatively, fast check on DST using DST Reader:
   Prototype2DSTReader *reader = new Prototype2DSTReader(
       string(output_file) + string("_DSTReader.root"));
+
+  reader->AddRunInfo("beam_MTNRG_GeV");
+
   reader->AddTower("RAW_LG_HCALIN");
   reader->AddTower("RAW_HG_HCALIN");
   reader->AddTower("RAW_LG_HCALOUT");
