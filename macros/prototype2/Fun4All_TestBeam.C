@@ -37,18 +37,18 @@ Fun4All_TestBeam(int nEvents = 100,
   //  F:MT5CP2 =  .0301 Psia
   //  F:MT6CP2 =  .6905 Psia
   i_offset = 0;
-  unpack_run->add_channel("beam_MTNRG_GeV", 911, i_offset++, 1e-5);
-  unpack_run->add_channel("beam_MT6SC1_Cnts", 911, i_offset++, 1e-5);
-  unpack_run->add_channel("beam_MT6SC2_Cnts", 911, i_offset++, 1e-5);
-  unpack_run->add_channel("beam_MT6SC3_Cnts", 911, i_offset++, 1e-5);
-  unpack_run->add_channel("beam_MT6SC4_Cnts", 911, i_offset++, 1e-5);
-  unpack_run->add_channel("beam_MT6SC5_Cnts", 911, i_offset++, 1e-5);
-  unpack_run->add_channel("beam_2CH_mm", 911, i_offset++, 1e-5);
-  unpack_run->add_channel("beam_2CV_mm", 911, i_offset++, 1e-5);
-  unpack_run->add_channel("beam_2CMT6T_F", 911, i_offset++, 1e-5);
-  unpack_run->add_channel("beam_2CMT6H_RH", 911, i_offset++, 1e-5);
-  unpack_run->add_channel("beam_MT5CP2_Psia", 911, i_offset++, 1e-5);
-  unpack_run->add_channel("beam_MT6CP2_Psia", 911, i_offset++, 1e-5);
+  unpack_run->add_channel("beam_MTNRG_GeV", 911, i_offset++, 1e-4);
+  unpack_run->add_channel("beam_MT6SC1_Cnts", 911, i_offset++, 1e-4);
+  unpack_run->add_channel("beam_MT6SC2_Cnts", 911, i_offset++, 1e-4);
+  unpack_run->add_channel("beam_MT6SC3_Cnts", 911, i_offset++, 1e-4);
+  unpack_run->add_channel("beam_MT6SC4_Cnts", 911, i_offset++, 1e-4);
+  unpack_run->add_channel("beam_MT6SC5_Cnts", 911, i_offset++, 1e-4);
+  unpack_run->add_channel("beam_2CH_mm", 911, i_offset++, 1e-4);
+  unpack_run->add_channel("beam_2CV_mm", 911, i_offset++, 1e-4);
+  unpack_run->add_channel("beam_2CMT6T_F", 911, i_offset++, 1e-4);
+  unpack_run->add_channel("beam_2CMT6H_RH", 911, i_offset++, 1e-4);
+  unpack_run->add_channel("beam_MT5CP2_Psia", 911, i_offset++, 1e-4);
+  unpack_run->add_channel("beam_MT6CP2_Psia", 911, i_offset++, 1e-4);
 
   se->registerSubsystem(unpack_run);
 
