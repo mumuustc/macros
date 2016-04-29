@@ -19,7 +19,7 @@ Fun4All_TestBeam(int nEvents = 100,
 
   // ------------------- Run info -> RUN node -------------------
   RunInfoUnpackPRDF *unpack_run = new RunInfoUnpackPRDF();
-  unpack_run->Verbosity(RunInfoUnpackPRDF::VERBOSITY_SOME);
+//  unpack_run->Verbosity(RunInfoUnpackPRDF::VERBOSITY_SOME);
 
   int i_offset = 0;
 
