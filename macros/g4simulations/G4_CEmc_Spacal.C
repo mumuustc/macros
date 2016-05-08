@@ -8,6 +8,11 @@ int Cemc_spacal_configuration = PHG4CylinderGeom_Spacalv1::k1DProjectiveSpacal;
 //   2D azimuthal projective SPACAL (slow)
 // int Cemc_spacal_configuration = PHG4CylinderGeom_Spacalv1::k2DProjectiveSpacal;
 
+bool combin_CEMC_tower_2x2 = false;
+//bool combin_CEMC_tower_2x2 = true; // combine CEMC tower 2x2 per readout channel
+
+
+
 #include <iostream>
 
 // just a dummy parameter used by the tilted plate geom
@@ -445,6 +450,19 @@ void CEMC_Towers(int verbosity = 0) {
       return ;
     }
 
+  // Make ganged output for CEMC
+  if (combin_CEMC_tower_2x2)
+  {
+    // group CEMC RawTower to CEMC2x2
+    RawTowerCombiner * TowerCombiner = new RawTowerCombiner("RawTowerCombiner_CEMC");
+    TowerCombiner->Detector("CEMC");
+    TowerCombiner->set_combine_eta(2);
+    TowerCombiner->set_combine_phi(2);
+//    TowerCombiner->Verbosity(RawTowerCombiner::VERBOSITY_SOME);
+    se->registerSubsystem( TowerCombiner );
+
+  }
+
   static const double photoelectron_per_GeV = 500;//500 photon per total GeV deposition
 
   RawTowerDigitizer *TowerDigitizer = new RawTowerDigitizer("EmcRawTowerDigitizer");
@@ -466,6 +484,9 @@ void CEMC_Towers(int verbosity = 0) {
   TowerCalibration->set_pedstal_ADC(0);
   se->registerSubsystem( TowerCalibration );
 
+
+
+
   return;
 }
 
@@ -479,7 +500,7 @@ void CEMC_Clusters(int verbosity = 0) {
   ClusterBuilder->Detector("CEMC");
   ClusterBuilder->Verbosity(verbosity);
   se->registerSubsystem( ClusterBuilder );
-  
+
   return;
 }
 
