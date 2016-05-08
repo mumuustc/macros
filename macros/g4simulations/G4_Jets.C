@@ -67,7 +67,7 @@ void Jet_Reco(int verbosity = 0) {
   trackjetreco->set_algo_node("ANTIKT");
   trackjetreco->set_input_node("TRACK");
   trackjetreco->Verbosity(verbosity);
-  se->registerSubsystem(trackjetreco); 
+  se->registerSubsystem(trackjetreco);
 
   return; 
 }
