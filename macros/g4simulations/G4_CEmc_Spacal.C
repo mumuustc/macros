@@ -458,7 +458,7 @@ void CEMC_Towers(int verbosity = 0) {
     TowerCombiner->Detector("CEMC");
     TowerCombiner->set_combine_eta(2);
     TowerCombiner->set_combine_phi(2);
-    TowerCombiner->Verbosity(RawTowerCombiner::VERBOSITY_SOME);
+//    TowerCombiner->Verbosity(RawTowerCombiner::VERBOSITY_SOME);
     se->registerSubsystem( TowerCombiner );
 
   }
