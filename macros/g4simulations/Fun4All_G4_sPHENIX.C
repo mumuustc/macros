@@ -1,11 +1,12 @@
 
 int Fun4All_G4_sPHENIX(
-		       const int nEvents = 10000,
-		                  const char * inputFile = "data/G4sPHENIXCells_2000jets25GeV_CEMC2x2.root",
+		       const int nEvents = 100,
+//		                  const char * inputFile = "data/G4sPHENIXCells_2000jets25GeV_CEMC2x2.root",
 //		                  const char * inputFile = "data/G4sPHENIXCells_250jets25GeV.root",
 //           const char * inputFile = "data/G4sPHENIXCells_1000pi24GeV.root",
 		       //            const char * inputFile = "data/G4sPHENIXCells_100e24GeV.root",
-//           const char * inputFile = "data/G4Hits_sPHENIX_e-_eta0_24GeV-0000.root",
+//           const char * inputFile = "data/./G4Hits_sPHENIX_gamma_eta0_24GeV-0000.root",
+           const char * inputFile = "data/./G4Hits_sPHENIX_gamma_eta0_24GeV-0000_cemc2x2.root",
 //           const char * inputFile = "data/G4Hits_sPHENIX_pi-_eta0_24GeV-0000.root",
 
 		       const char * outputFile = "G4sPHENIXCells.root"
@@ -67,7 +68,7 @@ int Fun4All_G4_sPHENIX(
   bool do_global_fastsim = false;
   
   bool do_jet_reco = true;
-  bool do_jet_eval = true;
+  bool do_jet_eval = false;
 
   bool do_dst_compress = false;
 

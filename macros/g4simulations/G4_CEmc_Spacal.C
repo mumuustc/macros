@@ -4,12 +4,12 @@ int Max_cemc_layer = 1;
 
   // set a default value for SPACAL configuration
 //  // 1D azimuthal projective SPACAL (fast)
-int Cemc_spacal_configuration = PHG4CylinderGeom_Spacalv1::k1DProjectiveSpacal;
+//int Cemc_spacal_configuration = PHG4CylinderGeom_Spacalv1::k1DProjectiveSpacal;
 //   2D azimuthal projective SPACAL (slow)
-// int Cemc_spacal_configuration = PHG4CylinderGeom_Spacalv1::k2DProjectiveSpacal;
+ int Cemc_spacal_configuration = PHG4CylinderGeom_Spacalv1::k2DProjectiveSpacal;
 
-bool combin_CEMC_tower_2x2 = false;
-//bool combin_CEMC_tower_2x2 = true; // combine CEMC tower 2x2 per readout channel
+//bool combin_CEMC_tower_2x2 = false;
+bool combin_CEMC_tower_2x2 = true; // combine CEMC tower 2x2 per readout channel
 
 
 
