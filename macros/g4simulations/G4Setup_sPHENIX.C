@@ -39,8 +39,9 @@ void G4Init(bool do_svtx = true,
 
   if (do_cemc)
     {
-      gROOT->LoadMacro("G4_CEmc_Spacal.C");
-      CEmcInit(72); // make it 2*2*2*3*3 so we can try other combinations
+//      gROOT->LoadMacro("G4_CEmc_Spacal.C"); // default SPACAL
+      gROOT->LoadMacro("G4_CEmc_Spacal_Reduced.C"); // reduce eta acceptance to 0.6
+      CEmcInit();
     }
 
   if (do_hcalin) 
