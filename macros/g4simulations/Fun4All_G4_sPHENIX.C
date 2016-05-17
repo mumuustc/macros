@@ -1,9 +1,9 @@
 
 int Fun4All_G4_sPHENIX(
-		       const int nEvents = 200
+		       const int nEvents = 10
 		       )
 {
-  const char * outputFile = "G4sPHENIXCells.root";
+  const char * outputFile = "data/G4sPHENIXCells.root";
 
   //===============
   // Input options
@@ -27,16 +27,16 @@ int Fun4All_G4_sPHENIX(
   //======================
 
   bool do_bbc = false;
-  
+
   bool do_pipe = false;
-  
+
   bool do_svtx = false;
   bool do_svtx_cell = false;
   bool do_svtx_track = false;
   bool do_svtx_eval = false;
 
   bool do_preshower = false;
-  
+
   bool do_cemc = false;
   bool do_cemc_cell = false;
   bool do_cemc_twr = false;
@@ -50,16 +50,16 @@ int Fun4All_G4_sPHENIX(
   bool do_hcalin_eval = false;
 
   bool do_magnet = false;
-  
+
   bool do_hcalout = false;
   bool do_hcalout_cell = false;
   bool do_hcalout_twr = false;
   bool do_hcalout_cluster = false;
   bool do_hcalout_eval = false;
-  
+
   bool do_global = false;
   bool do_global_fastsim = false;
-  
+
   bool do_jet_reco = true;
   bool do_jet_eval = false;
 
@@ -125,7 +125,7 @@ int Fun4All_G4_sPHENIX(
   else if (runpythia8)
     {
       gSystem->Load("libPHPythia8.so");
-      
+
 
       PHPy8JetTrigger *theTrigger = new PHPy8JetTrigger();
 //      theTrigger->Verbosity(10);
@@ -135,7 +135,7 @@ int Fun4All_G4_sPHENIX(
 
       PHPythia8* pythia8 = new PHPythia8();
       // see coresoftware/generators/PHPythia8 for example config
-      pythia8->set_config_file("phpythia8.cfg"); 
+      pythia8->set_config_file("phpythia8.cfg");
 
       pythia8->beam_vertex_parameters(0,0,0,0,0,5);
       pythia8->register_trigger(theTrigger);
@@ -198,8 +198,8 @@ int Fun4All_G4_sPHENIX(
   //---------
   // BBC Reco
   //---------
-  
-  if (do_bbc) 
+
+  if (do_bbc)
     {
       gROOT->LoadMacro("G4_Bbc.C");
       BbcInit();
@@ -227,7 +227,7 @@ int Fun4All_G4_sPHENIX(
   //-----------------------------
   // HCAL towering and clustering
   //-----------------------------
-  
+
   if (do_hcalin_twr) HCALInner_Towers();
   if (do_hcalin_cluster) HCALInner_Clusters();
 
@@ -246,23 +246,23 @@ int Fun4All_G4_sPHENIX(
   // Global Vertexing
   //-----------------
 
-  if (do_global) 
+  if (do_global)
     {
       gROOT->LoadMacro("G4_Global.C");
       Global_Reco();
     }
 
-  else if (do_global_fastsim) 
+  else if (do_global_fastsim)
     {
       gROOT->LoadMacro("G4_Global.C");
       Global_FastSim();
-    }  
+    }
 
   //---------
   // Jet reco
   //---------
 
-  if (do_jet_reco) 
+  if (do_jet_reco)
     {
       gROOT->LoadMacro("G4_Jets.C");
       Jet_Reco();
@@ -390,6 +390,15 @@ int Fun4All_G4_sPHENIX(
     }
 
   se->run(nEvents);
+
+  {
+
+    gSystem->Load("libqa_modules");
+    QAHistManagerDef::saveQARootFile(string(outputFile) + "_qa.root");
+
+    gSystem->Load("libslt");
+    SoftLeptonTaggingTruth::saveQARootFile(string(outputFile) + "_slt.root");
+  }
 
   //-----
   // Exit
