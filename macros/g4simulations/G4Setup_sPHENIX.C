@@ -109,7 +109,7 @@ int G4Setup(const int absorberactive = 0,
   }
   g4Reco->set_field_rescale(magfield_rescale);
   
-  double radius = 0.;
+  double radius = 10.;
 
   //----------------------------------------
   // PIPE

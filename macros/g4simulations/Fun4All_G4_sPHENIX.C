@@ -26,32 +26,32 @@ int Fun4All_G4_sPHENIX(
   // What to run
   //======================
 
-  bool do_bbc = true;
+  bool do_bbc = false;
   
-  bool do_pipe = true;
+  bool do_pipe = false;
   
-  bool do_svtx = true;
+  bool do_svtx = false;
   bool do_svtx_cell = false;
   bool do_svtx_track = false;
   bool do_svtx_eval = false;
 
   bool do_preshower = false;
   
-  bool do_cemc = true;
+  bool do_cemc = false;
   bool do_cemc_cell = false;
   bool do_cemc_twr = false;
   bool do_cemc_cluster = false;
   bool do_cemc_eval = false;
 
-  bool do_hcalin = true;
+  bool do_hcalin = false;
   bool do_hcalin_cell = false;
   bool do_hcalin_twr = false;
   bool do_hcalin_cluster = false;
   bool do_hcalin_eval = false;
 
-  bool do_magnet = true;
+  bool do_magnet = false;
   
-  bool do_hcalout = true;
+  bool do_hcalout = false;
   bool do_hcalout_cell = false;
   bool do_hcalout_twr = false;
   bool do_hcalout_cluster = false;
@@ -60,7 +60,7 @@ int Fun4All_G4_sPHENIX(
   bool do_global = false;
   bool do_global_fastsim = false;
   
-  bool do_jet_reco = false;
+  bool do_jet_reco = true;
   bool do_jet_eval = false;
 
   bool do_dst_compress = false;
@@ -84,8 +84,8 @@ int Fun4All_G4_sPHENIX(
   G4Init(do_svtx,do_preshower,do_cemc,do_hcalin,do_magnet,do_hcalout,do_pipe);
 
   int absorberactive = 1; // set to 1 to make all absorbers active volumes
-  //  const string magfield = "1.5"; // if like float -> solenoidal field in T, if string use as fieldmap name (including path)
-  const string magfield = "/phenix/upgrades/decadal/fieldmaps/sPHENIX.2d.root"; // if like float -> solenoidal field in T, if string use as fieldmap name (including path)
+    const string magfield = "0"; // if like float -> solenoidal field in T, if string use as fieldmap name (including path)
+//  const string magfield = "/phenix/upgrades/decadal/fieldmaps/sPHENIX.2d.root"; // if like float -> solenoidal field in T, if string use as fieldmap name (including path)
   const float magfield_rescale = 1.4/1.5; // scale the map to a 1.4 T field
 
   //---------------
@@ -93,7 +93,7 @@ int Fun4All_G4_sPHENIX(
   //---------------
 
   Fun4AllServer *se = Fun4AllServer::instance();
-  se->Verbosity(0); 
+  se->Verbosity(1);
   // just if we set some flags somewhere in this macro
   recoConsts *rc = recoConsts::instance();
   // By default every random number generator uses
@@ -131,7 +131,7 @@ int Fun4All_G4_sPHENIX(
 //      theTrigger->Verbosity(10);
       theTrigger->SetEtaHighLow(-1, 1);
       theTrigger->SetJetR(.7);
-      theTrigger->SetMinJetPt(30);
+      theTrigger->SetMinJetPt(25);
 
       PHPythia8* pythia8 = new PHPythia8();
       // see coresoftware/generators/PHPythia8 for example config
@@ -281,6 +281,8 @@ int Fun4All_G4_sPHENIX(
 
   if (do_jet_eval) Jet_Eval("g4jet_eval.root");
 
+
+
   //-------------- 
   // IO management
   //--------------
@@ -324,6 +326,48 @@ int Fun4All_G4_sPHENIX(
           /*bool*/ do_magnet  ,
           /*bool*/ do_hcalout_twr
           );
+    }
+
+  //temp lines for QA modules
+    {
+
+      gSystem->Load("libqa_modules");
+
+        if (do_jet_reco)
+          {
+            QAG4SimulationJet * calo_jet7 = new QAG4SimulationJet(
+                "AntiKt_Truth_r07",QAG4SimulationJet:: kProcessTruthSpectrum);
+            se->registerSubsystem(calo_jet7);
+
+            QAG4SimulationJet * calo_jet7 = new QAG4SimulationJet(
+                "AntiKt_Truth_r04", QAG4SimulationJet::kProcessTruthSpectrum);
+            se->registerSubsystem(calo_jet7);
+
+            QAG4SimulationJet * calo_jet7 = new QAG4SimulationJet(
+                "AntiKt_Truth_r02",QAG4SimulationJet:: kProcessTruthSpectrum);
+            se->registerSubsystem(calo_jet7);
+          }
+      }
+
+  // jet analysis moudle
+    {
+
+      gSystem->Load("libslt");
+
+      if (do_jet_reco)
+        {
+          SoftLeptonTaggingTruth * slt = new SoftLeptonTaggingTruth(
+              "AntiKt_Truth_r07");
+          se->registerSubsystem(slt);
+
+          SoftLeptonTaggingTruth * slt = new SoftLeptonTaggingTruth(
+              "AntiKt_Truth_r04");
+          se->registerSubsystem(slt);
+
+          SoftLeptonTaggingTruth * slt = new SoftLeptonTaggingTruth(
+              "AntiKt_Truth_r02");
+          se->registerSubsystem(slt);
+        }
     }
 
    Fun4AllDstOutputManager *out = new Fun4AllDstOutputManager("DSTOUT", outputFile);
