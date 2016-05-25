@@ -1,6 +1,6 @@
 
 int Fun4All_G4_sPHENIX(
-		       const int nEvents = 10,
+		       const int nEvents = 1000,
 		       const char * inputFile = "/gpfs02/phenix/prod/sPHENIX/preCDR/pro.1-beta.5/single_particle/spacal1d/fieldmap/G4Hits_sPHENIX_e-_eta0_16GeV.root",
 		       const char * outputFile = "G4sPHENIXCells.root"
 		       )
@@ -159,17 +159,41 @@ int Fun4All_G4_sPHENIX(
 					       PHG4SimpleEventGenerator::Uniform,
 					       PHG4SimpleEventGenerator::Uniform);
 	gen->set_vertex_distribution_mean(0.0,0.0,0.0);
-	gen->set_vertex_distribution_width(0.0,0.0,5.0);
+	gen->set_vertex_distribution_width(0.0,0.0,0.0);
       }
       gen->set_vertex_size_function(PHG4SimpleEventGenerator::Uniform);
       gen->set_vertex_size_parameters(0.0,0.0);
-      gen->set_eta_range(-0.5, 0.5);
+      gen->set_eta_range(-0.1, 0.1);
       gen->set_phi_range(-1.0*TMath::Pi(), 1.0*TMath::Pi());
       gen->set_pt_range(4, 4);
       gen->Embed(1);
       gen->Verbosity(0);
       se->registerSubsystem(gen);
     }
+//  {
+//    // toss low multiplicity dummy events
+//    PHG4SimpleEventGenerator *gen = new PHG4SimpleEventGenerator();
+//    gen->add_particles("pi-",5); // mu+,e+,proton,pi+,Upsilon
+////     gen->add_particles("pi+",5); // mu-,e-,anti_proton,pi-
+//    if (readhepmc) {
+//gen->set_reuse_existing_vertex(true);
+//gen->set_existing_vertex_offset_vector(0.0,0.0,0.0);
+//    } else {
+//gen->set_vertex_distribution_function(PHG4SimpleEventGenerator::Uniform,
+//               PHG4SimpleEventGenerator::Uniform,
+//               PHG4SimpleEventGenerator::Uniform);
+//gen->set_vertex_distribution_mean(0.0,0.0,0.0);
+//gen->set_vertex_distribution_width(0.0,0.0,0.0);
+//    }
+//    gen->set_vertex_size_function(PHG4SimpleEventGenerator::Uniform);
+//    gen->set_vertex_size_parameters(0.0,0.0);
+//    gen->set_eta_range(0.1, 0.1);
+//    gen->set_phi_range(2.0*TMath::Pi(), 2.0*TMath::Pi());
+//    gen->set_pt_range(4, 4);
+//    gen->Embed(1);
+//    gen->Verbosity(0);
+//    se->registerSubsystem(gen);
+//  }
 
   if (!readhits)
     {
