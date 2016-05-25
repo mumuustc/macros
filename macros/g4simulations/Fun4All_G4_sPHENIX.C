@@ -1,6 +1,6 @@
 
 int Fun4All_G4_sPHENIX(
-		       const int nEvents = 10
+		       const int nEvents = 100000
 		       )
 {
   const char * outputFile = "data/G4sPHENIXCells.root";
@@ -130,7 +130,7 @@ int Fun4All_G4_sPHENIX(
       PHPy8JetTrigger *theTrigger = new PHPy8JetTrigger();
 //      theTrigger->Verbosity(10);
       theTrigger->SetEtaHighLow(-1, 1);
-      theTrigger->SetJetR(.7);
+      theTrigger->SetJetR(.4);
       theTrigger->SetMinJetPt(25);
 
       PHPythia8* pythia8 = new PHPythia8();
@@ -362,6 +362,7 @@ int Fun4All_G4_sPHENIX(
 
           SoftLeptonTaggingTruth * slt = new SoftLeptonTaggingTruth(
               "AntiKt_Truth_r04");
+//          slt->Verbosity(1);
           se->registerSubsystem(slt);
 
           SoftLeptonTaggingTruth * slt = new SoftLeptonTaggingTruth(
@@ -397,7 +398,7 @@ int Fun4All_G4_sPHENIX(
     QAHistManagerDef::saveQARootFile(string(outputFile) + "_qa.root");
 
     gSystem->Load("libslt");
-    SoftLeptonTaggingTruth::saveQARootFile(string(outputFile) + "_slt.root");
+    SoftLeptonTaggingTruth::getHistoManager()->dumpHistos(string(outputFile) + "_slt.root");
   }
 
   //-----
