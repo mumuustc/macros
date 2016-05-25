@@ -1,6 +1,6 @@
 
 int Fun4All_G4_sPHENIX(
-		       const int nEvents = 100000
+		       const int nEvents = 1000
 		       )
 {
   const char * outputFile = "data/G4sPHENIXCells.root";
@@ -19,8 +19,8 @@ int Fun4All_G4_sPHENIX(
   const bool readhepmc = false; // read HepMC files
   // Or:
   // Use particle generator
-  const bool runpythia8 = true;
-  const bool runpythia6 = false;
+  const bool runpythia8 = false;
+  const bool runpythia6 = true;
 
   //======================
   // What to run
@@ -349,28 +349,6 @@ int Fun4All_G4_sPHENIX(
           }
       }
 
-  // jet analysis moudle
-    {
-
-      gSystem->Load("libslt");
-
-      if (do_jet_reco)
-        {
-          SoftLeptonTaggingTruth * slt = new SoftLeptonTaggingTruth(
-              "AntiKt_Truth_r07");
-          se->registerSubsystem(slt);
-
-          SoftLeptonTaggingTruth * slt = new SoftLeptonTaggingTruth(
-              "AntiKt_Truth_r04");
-//          slt->Verbosity(1);
-          se->registerSubsystem(slt);
-
-          SoftLeptonTaggingTruth * slt = new SoftLeptonTaggingTruth(
-              "AntiKt_Truth_r02");
-          se->registerSubsystem(slt);
-        }
-    }
-
    Fun4AllDstOutputManager *out = new Fun4AllDstOutputManager("DSTOUT", outputFile);
    if (do_dst_compress) DstCompress(out);
    se->registerOutputManager(out);
@@ -397,8 +375,6 @@ int Fun4All_G4_sPHENIX(
     gSystem->Load("libqa_modules");
     QAHistManagerDef::saveQARootFile(string(outputFile) + "_qa.root");
 
-    gSystem->Load("libslt");
-    SoftLeptonTaggingTruth::getHistoManager()->dumpHistos(string(outputFile) + "_slt.root");
   }
 
   //-----
