@@ -14,7 +14,7 @@ int Fun4All_G4_Prototype2(
   // Make the Server
   //////////////////////////////////////////
   Fun4AllServer *se = Fun4AllServer::instance();
-  //  se->Verbosity(1);
+    se->Verbosity(1);
   recoConsts *rc = recoConsts::instance();
   // only set this if you want a fixed random seed to make
   // results reproducible for testing
@@ -449,8 +449,8 @@ int Fun4All_G4_Prototype2(
 
   se->registerSubsystem(ana);
 
-  // Fun4AllDstOutputManager *out = new Fun4AllDstOutputManager("DSTOUT","G4Prototype2.root");
-  // se->registerOutputManager(out);
+   Fun4AllDstOutputManager *out = new Fun4AllDstOutputManager("DSTOUT","G4Prototype2.root");
+   se->registerOutputManager(out);
 
   Fun4AllInputManager *in = new Fun4AllDummyInputManager( "JADE");
   se->registerInputManager( in );
