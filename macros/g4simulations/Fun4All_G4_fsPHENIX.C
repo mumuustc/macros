@@ -1,8 +1,9 @@
 
 int Fun4All_G4_fsPHENIX(
 		       const int nEvents = 2,
-		       const char * inputFile = "/gpfs02/phenix/prod/sPHENIX/preCDR/pro.1-beta.5/single_particle/spacal1d/fieldmap/G4Hits_sPHENIX_e-_eta0_16GeV.root",
-		       const char * outputFile = "G4fsPHENIX.root"
+           const char * inputFile = "/sphenix/sim//sim01/production/2016-07-21/single_particle/spacal2d/fieldmap/G4Hits_sPHENIX_e-_eta0_8GeV-0002.root",
+		       const char * outputFile = "G4fsPHENIX.root",
+           const char * embed_input_file = "/sphenix/sim/sim01/production/2016-07-12/sHijing/spacal2d/G4Hits_sPHENIX_sHijing-0-4.4fm.list"
 		       )
 {
   //===============
@@ -19,7 +20,13 @@ int Fun4All_G4_fsPHENIX(
   const bool readhepmc = false; // read HepMC files
   // Or:
   // Use particle generator
-  const bool runpythia = false;
+  const bool runpythia8 = false;
+  const bool runpythia6 = false;
+  // And
+  // Further choose to embed newly simulated events to a previous simulation. Not compatible with `readhits = true`
+  // In case embedding into a production output, please double check your G4Setup_sPHENIX.C and G4_*.C consistent with those in the production macro folder
+  // E.g. /sphenix/sim//sim01/production/2016-07-21/single_particle/spacal2d/
+  const bool do_embedding = false;
 
   //======================
   // What to run
@@ -131,6 +138,11 @@ int Fun4All_G4_fsPHENIX(
     {
       // Get the hits from a file
       // The input manager is declared later
+      if (do_embedding)
+       {
+         cout <<"Do not support read hits and embed background at the same time."<<endl;
+         exit(1);
+       }
     }
   else if (readhepmc)
     {
@@ -139,7 +151,7 @@ int Fun4All_G4_fsPHENIX(
       HepMCNodeReader *hr = new HepMCNodeReader();
       se->registerSubsystem(hr);
     }
-  else if (runpythia)
+  else if (runpythia8)
     {
       gSystem->Load("libPHPythia8.so");
       
@@ -151,6 +163,17 @@ int Fun4All_G4_fsPHENIX(
       HepMCNodeReader *hr = new HepMCNodeReader();
       se->registerSubsystem(hr);
     }
+  else if (runpythia6)
+    {
+      gSystem->Load("libPHPythia6.so");
+
+      PHPythia6 *pythia6 = new PHPythia6();
+      pythia6->set_config_file("phpythia6.cfg");
+      se->registerSubsystem(pythia6);
+
+      HepMCNodeReader *hr = new HepMCNodeReader();
+      se->registerSubsystem(hr);
+    }
   else
     {
       // toss low multiplicity dummy events
@@ -158,7 +181,7 @@ int Fun4All_G4_fsPHENIX(
       //gen->add_particles("e-",5); // mu+,e+,proton,pi+,Upsilon
       //gen->add_particles("e+",5); // mu-,e-,anti_proton,pi-
       gen->add_particles("pi-",1); // mu-,e-,anti_proton,pi-
-      if (readhepmc) {
+      if (readhepmc || do_embedding) {
 	gen->set_reuse_existing_vertex(true);
 	gen->set_existing_vertex_offset_vector(0.0,0.0,0.0);
       } else {
@@ -307,6 +330,19 @@ int Fun4All_G4_fsPHENIX(
       Fun4AllInputManager *hitsin = new Fun4AllDstInputManager("DSTin");
       hitsin->fileopen(inputFile);
       se->registerInputManager(hitsin);
+    }
+  if (do_embedding)
+    {
+      if (embed_input_file == NULL)
+        {
+          cout << "Missing embed_input_file! Exit";
+          exit(3);
+        }
+
+      Fun4AllDstInputManager *in1 = new Fun4AllNoSyncDstInputManager("DSTinEmbed");
+      //      in1->AddFile(embed_input_file); // if one use a single input file
+      in1->AddListFile(embed_input_file); // RecommendedL: if one use a text list of many input files
+      se->registerInputManager(in1);
     }
   if (readhepmc)
     {
