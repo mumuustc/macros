@@ -78,9 +78,9 @@ CEmc_1DProjectiveSpacal(PHG4Reco* g4Reco, double radius, const int crossings, co
   // 1.5cm thick teflon as an approximation for EMCAl light collection + electronics (10% X0 total estimated)
   PHG4CylinderSubsystem *cyl = new PHG4CylinderSubsystem("CEMC_ELECTRONICS", 0);
   cyl->SuperDetector("CEMC_ELECTRONICS");
-  cyl->SetRadius(radius);
-  cyl->SetMaterial("G4_TEFLON"); // plastic
-  cyl->SetThickness(1.5);
+  cyl->set_double_param("radius",radius);
+  cyl->set_string_param("material","G4_TEFLON");
+  cyl->set_double_param("thickness",1.5);
   if (absorberactive)  cyl->SetActive();
   g4Reco->registerSubsystem( cyl );
 
@@ -94,7 +94,7 @@ CEmc_1DProjectiveSpacal(PHG4Reco* g4Reco, double radius, const int crossings, co
 
   cemc ->get_geom().set_radius(emc_inner_radius);
   cemc ->get_geom().set_thickness(cemcthickness);
-  cemc ->get_geom().set_construction_verbose(1);
+//  cemc ->get_geom().set_construction_verbose(1);
 
   cemc->SetActive();
   cemc->SuperDetector("CEMC");
@@ -115,9 +115,9 @@ CEmc_1DProjectiveSpacal(PHG4Reco* g4Reco, double radius, const int crossings, co
   // 0.5cm thick Stainless Steel as an approximation for EMCAl support system
   cyl = new PHG4CylinderSubsystem("CEMC_SPT", 0);
   cyl->SuperDetector("CEMC_SPT");
-  cyl->SetRadius(radius);
-  cyl->SetMaterial("SS310"); // SS310 Stainless Steel
-  cyl->SetThickness(0.5);
+  cyl->set_double_param("radius",radius);
+cyl->set_string_param("material","SS310"); // SS310 Stainless Steel
+ cyl->set_double_param("thickness",0.5);
   if (absorberactive)
     cyl->SetActive();
   g4Reco->registerSubsystem(cyl);
@@ -159,10 +159,10 @@ CEmc_2DProjectiveSpacal(PHG4Reco* g4Reco, double radius, const int crossings,
 
   // 1.5cm thick teflon as an approximation for EMCAl light collection + electronics (10% X0 total estimated)
   PHG4CylinderSubsystem *cyl = new PHG4CylinderSubsystem("CEMC_ELECTRONICS", 0);
+  cyl->set_double_param("radius",radius);
+  cyl->set_string_param("material","G4_TEFLON");
+  cyl->set_double_param("thickness",1.5- no_overlapp);
   cyl->SuperDetector("CEMC_ELECTRONICS");
-  cyl->SetRadius(radius);
-  cyl->SetMaterial("G4_TEFLON"); // plastic
-  cyl->SetThickness(1.5- no_overlapp);
   cyl->OverlapCheck(overlapcheck);
   if (absorberactive)  cyl->SetActive();
   g4Reco->registerSubsystem( cyl );
@@ -174,9 +174,9 @@ CEmc_2DProjectiveSpacal(PHG4Reco* g4Reco, double radius, const int crossings,
   // 0.5cm thick Stainless Steel as an approximation for EMCAl support system
   cyl = new PHG4CylinderSubsystem("CEMC_SPT", 0);
   cyl->SuperDetector("CEMC_SPT");
-  cyl->SetRadius(radius +cemcthickness - 0.5 );
-  cyl->SetMaterial("SS310"); // SS310 Stainless Steel
-  cyl->SetThickness(0.5 - no_overlapp);
+cyl->set_double_param("radius",radius +cemcthickness - 0.5 );
+cyl->set_string_param("material","SS310"); // SS310 Stainless Steel
+cyl->set_double_param("thickness",0.5 - no_overlapp);
   cyl->OverlapCheck(overlapcheck);
   if (absorberactive)
     cyl->SetActive();
@@ -200,7 +200,7 @@ CEmc_2DProjectiveSpacal(PHG4Reco* g4Reco, double radius, const int crossings,
   cemc->get_geom().load_demo_sector_tower_map3();
   cemc->get_geom().set_radius(radius);
   cemc->get_geom().set_thickness(cemcthickness);
-  cemc->get_geom().set_construction_verbose(1);
+//  cemc->get_geom().set_construction_verbose(1);
 
   cemc->SetActive();
   cemc->SuperDetector("CEMC");
@@ -260,7 +260,7 @@ CEmc_Proj(PHG4Reco* g4Reco, double radius, const int crossings, const int absorb
 
   cemc ->get_geom().set_radius(emc_inner_radius);
   cemc ->get_geom().set_thickness(cemcthickness);
-  cemc ->get_geom().set_construction_verbose(2);
+//  cemc ->get_geom().set_construction_verbose(2);
 
   cemc ->get_geom().set_config(PHG4CylinderGeom_Spacalv1::kProjective_PolarTaper);
   cemc ->get_geom().set_azimuthal_tilt(Get_Spacal_Tilt());
@@ -293,9 +293,9 @@ CEmc_Proj(PHG4Reco* g4Reco, double radius, const int crossings, const int absorb
   radius += no_overlapp;
 
   PHG4CylinderSubsystem *cyl = new PHG4CylinderSubsystem("EMCELECTRONICS", 0);
-  cyl->SetRadius(radius);
-  cyl->SetMaterial("G4_TEFLON"); // plastic
-  cyl->SetThickness(0.5);
+  cyl->set_double_param("radius",radius);
+  cyl->set_string_param("material","G4_TEFLON");
+  cyl->set_double_param("thickness",0.5);
   if (absorberactive)  cyl->SetActive();
   g4Reco->registerSubsystem( cyl );
   radius += 0.5;
@@ -385,7 +385,7 @@ void CEMC_Cells(int verbosity = 0) {
           const double radius = 95;
           cemc_cells->cellsize(i,  2*TMath::Pi()/256. * radius, 2*TMath::Pi()/256. * radius);
       }
-      cemc_cells->set_timing_window_size(60);
+      cemc_cells->set_timing_window_defaults(0.0,60.0);
       se->registerSubsystem(cemc_cells);
 
     }
@@ -395,7 +395,7 @@ void CEMC_Cells(int verbosity = 0) {
       PHG4FullProjSpacalCellReco *cemc_cells = new PHG4FullProjSpacalCellReco("CEMCCYLCELLRECO");
       cemc_cells->Detector("CEMC");
       cemc_cells->Verbosity(verbosity);
-      cemc_cells->set_timing_window_size(60);
+      cemc_cells->set_timing_window_defaults(0.0,60.0);
       se->registerSubsystem(cemc_cells);
 
     }
