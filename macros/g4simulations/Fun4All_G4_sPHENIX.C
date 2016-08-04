@@ -380,10 +380,21 @@ int Fun4All_G4_sPHENIX(
           }
       }
 
-  // jet analysis moudle
+    // HF jet trigger moudle
+      if (gSystem->Load("libHFJetTruthGeneration") == 0)
+      {
+        if (do_jet_reco)
+          {
+            HFJetTruthTrigger * slt = new HFJetTruthTrigger(
+                "HFJetTruthTrigger.root",5,1000000);
+            se->registerSubsystem(slt);
+          }
+      }
+
+  // HF jet analysis moudle
+    if (gSystem->Load("libslt") == 0)
     {
 
-      gSystem->Load("libslt");
 
       if (do_jet_reco)
         {
@@ -428,8 +439,11 @@ int Fun4All_G4_sPHENIX(
     gSystem->Load("libqa_modules");
     QAHistManagerDef::saveQARootFile(string(outputFile) + "_qa.root");
 
-    gSystem->Load("libslt");
-    SoftLeptonTaggingTruth::getHistoManager()->dumpHistos(string(outputFile) + "_slt.root");
+      if (gSystem->Load("libslt") == 0)
+        {
+          SoftLeptonTaggingTruth::getHistoManager()->dumpHistos(
+              string(outputFile) + "_slt.root");
+        }
   }
 
   //-----
