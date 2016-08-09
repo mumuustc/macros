@@ -30,7 +30,7 @@ G4DSTreader( const char * outputFile = "G4sPHENIXCells.root",//
   const bool debug = false;
 
   //! save raw g4 hits
-  const bool save_g4_raw = true;
+  const bool save_g4_raw = false;
 
   //! save jets
   const bool do_jet_reco = true;
@@ -116,9 +116,7 @@ G4DSTreader( const char * outputFile = "G4sPHENIXCells.root",//
   // Jets disabled for now
   if (do_jet_reco)
     {
-
-      ana->AddJet("AntiKt_Truth_r07");
-      ana->AddJet("G4TowerJets_6");
+      ana->AddJet("AntiKt_Truth_r04");
     }
 
   Fun4AllServer *se = Fun4AllServer::instance();
