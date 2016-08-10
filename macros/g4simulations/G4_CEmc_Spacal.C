@@ -494,6 +494,10 @@ void CEMC_Eval(std::string outputfile, int verbosity = 0) {
 
   CaloEvaluator* eval = new CaloEvaluator("CEMCEVALUATOR", "CEMC", outputfile.c_str());
   eval->Verbosity(verbosity);
+  
+  eval->set_truth_tracing_energy_threshold(1); // Only analyze truth particle of E > 1GeV
+  eval->set_reco_tracing_energy_threshold(1); // Only analyze tower/cluster of E > 1GeV
+  
   se->registerSubsystem( eval );
       
   return;
