@@ -151,7 +151,7 @@ CEmc_2DProjectiveSpacal(PHG4Reco* g4Reco, double radius, const int crossings,
   gSystem->Load("libg4detectors.so");
 
   cout <<"CEmc_2DProjectiveSpacal - WARNING - disable DST geometry export for 2D SPACAL to speed up"<<endl;
-  g4Reco->save_DST_geometr(false);
+  g4Reco->save_DST_geometry(false);
 
   // the radii are only to determined the thickness of the cemc
   radius = emc_inner_radius;
