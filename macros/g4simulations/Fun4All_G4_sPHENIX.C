@@ -338,26 +338,6 @@ int Fun4All_G4_sPHENIX(
       se->registerInputManager( in );
     }
 
-  if (do_DSTReader)
-    {
-      //Convert DST to human command readable TTree for quick poke around the outputs
-      gROOT->LoadMacro("G4_DSTReader.C");
-
-      G4DSTreader( outputFile, //
-          /*int*/ absorberactive ,
-          /*bool*/ do_svtx ,
-          /*bool*/ do_preshower ,
-          /*bool*/ do_cemc ,
-          /*bool*/ do_hcalin ,
-          /*bool*/ do_magnet ,
-          /*bool*/ do_hcalout ,
-          /*bool*/ do_cemc_twr ,
-          /*bool*/ do_hcalin_twr ,
-          /*bool*/ do_magnet  ,
-          /*bool*/ do_hcalout_twr
-          );
-    }
-
   //temp lines for QA modules
     {
 
@@ -412,6 +392,28 @@ int Fun4All_G4_sPHENIX(
           se->registerSubsystem(slt);
         }
     }
+
+
+  if (do_DSTReader)
+    {
+      //Convert DST to human command readable TTree for quick poke around the outputs
+      gROOT->LoadMacro("G4_DSTReader.C");
+
+      G4DSTreader( outputFile, //
+          /*int*/ absorberactive ,
+          /*bool*/ do_svtx ,
+          /*bool*/ do_preshower ,
+          /*bool*/ do_cemc ,
+          /*bool*/ do_hcalin ,
+          /*bool*/ do_magnet ,
+          /*bool*/ do_hcalout ,
+          /*bool*/ do_cemc_twr ,
+          /*bool*/ do_hcalin_twr ,
+          /*bool*/ do_magnet  ,
+          /*bool*/ do_hcalout_twr
+          );
+    }
+
 
    Fun4AllDstOutputManager *out = new Fun4AllDstOutputManager("DSTOUT", outputFile);
    if (do_dst_compress) DstCompress(out);
