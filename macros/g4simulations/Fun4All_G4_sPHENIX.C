@@ -366,7 +366,7 @@ int Fun4All_G4_sPHENIX(
           {
             HFJetTruthTrigger * jt = new HFJetTruthTrigger(
                 "HFJetTruthTrigger.root",5);
-//            jt->Verbosity(HFJetTruthTrigger::VERBOSITY_MORE);
+            jt->Verbosity(HFJetTruthTrigger::VERBOSITY_MORE);
             se->registerSubsystem(jt);
           }
       }
