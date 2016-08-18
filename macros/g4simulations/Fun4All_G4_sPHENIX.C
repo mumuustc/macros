@@ -380,13 +380,14 @@ int Fun4All_G4_sPHENIX(
       }
 
     // HF jet trigger moudle
-      if (gSystem->Load("libHFJetTruthGeneration") == 0)
+      assert (gSystem->Load("libHFJetTruthGeneration") == 0);
       {
         if (do_jet_reco)
           {
-            HFJetTruthTrigger * slt = new HFJetTruthTrigger(
-                "HFJetTruthTrigger.root",5,1000000);
-            se->registerSubsystem(slt);
+            HFJetTruthTrigger * jt = new HFJetTruthTrigger(
+                "HFJetTruthTrigger.root",5);
+//            jt->Verbosity(HFJetTruthTrigger::VERBOSITY_MORE);
+            se->registerSubsystem(jt);
           }
       }
 
