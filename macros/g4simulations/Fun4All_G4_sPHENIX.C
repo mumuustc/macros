@@ -365,7 +365,17 @@ int Fun4All_G4_sPHENIX(
         if (do_jet_reco)
           {
             HFJetTruthTrigger * jt = new HFJetTruthTrigger(
-                "HFJetTruthTrigger.root",5);
+                "HFJetTruthTrigger.root",5 , "AntiKt_Truth_r07");
+//            jt->Verbosity(HFJetTruthTrigger::VERBOSITY_MORE);
+            se->registerSubsystem(jt);
+
+            HFJetTruthTrigger * jt = new HFJetTruthTrigger(
+                "HFJetTruthTrigger.root",5 , "AntiKt_Truth_r04");
+//            jt->Verbosity(HFJetTruthTrigger::VERBOSITY_MORE);
+            se->registerSubsystem(jt);
+
+            HFJetTruthTrigger * jt = new HFJetTruthTrigger(
+                "HFJetTruthTrigger.root",5 , "AntiKt_Truth_r02");
 //            jt->Verbosity(HFJetTruthTrigger::VERBOSITY_MORE);
             se->registerSubsystem(jt);
           }
