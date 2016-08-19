@@ -372,8 +372,8 @@ void Svtx_Eval(std::string outputfile, int verbosity = 0)
   //----------------
 
   SvtxEvaluator* eval = new SvtxEvaluator("SVTXEVALUATOR", outputfile.c_str());
-  eval->do_cluster_eval(true);
-  eval->do_g4hit_eval(true);
+  eval->do_cluster_eval(false);
+  eval->do_g4hit_eval(false);
   eval->do_hit_eval(false);
   eval->do_gpoint_eval(false);
   eval->scan_for_embedded(true);
