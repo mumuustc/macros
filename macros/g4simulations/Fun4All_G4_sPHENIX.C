@@ -24,8 +24,8 @@ int Fun4All_G4_sPHENIX(
   const bool readhepmc = false; // read HepMC files
   // Or:
   // Use particle generator
-  const bool runpythia8 = true;
-  const bool runpythia6 = false;
+  const bool runpythia8 = false;
+  const bool runpythia6 = true;
   // And
   // Further choose to embed newly simulated events to a previous simulation. Not compatible with `readhits = true`
   // In case embedding into a production output, please double check your G4Setup_sPHENIX.C and G4_*.C consistent with those in the production macro folder
