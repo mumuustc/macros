@@ -1,7 +1,7 @@
 
 int Fun4All_G4_sPHENIX(
-		       const int nEvents = 20000,
-		       const char * inputFile = "/sphenix/sim//sim01/production/2016-07-21/single_particle/spacal2d/fieldmap/G4Hits_sPHENIX_e-_eta0_8GeV-0002.root",
+		       const int nEvents = 10000,
+		       const char * inputFile = "phpythia8.cfg",
 		       const char * outputFile = "G4sPHENIXCells.root",
            const char * embed_input_file = "/sphenix/sim/sim01/production/2016-07-12/sHijing/spacal2d/G4Hits_sPHENIX_sHijing-0-4.4fm.list"
 		       )
@@ -152,7 +152,7 @@ int Fun4All_G4_sPHENIX(
 
       PHPythia8* pythia8 = new PHPythia8();
       // see coresoftware/generators/PHPythia8 for example config
-      pythia8->set_config_file("phpythia8.cfg");
+      pythia8->set_config_file(inputFile);
 
       pythia8->beam_vertex_parameters(0,0,0,0,0,5);
       pythia8->register_trigger(theTrigger);
