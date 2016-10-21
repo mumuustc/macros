@@ -28,24 +28,40 @@ double Svtx(PHG4Reco* g4Reco, double radius,
    
   for (int ilayer = Min_si_layer; ilayer < n_svx_layer; ilayer++)
     {
+      if (verbosity)
       cout << " ilayer = " << ilayer << endl;
-      
+
+      if (verbosity)
       cout << "Create Maps layer " << ilayer  << " with radius " << maps_layer_radius[ilayer] << " stave type " << stave_type[ilayer] << endl;
       PHG4MapsSubsystem  *lyr = new PHG4MapsSubsystem("MAPS", ilayer, stave_type[ilayer]);
-      lyr->Verbosity(2);
-      lyr->set_nominal_layer_radius(maps_layer_radius[ilayer]);
+      lyr->Verbosity(verbosity);
+
+//      lyr->set_nominal_layer_radius(maps_layer_radius[ilayer]);
+      lyr->set_double_param("layer_nominal_radius",maps_layer_radius[ilayer]);// thickness in cm
+
       // The cell size is used only during pixilization of sensor hits, but it is convemient to set it now because the geometry object needs it
-      lyr->set_pixel_x(0.0020);  // pitch in cm
-      lyr->set_pixel_z(0.0020);  // length in cm
-      lyr->set_pixel_thickness(0.0018);  // thickness in cm
-      lyr->SetActive();
+//      lyr->set_pixel_x(0.0020);  // pitch in cm
+//      lyr->set_pixel_z(0.0020);  // length in cm
+//      lyr->set_pixel_thickness(0.0018);  // thickness in cm
+      lyr->set_double_param("pixel_x",0.0020);// pitch in cm
+      lyr->set_double_param("pixel_z",0.0020);// length in cm
+      lyr->set_double_param("pixel_thickness",0.0018);// thickness in cm
+      lyr->set_double_param("phitilt",0.304);   // radians, equivalent to 17.4 degrees
+
+//      lyr->SetActive();
+      lyr->set_int_param("active",1);
       lyr->OverlapCheck(overlapcheck);
+
+      lyr->set_string_param("stave_geometry_file",
+          string(getenv("CALIBRATIONROOT")) + string("/Tracking/geometry/ALICE_ITS_tgeo.gdml"));
       
+      if (verbosity)
       cout << "Created Maps layer for layer " << ilayer << " with radius  " << maps_layer_radius[ilayer]  << endl;
       
       g4Reco->registerSubsystem( lyr );      
-      
-      cout << "Registered  Maps layer for layer " << ilayer <<  endl;      
+
+      if (verbosity)
+      cout << "Registered  Maps layer for layer " << ilayer <<  endl;
 
       radius = maps_layer_radius[ilayer];
     }
@@ -257,7 +273,7 @@ void Svtx_Reco(int verbosity = 0)
   // Digitize the cell energy into ADC
   //----------------------------------
   PHG4SvtxDigitizer* digi = new PHG4SvtxDigitizer();
-  digi->Verbosity(2);
+  digi->Verbosity(verbosity);
   for (int i=0;i<n_svx_layer;++i) {
     //digi->set_adc_scale(i, 255, 1.0e-6);  // used for cylinder cell maps, wjere thickness was set to 50 microns
     digi->set_adc_scale(i, 255, 0.4e-6);  // reduced by a factor of 2.5 when going from maps thickess of 50 microns to 18 microns
@@ -284,7 +300,7 @@ void Svtx_Reco(int verbosity = 0)
   //-----------------------------
 
   PHG4SvtxThresholds* thresholds = new PHG4SvtxThresholds();
-  thresholds->Verbosity(10);
+  thresholds->Verbosity(verbosity);
   // reduced by x2.5 when going from cylinder maps with 50 microns thickness to actual maps with 18 microns thickness
   // to set it at a similar fraction of charge deposited
   // Note the non-use of set_using_thickness here, this is so that the shortest dimension of the cell sets the mip energy loss
@@ -304,7 +320,7 @@ void Svtx_Reco(int verbosity = 0)
   //-------------
 
   PHG4SvtxClusterizer* clusterizer = new PHG4SvtxClusterizer("PHG4SvtxClusterizer",Min_si_layer,n_svx_layer-1);
-  clusterizer->Verbosity(2);
+  clusterizer->Verbosity(verbosity);
   // Reduced by 2 relative to cylinder cell maps macro. I found this necessary to get full efficiency
   // Many hits in the present simulation are single cell hits, so it is not clear why the cluster 
   // threshold should be higher than the cell threshold
@@ -334,8 +350,8 @@ void Svtx_Reco(int verbosity = 0)
   hough->setBinScale(1.0);
   hough->setZBinScale(1.0);
 
-  //hough->Verbosity(verbosity);
-  hough->Verbosity(21);
+  hough->Verbosity(verbosity);
+//  hough->Verbosity(21);
   double mat_scale = 1.0;
   hough->set_material(0, mat_scale*0.003);
   hough->set_material(1, mat_scale*0.003);
