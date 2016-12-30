@@ -1,6 +1,6 @@
 int Fun4All_G4_sPHENIX(
 		       const int nEvents = 10,
-		       const char * inputFile = "/sphenix/user/isibf5y/sPHENIX_tpc_exp/macros/mike_hijing_in/hijing_00001.txt.bz2",
+		       const char * inputFile = "/sphenix/user/belmonrj/HIJING_a/hijing_02116.txt.bz2",
 		       const char * outputFile = "G4sPHENIXCells.root",
            const char * embed_input_file = "/sphenix/sim/sim01/production/2016-07-12/sHijing/spacal2d/G4Hits_sPHENIX_sHijing-0-4.4fm.list"
 		       )
