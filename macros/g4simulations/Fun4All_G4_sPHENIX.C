@@ -1,6 +1,6 @@
 int Fun4All_G4_sPHENIX(
 		       const int nEvents = 10,
-		       const char * inputFile = "/sphenix/sim/sim01/production/2016-07-21/single_particle/spacal2d/fieldmap/G4Hits_sPHENIX_e-_eta0_8GeV-0002.root",
+		       const char * inputFile = "/sphenix/user/isibf5y/sPHENIX_tpc_exp/macros/mike_hijing_in/hijing_00001.txt.bz2",
 		       const char * outputFile = "G4sPHENIXCells.root",
            const char * embed_input_file = "/sphenix/sim/sim01/production/2016-07-12/sHijing/spacal2d/G4Hits_sPHENIX_sHijing-0-4.4fm.list"
 		       )
@@ -16,10 +16,10 @@ int Fun4All_G4_sPHENIX(
   //
   // In case reading production output, please double check your G4Setup_sPHENIX.C and G4_*.C consistent with those in the production macro folder
   // E.g. /sphenix/sim//sim01/production/2016-07-21/single_particle/spacal2d/
-  const bool readhits = true;
+  const bool readhits = false;
   // Or:
   // read files in HepMC format (typically output from event generators like hijing or pythia)
-  const bool readhepmc = false; // read HepMC files
+  const bool readhepmc = true; // read HepMC files
   // Or:
   // Use pythia
   const bool runpythia8 = false;
@@ -49,21 +49,21 @@ int Fun4All_G4_sPHENIX(
 
   bool do_preshower = false;
   
-  bool do_cemc = true;
+  bool do_cemc = false;
   bool do_cemc_cell = do_cemc && true;
   bool do_cemc_twr = do_cemc_cell && true;
   bool do_cemc_cluster = do_cemc_twr && true;
   bool do_cemc_eval = do_cemc_cluster && true;
 
-  bool do_hcalin = true;
+  bool do_hcalin = false;
   bool do_hcalin_cell = do_hcalin && true;
   bool do_hcalin_twr = do_hcalin_cell && true;
   bool do_hcalin_cluster = do_hcalin_twr && true;
   bool do_hcalin_eval = do_hcalin_cluster && true;
 
-  bool do_magnet = true;
+  bool do_magnet = false;
   
-  bool do_hcalout = true;
+  bool do_hcalout = false;
   bool do_hcalout_cell = do_hcalout && true;
   bool do_hcalout_twr = do_hcalout_cell && true;
   bool do_hcalout_cluster = do_hcalout_twr && true;
@@ -72,8 +72,8 @@ int Fun4All_G4_sPHENIX(
   bool do_global = true;
   bool do_global_fastsim = true;
   
-  bool do_jet_reco = true;
-  bool do_jet_eval = true;
+  bool do_jet_reco = false;
+  bool do_jet_eval = false;
 
   bool do_dst_compress = false;
 
@@ -105,7 +105,7 @@ int Fun4All_G4_sPHENIX(
   //---------------
 
   Fun4AllServer *se = Fun4AllServer::instance();
-  se->Verbosity(0);
+  se->Verbosity(1);
   // just if we set some flags somewhere in this macro
   recoConsts *rc = recoConsts::instance();
   // By default every random number generator uses
@@ -164,11 +164,16 @@ int Fun4All_G4_sPHENIX(
       HepMCNodeReader *hr = new HepMCNodeReader();
       se->registerSubsystem(hr);
     }
-  else
+//  else
+
+// add extra particle for embedding
     {
       // toss low multiplicity dummy events
       PHG4SimpleEventGenerator *gen = new PHG4SimpleEventGenerator();
-      gen->add_particles("e-",1); // mu+,e+,proton,pi+,Upsilon
+      gen->add_particles("pi-",10); // mu+,e+,proton,pi+,Upsilon
+      gen->add_particles("pi+",10); // mu+,e+,proton,pi+,Upsilon
+      gen->add_particles("kaon-",10); // mu+,e+,proton,pi+,Upsilon
+      gen->add_particles("kaon+",10); // mu+,e+,proton,pi+,Upsilon
       // gen->add_particles("e+",5); // mu-,e-,anti_proton,pi-
       if (readhepmc || do_embedding)
 	{
