@@ -452,8 +452,8 @@ void Svtx_Eval(std::string outputfile, int verbosity = 0)
   eval->do_g4hit_eval(false);     // make g4hit ntuple
   eval->do_hit_eval(false);         // make hit ntuple
   eval->do_gpoint_eval(false);  
-  //eval->scan_for_embedded(true);  // evaluator will only collect embedded tracks - it will also ignore decay tracks from embedded particles!
-  eval->scan_for_embedded(false); // evaluator takes all tracks
+  eval->scan_for_embedded(true);  // evaluator will only collect embedded tracks - it will also ignore decay tracks from embedded particles!
+//  eval->scan_for_embedded(false); // evaluator takes all tracks
   eval->Verbosity(verbosity);
   se->registerSubsystem( eval );
 
