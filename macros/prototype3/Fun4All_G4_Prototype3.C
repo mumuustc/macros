@@ -1,4 +1,4 @@
-int Fun4All_G4_Prototype3(int nEvents = 1)
+int Fun4All_G4_Prototype3(int nEvents = 100, const std::string output_file = "data/proto3.root",  const std::string particle="e-", const double momentum = 32)
 {
 
   gSystem->Load("libfun4all");
@@ -13,12 +13,12 @@ int Fun4All_G4_Prototype3(int nEvents = 1)
   bool cemc_twr = cemc_cell && true;
   bool cemc_digi = cemc_twr && true;
   bool cemc_twrcal = cemc_digi && true;
-  bool ihcal_on = true;
+  bool ihcal_on = false;
   bool ihcal_cell = ihcal_on && false;
   bool ihcal_twr = ihcal_cell && false;
   bool ihcal_digi = ihcal_twr && false;
   bool ihcal_twrcal = ihcal_digi && false;
-  bool ohcal_on = true;
+  bool ohcal_on = false;
   bool ohcal_cell = ohcal_on && false;
   bool ohcal_twr = ohcal_cell && false;
   bool ohcal_digi = ohcal_twr && false;
@@ -45,7 +45,7 @@ int Fun4All_G4_Prototype3(int nEvents = 1)
   double add_place_x = 183.-173.93+2.54/2.;
   // Test beam generator
   PHG4SimpleEventGenerator *gen = new PHG4SimpleEventGenerator();
-  gen->add_particles("e-", 1); // mu-,e-,anti_proton,pi-
+  gen->add_particles(particle, 1); // mu-,e-,anti_proton,pi-
   gen->set_vertex_distribution_mean(0.0, 0.0, 0);
   gen->set_vertex_distribution_width(0.0, .7, .7); // Rough beam profile size @ 16 GeV measured by Abhisek
   gen->set_vertex_distribution_function(PHG4SimpleEventGenerator::Gaus,
@@ -55,7 +55,7 @@ int Fun4All_G4_Prototype3(int nEvents = 1)
   double eta = -1.*TMath::Log(TMath::Tan(angle/2.));
   gen->set_eta_range(eta-0.001,eta+0.001); // 1mrad angular divergence
   gen->set_phi_range(-0.001, 0.001); // 1mrad angular divergence
-  const double momentum = 32;
+//  const double momentum = 32;
   gen->set_p_range(momentum,momentum, momentum*2e-2); // 2% momentum smearing
   se->registerSubsystem(gen);
 
@@ -497,7 +497,7 @@ int Fun4All_G4_Prototype3(int nEvents = 1)
   //----------------------
   if (dstreader)
     {
-      PHG4DSTReader* ana = new PHG4DSTReader(string("DSTReader.root"));
+      PHG4DSTReader* ana = new PHG4DSTReader(output_file + string("_DSTReader.root"));
       ana->set_save_particle(true);
       ana->set_load_all_particle(false);
       ana->set_load_active_particle(false);
@@ -560,7 +560,7 @@ int Fun4All_G4_Prototype3(int nEvents = 1)
 
   if (dstoutput)
     {
-      Fun4AllDstOutputManager *out = new Fun4AllDstOutputManager("DSTOUT","G4Prototype3New.root");
+      Fun4AllDstOutputManager *out = new Fun4AllDstOutputManager("DSTOUT",output_file);
       se->registerOutputManager(out);
     }
 
@@ -574,7 +574,7 @@ int Fun4All_G4_Prototype3(int nEvents = 1)
 
   se->End();
 
-  QAHistManagerDef::saveQARootFile("G4Prototype2_qa.root");
+  QAHistManagerDef::saveQARootFile(output_file + "_qa.root");
 
 
   //   std::cout << "All done" << std::endl;
