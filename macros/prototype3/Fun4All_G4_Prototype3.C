@@ -1,4 +1,4 @@
-int Fun4All_G4_Prototype3(int nEvents = 100, const std::string output_file = "data/proto3.root",  const std::string particle="e-", const double momentum = 32)
+int Fun4All_G4_Prototype3(int nEvents = 10, const std::string output_file = "data/proto3.root",  const std::string particle="e-", const double momentum = 32)
 {
 
   gSystem->Load("libfun4all");
@@ -559,7 +559,7 @@ int Fun4All_G4_Prototype3(int nEvents = 100, const std::string output_file = "da
   // se->registerOutputManager(out);
 
   gSystem->Load("libProto2ShowCalib.so");
-  Proto2ShowerCalib * emcal_ana = new Proto2ShowerCalib( string("EMCalCalib.root"));
+  Proto2ShowerCalib * emcal_ana = new Proto2ShowerCalib(output_file+ string("_EMCalCalib.root"));
   emcal_ana->is_sim(true);
   emcal_ana->Verbosity(1);
  //  emcal_ana->LoadRecalibMap( "/phenix/u/jinhuang/links/sPHENIX_work/Prototype_2016/ShowerCalib/ShowerCalibFit_CablibConst.dat");
