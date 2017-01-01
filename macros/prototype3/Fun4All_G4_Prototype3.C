@@ -558,6 +558,13 @@ int Fun4All_G4_Prototype3(int nEvents = 100, const std::string output_file = "da
   // out->AddNode("G4RootScintillatorSlat_HCALOUT");
   // se->registerOutputManager(out);
 
+  gSystem->Load("libProto2ShowCalib.so");
+  Proto2ShowerCalib * emcal_ana = new Proto2ShowerCalib( string("EMCalCalib.root"));
+  emcal_ana->is_sim(true);
+  emcal_ana->Verbosity(1);
+ //  emcal_ana->LoadRecalibMap( "/phenix/u/jinhuang/links/sPHENIX_work/Prototype_2016/ShowerCalib/ShowerCalibFit_CablibConst.dat");
+  se->registerSubsystem(emcal_ana);
+
   if (dstoutput)
     {
       Fun4AllDstOutputManager *out = new Fun4AllDstOutputManager("DSTOUT",output_file);
