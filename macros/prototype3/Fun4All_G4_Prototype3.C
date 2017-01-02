@@ -46,7 +46,7 @@ int Fun4All_G4_Prototype3(int nEvents = 10, const std::string output_file = "dat
   // Test beam generator
   PHG4SimpleEventGenerator *gen = new PHG4SimpleEventGenerator();
   gen->add_particles(particle, 1); // mu-,e-,anti_proton,pi-
-  gen->set_vertex_distribution_mean(0.0, 0.0, 0);
+  gen->set_vertex_distribution_mean(0.0, 1.0, 1.0);
   gen->set_vertex_distribution_width(0.0, .7, .7); // Rough beam profile size @ 16 GeV measured by Abhisek
   gen->set_vertex_distribution_function(PHG4SimpleEventGenerator::Gaus,
 					PHG4SimpleEventGenerator::Gaus, 
@@ -105,7 +105,7 @@ int Fun4All_G4_Prototype3(int nEvents = 10, const std::string output_file = "dat
       cemc->UseCalibFiles(PHG4DetectorSubsystem::xml);
       cemc->SetCalibrationFileDir(string(getenv("CALIBRATIONROOT")) + string("/Prototype3/Geometry/") );
 //      cemc->SetCalibrationFileDir("./test_geom/" );
-      //  cemc->set_double_param("z_rotation_degree", 15); // rotation around CG
+        cemc->set_double_param("z_rotation_degree", 10); // rotation around CG
 //      cemc->set_double_param("xpos", (116.77 + 137.0)*.5 - 26.5 - 10.2); // location in cm of EMCal CG. Updated with final positioning of EMCal
 //      cemc->set_double_param("ypos", 4); // put it some where in UIUC blocks
 //      cemc->set_double_param("zpos", 4); // put it some where in UIUC blocks
