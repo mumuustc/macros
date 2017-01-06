@@ -1,6 +1,6 @@
 int Fun4All_G4_sPHENIX(
 		       const int nEvents = 100,
-		       const char * inputFile = "/sphenix/sim/sim01/production/2016-07-21/single_particle/spacal2d/fieldmap/G4Hits_sPHENIX_e-_eta0_8GeV-0002.root",
+		       const char * inputFile = "phpythia8.cfg",
 		       const char * outputFile = "G4sPHENIXCells.root",
            const char * embed_input_file = "/sphenix/sim/sim01/production/2016-07-12/sHijing/spacal2d/G4Hits_sPHENIX_sHijing-0-4.4fm.list"
 		       )
@@ -23,7 +23,7 @@ int Fun4All_G4_sPHENIX(
   const bool readhepmc = false; // read HepMC files
   // Or:
   // Use pythia
-  const bool runpythia8 = false;
+  const bool runpythia8 = true;
   const bool runpythia6 = false;
   // else
   // Use particle generator (default simple generator)
@@ -41,30 +41,30 @@ int Fun4All_G4_sPHENIX(
 
   bool do_bbc = true;
   
-  bool do_pipe = true;
+  bool do_pipe = false;
   
-  bool do_svtx = true;
+  bool do_svtx = false;
   bool do_svtx_cell = do_svtx && true;
   bool do_svtx_track = do_svtx_cell && true;
   bool do_svtx_eval = do_svtx_track && true;
 
   bool do_preshower = false;
   
-  bool do_cemc = true;
+  bool do_cemc = false;
   bool do_cemc_cell = do_cemc && true;
   bool do_cemc_twr = do_cemc_cell && true;
   bool do_cemc_cluster = do_cemc_twr && true;
   bool do_cemc_eval = do_cemc_cluster && true;
 
-  bool do_hcalin = true;
+  bool do_hcalin = false;
   bool do_hcalin_cell = do_hcalin && true;
   bool do_hcalin_twr = do_hcalin_cell && true;
   bool do_hcalin_cluster = do_hcalin_twr && true;
   bool do_hcalin_eval = do_hcalin_cluster && true;
 
-  bool do_magnet = true;
+  bool do_magnet = false;
   
-  bool do_hcalout = true;
+  bool do_hcalout = false;
   bool do_hcalout_cell = do_hcalout && true;
   bool do_hcalout_twr = do_hcalout_cell && true;
   bool do_hcalout_cluster = do_hcalout_twr && true;
@@ -198,19 +198,12 @@ int Fun4All_G4_sPHENIX(
 	  gen->set_vertex_distribution_mean(0.0, 0.0, 0.0);
 	  gen->set_vertex_distribution_width(0.0, 0.0, 5.0);
 	}
-      gen->set_vertex_size_function(PHG4SimpleEventGenerator::Uniform);
-<<<<<<< HEAD
-      gen->set_vertex_size_parameters(10.0,0.0);
-      gen->set_eta_range(-0.1, 0.1);
-      gen->set_phi_range(-1.0*TMath::Pi(), 1.0*TMath::Pi());
-      gen->set_pt_range(24, 24);
-=======
+      gen->set_vertex_size_function(PHG4SimpleEventGenerator::Uniform);]
       gen->set_vertex_size_parameters(0.0, 0.0);
       gen->set_eta_range(-0.5, 0.5);
       gen->set_phi_range(-1.0 * TMath::Pi(), 1.0 * TMath::Pi());
       gen->set_pt_range(0.1, 10.0);
->>>>>>> e2c282faaf6b1865ccfe27e7e4faad8f2721db5b
-      gen->Embed(1);
+]      gen->Embed(1);
       gen->Verbosity(0);
       if (! usegun)
 	{
@@ -470,16 +463,9 @@ int Fun4All_G4_sPHENIX(
           );
     }
 
-<<<<<<< HEAD
-
    Fun4AllDstOutputManager *out = new Fun4AllDstOutputManager("DSTOUT", outputFile);
    if (do_dst_compress) DstCompress(out);
    se->registerOutputManager(out);
-=======
-  //  Fun4AllDstOutputManager *out = new Fun4AllDstOutputManager("DSTOUT", outputFile);
-  // if (do_dst_compress) DstCompress(out);
-  //  se->registerOutputManager(out);
->>>>>>> e2c282faaf6b1865ccfe27e7e4faad8f2721db5b
 
   //-----------------
   // Event processing
