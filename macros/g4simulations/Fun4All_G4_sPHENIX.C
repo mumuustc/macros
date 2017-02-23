@@ -1,5 +1,5 @@
 int Fun4All_G4_sPHENIX(
-		       const int nEvents = 10,
+		       const int nEvents = 1,
 		       const char * inputFile = "/sphenix/sim/sim01/production/2016-07-21/single_particle/spacal2d/fieldmap/G4Hits_sPHENIX_e-_eta0_8GeV-0002.root",
 		       const char * outputFile = "G4sPHENIXCells.root",
            const char * embed_input_file = "/sphenix/sim/sim01/production/2016-07-12/sHijing/spacal2d/G4Hits_sPHENIX_sHijing-0-4.4fm.list"
@@ -105,7 +105,7 @@ int Fun4All_G4_sPHENIX(
   //---------------
 
   Fun4AllServer *se = Fun4AllServer::instance();
-  se->Verbosity(0);
+  se->Verbosity(1);
   // just if we set some flags somewhere in this macro
   recoConsts *rc = recoConsts::instance();
   // By default every random number generator uses
@@ -397,6 +397,10 @@ int Fun4All_G4_sPHENIX(
     }
 
   se->run(nEvents);
+
+  // Geometry export:
+  PHG4Reco *g4 = (PHG4Reco *) se->getSubsysReco("PHG4RECO");
+  g4->Dump_GDML("sPHENIX.gdml");
 
   //-----
   // Exit
