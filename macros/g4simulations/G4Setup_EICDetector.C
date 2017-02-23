@@ -28,7 +28,7 @@ void G4Init(bool do_svtx = true,
     }
   if (do_svtx)
     {
-      gROOT->LoadMacro("G4_Svtx_maps+tpc.C");
+      gROOT->LoadMacro("G4_Svtx_maps_ladders+intt_ladders+tpc.C");
       SvtxInit();
     }
 

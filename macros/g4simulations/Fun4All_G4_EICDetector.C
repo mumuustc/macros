@@ -1,6 +1,6 @@
 
 int Fun4All_G4_EICDetector(
-                           const int nEvents = 2,
+                           const int nEvents = 1,
                            const char * inputFile = "/gpfs02/phenix/prod/sPHENIX/preCDR/pro.1-beta.5/single_particle/spacal1d/fieldmap/G4Hits_sPHENIX_e-_eta0_16GeV.root",
                            const char * outputFile = "G4EICDetector.root"
                            )
@@ -429,6 +429,10 @@ int Fun4All_G4_EICDetector(
 
       se->run(nEvents);
 
+					// Geometry export:
+					PHG4Reco *g4 = (PHG4Reco *) se->getSubsysReco("PHG4RECO");
+					g4->Dump_GDML("EICDetector.gdml");
+  
       se->End();
       std::cout << "All done" << std::endl;
       delete se;
