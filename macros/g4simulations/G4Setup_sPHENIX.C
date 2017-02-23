@@ -21,7 +21,7 @@ void G4Init(bool do_svtx = true,
   if (do_svtx)
     {
 //      gROOT->LoadMacro("G4_Svtx.C");                 // default MIE projections
-      //gROOT->LoadMacro("G4_Svtx_maps+IT+tpc.C"); // Reference design for 2016 tracking review
+      gROOT->LoadMacro("G4_Svtx_maps+IT+tpc.C"); // Reference design for 2016 tracking review
 //      gROOT->LoadMacro("G4_Svtx_MAPScyl_ITTcyl_TPC.C"); // TPC new readout && MAPS/IT
       //gROOT->LoadMacro("G4_Svtx_pixels+strips.C"); // testing
       //gROOT->LoadMacro("G4_Svtx_pixels+tpc.C");    // testing
@@ -30,7 +30,7 @@ void G4Init(bool do_svtx = true,
       //gROOT->LoadMacro("G4_Svtx_maps_7layers.C");  // testing
       //gROOT->LoadMacro("G4_Svtx_maps_5layers.C");  // testing
       //gROOT->LoadMacro("G4_Svtx_ladders.C");       // testing (new geometries)
-      gROOT->LoadMacro("G4_Svtx_maps_ladders+intt_ladders+tpc.C");
+      //gROOT->LoadMacro("G4_Svtx_maps_ladders+intt_ladders+tpc.C");
       SvtxInit();
     }
 
