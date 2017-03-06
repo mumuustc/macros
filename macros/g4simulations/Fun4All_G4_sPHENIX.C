@@ -1,6 +1,6 @@
 int Fun4All_G4_sPHENIX(
-		       const int nEvents = 1,
-		       const char * inputFile = "/sphenix/sim/sim01/production/2016-07-21/single_particle/spacal2d/fieldmap/G4Hits_sPHENIX_e-_eta0_8GeV-0002.root",
+		       const int nEvents = 10,
+		       const char * inputFile = "data/gamma-jet-pTHatMin25PromptPhotonall_photontrig30eta0to1_jettrig20eta0to0p6.lst",
 		       const char * outputFile = "G4sPHENIXCells.root",
            const char * embed_input_file = "/sphenix/sim/sim01/production/2016-07-12/sHijing/spacal2d/G4Hits_sPHENIX_sHijing-0-4.4fm.list"
 		       )
@@ -16,7 +16,7 @@ int Fun4All_G4_sPHENIX(
   //
   // In case reading production output, please double check your G4Setup_sPHENIX.C and G4_*.C consistent with those in the production macro folder
   // E.g. /sphenix/sim//sim01/production/2016-07-21/single_particle/spacal2d/
-  const bool readhits = false;
+  const bool readhits = true;
   // Or:
   // read files in HepMC format (typically output from event generators like hijing or pythia)
   const bool readhepmc = false; // read HepMC files
@@ -43,37 +43,37 @@ int Fun4All_G4_sPHENIX(
   bool do_pipe = true;
   
   bool do_svtx = true;
-  bool do_svtx_cell = do_svtx && true;
-  bool do_svtx_track = do_svtx_cell && true;
-  bool do_svtx_eval = do_svtx_track && true;
+  bool do_svtx_cell = do_svtx && false;
+  bool do_svtx_track = do_svtx_cell && false;
+  bool do_svtx_eval = do_svtx_track && false;
 
   bool do_preshower = false;
   
   bool do_cemc = true;
   bool do_cemc_cell = do_cemc && true;
   bool do_cemc_twr = do_cemc_cell && true;
-  bool do_cemc_cluster = do_cemc_twr && true;
-  bool do_cemc_eval = do_cemc_cluster && true;
+  bool do_cemc_cluster = do_cemc_twr && false;
+  bool do_cemc_eval = do_cemc_cluster && false;
 
   bool do_hcalin = true;
   bool do_hcalin_cell = do_hcalin && true;
   bool do_hcalin_twr = do_hcalin_cell && true;
-  bool do_hcalin_cluster = do_hcalin_twr && true;
-  bool do_hcalin_eval = do_hcalin_cluster && true;
+  bool do_hcalin_cluster = do_hcalin_twr && false;
+  bool do_hcalin_eval = do_hcalin_cluster && false;
 
   bool do_magnet = true;
   
   bool do_hcalout = true;
   bool do_hcalout_cell = do_hcalout && true;
   bool do_hcalout_twr = do_hcalout_cell && true;
-  bool do_hcalout_cluster = do_hcalout_twr && true;
-  bool do_hcalout_eval = do_hcalout_cluster && true;
+  bool do_hcalout_cluster = do_hcalout_twr && false;
+  bool do_hcalout_eval = do_hcalout_cluster && false;
   
   bool do_global = true;
   bool do_global_fastsim = true;
   
-  bool do_jet_reco = true;
-  bool do_jet_eval = true;
+  bool do_jet_reco = false;
+  bool do_jet_eval = false;
 
   bool do_dst_compress = false;
 
@@ -327,7 +327,8 @@ int Fun4All_G4_sPHENIX(
     {
       // Hits file
       Fun4AllInputManager *hitsin = new Fun4AllDstInputManager("DSTin");
-      hitsin->fileopen(inputFile);
+//      hitsin->fileopen(inputFile);
+      hitsin->AddListFile(inputFile);
       se->registerInputManager(hitsin);
     }
   if (do_embedding)
@@ -377,9 +378,19 @@ int Fun4All_G4_sPHENIX(
           );
     }
 
-   Fun4AllDstOutputManager *out = new Fun4AllDstOutputManager("DSTOUT", outputFile);
-   if (do_dst_compress) DstCompress(out);
-   se->registerOutputManager(out);
+
+  if (gSystem->Load("libRecoInfoExport") == 0)
+    {
+      RecoInfoExport * exp = new RecoInfoExport();
+      exp->set_file_prefix("data/RecoInfoExport");
+      exp->set_file_prefix(inputFile);
+
+      se->registerSubsystem(exp);
+    }
+
+//   Fun4AllDstOutputManager *out = new Fun4AllDstOutputManager("DSTOUT", outputFile);
+//   if (do_dst_compress) DstCompress(out);
+//   se->registerOutputManager(out);
 
   //-----------------
   // Event processing
@@ -398,10 +409,12 @@ int Fun4All_G4_sPHENIX(
 
   se->run(nEvents);
 
-  // Geometry export:
-  PHG4Reco *g4 = (PHG4Reco *) se->getSubsysReco("PHG4RECO");
-  g4->Dump_GDML("sPHENIX.gdml");
-
+//  if (!readhits)
+//    {
+//      // Geometry export:
+//      PHG4Reco *g4 = (PHG4Reco *) se->getSubsysReco("PHG4RECO");
+//      g4->Dump_GDML("sPHENIX.gdml");
+//    }
   //-----
   // Exit
   //-----
