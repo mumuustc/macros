@@ -1,8 +1,9 @@
 int Fun4All_G4_sPHENIX(
-		       const int nEvents = 10,
-		       const char * inputFile = "data/gamma-jet-pTHatMin25PromptPhotonall_photontrig30eta0to1_jettrig20eta0to0p6.lst",
+		       const int nEvents = 1,
+           const char * inputFile = "data/b-jet-pTHatMin30.lst",
+//           const char * inputFile = "data/single-pion",
 		       const char * outputFile = "G4sPHENIXCells.root",
-           const char * embed_input_file = "/sphenix/sim/sim01/production/2016-07-12/sHijing/spacal2d/G4Hits_sPHENIX_sHijing-0-4.4fm.list"
+           const char * embed_input_file = "data/sHijing_0-4fm.lst"
 		       )
 {
   //===============
@@ -16,13 +17,13 @@ int Fun4All_G4_sPHENIX(
   //
   // In case reading production output, please double check your G4Setup_sPHENIX.C and G4_*.C consistent with those in the production macro folder
   // E.g. /sphenix/sim//sim01/production/2016-07-21/single_particle/spacal2d/
-  const bool readhits = true;
+  const bool readhits = false;
   // Or:
   // read files in HepMC format (typically output from event generators like hijing or pythia)
   const bool readhepmc = false; // read HepMC files
   // Or:
   // Use pythia
-  const bool runpythia8 = false;
+  const bool runpythia8 = true;
   const bool runpythia6 = false;
   // else
   // Use particle generator (default simple generator)
@@ -168,7 +169,7 @@ int Fun4All_G4_sPHENIX(
     {
       // toss low multiplicity dummy events
       PHG4SimpleEventGenerator *gen = new PHG4SimpleEventGenerator();
-      gen->add_particles("e-",1); // mu+,e+,proton,pi+,Upsilon
+      gen->add_particles("mu-",1); // mu+,e+,proton,pi+,Upsilon
       // gen->add_particles("e+",5); // mu-,e-,anti_proton,pi-
       if (readhepmc || do_embedding)
 	{
@@ -187,7 +188,7 @@ int Fun4All_G4_sPHENIX(
       gen->set_vertex_size_parameters(0.0, 0.0);
       gen->set_eta_range(-0.5, 0.5);
       gen->set_phi_range(-1.0 * TMath::Pi(), 1.0 * TMath::Pi());
-      gen->set_pt_range(0.1, 10.0);
+      gen->set_pt_range(30, 30.0);
       gen->Embed(1);
       gen->Verbosity(0);
       if (! usegun)
