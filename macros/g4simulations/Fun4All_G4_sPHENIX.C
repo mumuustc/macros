@@ -387,6 +387,7 @@ int Fun4All_G4_sPHENIX(
 
       exp->set_pT_threshold(.5);
       exp->set_tower_threshold(0.1);
+      exp->set_min_track_hit_dist(10);
 
       se->registerSubsystem(exp);
     }
