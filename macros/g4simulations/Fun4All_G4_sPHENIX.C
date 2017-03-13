@@ -395,6 +395,9 @@ int Fun4All_G4_sPHENIX(
       exp->set_file_prefix("data/RecoInfoExport");
       exp->set_file_prefix(inputFile);
 
+      exp->set_pT_threshold(.5);
+      exp->set_tower_threshold(0.1);
+
       se->registerSubsystem(exp);
     }
 
