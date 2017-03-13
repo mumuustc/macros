@@ -1,5 +1,5 @@
 int Fun4All_G4_sPHENIX(
-		       const int nEvents = 1,
+		       const int nEvents = 100,
            const char * inputFile = "data/b-jet-pTHatMin30.lst",
 //           const char * inputFile = "data/single-pion",
 		       const char * outputFile = "G4sPHENIXCells.root",
@@ -33,7 +33,7 @@ int Fun4All_G4_sPHENIX(
   // Further choose to embed newly simulated events to a previous simulation. Not compatible with `readhits = true`
   // In case embedding into a production output, please double check your G4Setup_sPHENIX.C and G4_*.C consistent with those in the production macro folder
   // E.g. /sphenix/sim//sim01/production/2016-07-21/single_particle/spacal2d/
-  const bool do_embedding = false;
+  const bool do_embedding = true;
 
   //======================
   // What to run
@@ -146,6 +146,15 @@ int Fun4All_G4_sPHENIX(
     {
       gSystem->Load("libPHPythia8.so");
       
+
+      PHPy8JetTrigger *theTrigger = new PHPy8JetTrigger();
+//      theTrigger->Verbosity(10);
+      theTrigger->SetEtaHighLow(-.6, .6);
+      theTrigger->SetJetR(.4);
+      theTrigger->SetMinJetPt(30);
+
+
+
       PHPythia8* pythia8 = new PHPythia8();
       // see coresoftware/generators/PHPythia8 for example config
       pythia8->set_config_file("phpythia8.cfg"); 
