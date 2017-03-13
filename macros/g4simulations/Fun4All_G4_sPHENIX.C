@@ -1,9 +1,9 @@
 int Fun4All_G4_sPHENIX(
-		       const int nEvents = 100,
-           const char * inputFile = "data/b-jet-pTHatMin30.lst",
+		       const int nEvents = 5,
+           const char * inputFile = "data/b-jet-pTHatMin30-0-12fm.lst",
 //           const char * inputFile = "data/single-pion",
 		       const char * outputFile = "G4sPHENIXCells.root",
-           const char * embed_input_file = "data/sHijing_0-4fm.lst"
+           const char * embed_input_file = "data/sHijing_0-12fm.lst"
 		       )
 {
   //===============
@@ -158,6 +158,7 @@ int Fun4All_G4_sPHENIX(
       PHPythia8* pythia8 = new PHPythia8();
       // see coresoftware/generators/PHPythia8 for example config
       pythia8->set_config_file("phpythia8.cfg"); 
+      pythia8->register_trigger(theTrigger);
       se->registerSubsystem(pythia8);
 
       HepMCNodeReader *hr = new HepMCNodeReader();
