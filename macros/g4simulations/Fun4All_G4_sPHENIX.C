@@ -417,7 +417,7 @@ int Fun4All_G4_sPHENIX(
 //            jt->Verbosity(HFJetTruthTrigger::VERBOSITY_MORE);
             jt->set_pt_min(10);
             jt->set_eta_min(-4);
-            jt->set_eta_min(4);
+            jt->set_eta_max(4);
             se->registerSubsystem(jt);
 
             HFJetTruthTrigger * jt = new HFJetTruthTrigger(
@@ -425,7 +425,7 @@ int Fun4All_G4_sPHENIX(
 //            jt->Verbosity(HFJetTruthTrigger::VERBOSITY_MORE);MORE);
             jt->set_pt_min(10);
             jt->set_eta_min(-4);
-            jt->set_eta_min(4);
+            jt->set_eta_max(4);
             se->registerSubsystem(jt);
 
             HFJetTruthTrigger * jt = new HFJetTruthTrigger(
@@ -433,7 +433,7 @@ int Fun4All_G4_sPHENIX(
 //            jt->Verbosity(HFJetTruthTrigger::VERBOSITY_MORE);MORE);
             jt->set_pt_min(10);
             jt->set_eta_min(-4);
-            jt->set_eta_min(4);
+            jt->set_eta_max(4);
             se->registerSubsystem(jt);
           }
       }
