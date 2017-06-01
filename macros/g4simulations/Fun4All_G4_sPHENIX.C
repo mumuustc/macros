@@ -73,7 +73,7 @@ int Fun4All_G4_sPHENIX(
   bool do_global = true;
   bool do_global_fastsim = true;
   
-  bool do_calotrigger = true;
+  bool do_calotrigger = false;
 
   bool do_jet_reco = true;
   bool do_jet_eval = false;
@@ -153,7 +153,7 @@ int Fun4All_G4_sPHENIX(
 //      theTrigger->Verbosity(10);
       theTrigger->SetEtaHighLow(-1, 1);
       theTrigger->SetJetR(.4);
-      theTrigger->SetMinJetPt(20);
+      theTrigger->SetMinJetPt(15);
 
       PHPythia8* pythia8 = new PHPythia8();
       // see coresoftware/generators/PHPythia8 for example config
@@ -415,19 +415,25 @@ int Fun4All_G4_sPHENIX(
             HFJetTruthTrigger * jt = new HFJetTruthTrigger(
                 "HFJetTruthTrigger.root_r07",5 , "AntiKt_Truth_r07");
 //            jt->Verbosity(HFJetTruthTrigger::VERBOSITY_MORE);
-            jt->set_pt_min(20);
+            jt->set_pt_min(10);
+            jt->set_eta_min(-4);
+            jt->set_eta_min(4);
             se->registerSubsystem(jt);
 
             HFJetTruthTrigger * jt = new HFJetTruthTrigger(
                 "HFJetTruthTrigger.root_r04",5 , "AntiKt_Truth_r04");
 //            jt->Verbosity(HFJetTruthTrigger::VERBOSITY_MORE);MORE);
-            jt->set_pt_min(20);
+            jt->set_pt_min(10);
+            jt->set_eta_min(-4);
+            jt->set_eta_min(4);
             se->registerSubsystem(jt);
 
             HFJetTruthTrigger * jt = new HFJetTruthTrigger(
                 "HFJetTruthTrigger.root_r02",5 , "AntiKt_Truth_r02");
 //            jt->Verbosity(HFJetTruthTrigger::VERBOSITY_MORE);MORE);
-            jt->set_pt_min(20);
+            jt->set_pt_min(10);
+            jt->set_eta_min(-4);
+            jt->set_eta_min(4);
             se->registerSubsystem(jt);
           }
       }
