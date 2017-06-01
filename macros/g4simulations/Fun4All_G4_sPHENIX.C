@@ -73,6 +73,8 @@ int Fun4All_G4_sPHENIX(
   bool do_global = true;
   bool do_global_fastsim = true;
   
+  bool do_calotrigger = true;
+
   bool do_jet_reco = true;
   bool do_jet_eval = false;
 
@@ -198,12 +200,12 @@ int Fun4All_G4_sPHENIX(
 	  gen->set_vertex_distribution_mean(0.0, 0.0, 0.0);
 	  gen->set_vertex_distribution_width(0.0, 0.0, 5.0);
 	}
-      gen->set_vertex_size_function(PHG4SimpleEventGenerator::Uniform);]
+      gen->set_vertex_size_function(PHG4SimpleEventGenerator::Uniform);
       gen->set_vertex_size_parameters(0.0, 0.0);
       gen->set_eta_range(-0.5, 0.5);
       gen->set_phi_range(-1.0 * TMath::Pi(), 1.0 * TMath::Pi());
       gen->set_pt_range(0.1, 10.0);
-]      gen->Embed(1);
+      gen->Embed(1);
       gen->Verbosity(0);
       if (! usegun)
 	{
@@ -226,14 +228,14 @@ int Fun4All_G4_sPHENIX(
 	  pgen->set_z_range(0,0);
 	  pgen->set_eta_range(0.01,0.01);
 	  pgen->set_mom_range(10,10);
-	  pgen->set_phi_range(5.3./180.*TMath::Pi(),5.7./180.*TMath::Pi());
+	  pgen->set_phi_range(5.3/180.*TMath::Pi(),5.7/180.*TMath::Pi());
 	  se->registerSubsystem(pgen);
 	  pgen = new PHG4ParticleGenerator();
           pgen->set_name("geantino");
 	  pgen->set_z_range(0,0);
 	  pgen->set_eta_range(0.01,0.01);
 	  pgen->set_mom_range(10,10);
-	  pgen->set_phi_range(-0.2./180.*TMath::Pi(),0.2./180.*TMath::Pi());
+	  pgen->set_phi_range(-0.2/180.*TMath::Pi(),0.2/180.*TMath::Pi());
 	  se->registerSubsystem(pgen);
 	}
     }
@@ -309,6 +311,16 @@ int Fun4All_G4_sPHENIX(
     {
       gROOT->LoadMacro("G4_Global.C");
       Global_FastSim();
+    }
+
+  //-----------------
+  // Calo Trigger Simulation
+  //-----------------
+  
+  if (do_calotrigger) 
+    {
+      gROOT->LoadMacro("G4_CaloTrigger.C");
+      CaloTrigger_Sim();
     }
 
   //---------

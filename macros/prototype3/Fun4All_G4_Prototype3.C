@@ -236,7 +236,7 @@ int Fun4All_G4_Prototype3(int nEvents = 1)
     {
       PHG4FullProjSpacalCellReco *cemc_cells = new PHG4FullProjSpacalCellReco("CEMCCYLCELLRECO");
       cemc_cells->Detector("CEMC");
-      cemc_cells->set_timing_window_defaults(0.,60.);
+      cemc_cells->set_timing_window(0.,60.);
       cemc_cells->get_light_collection_model().load_data_file(string(getenv("CALIBRATIONROOT")) + string("/CEMC/LightCollection/Prototype2Module.xml"),"data_grid_light_guide_efficiency","data_grid_fiber_trans");
 
       se->registerSubsystem(cemc_cells);
@@ -463,11 +463,12 @@ int Fun4All_G4_Prototype3(int nEvents = 1)
     }
   if (ihcal_on)
     {
-      se->registerSubsystem(new QAG4SimulationCalorimeter("HCALIN",QAG4SimulationCalorimeter::kProcessG4Hit));
+      // TODO: disable QA for HCal right now as there is a hit->particle truth association error at the moment
+      // se->registerSubsystem(new QAG4SimulationCalorimeter("HCALIN",QAG4SimulationCalorimeter::kProcessG4Hit));
     }
   if (ohcal_on)
     {
-      se->registerSubsystem(new QAG4SimulationCalorimeter("HCALOUT",QAG4SimulationCalorimeter::kProcessG4Hit));
+      // se->registerSubsystem(new QAG4SimulationCalorimeter("HCALOUT",QAG4SimulationCalorimeter::kProcessG4Hit));
     }
   //----------------------
   // G4HitNtuple
