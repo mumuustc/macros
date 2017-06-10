@@ -153,7 +153,7 @@ int Fun4All_G4_sPHENIX(
 //      theTrigger->Verbosity(10);
       theTrigger->SetEtaHighLow(-1, 1);
       theTrigger->SetJetR(.4);
-      theTrigger->SetMinJetPt(15);
+      theTrigger->SetMinJetPt(30);
 
       PHPythia8* pythia8 = new PHPythia8();
       // see coresoftware/generators/PHPythia8 for example config
