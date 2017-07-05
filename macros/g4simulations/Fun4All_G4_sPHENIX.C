@@ -456,7 +456,9 @@ int Fun4All_G4_sPHENIX(
   gSystem->Load("libemcal_ana.so");
   EMCalAna * emcal_ana = new EMCalAna(
       string(inputFile) + string("_EMCalAna.root"));
-  emcal_ana->set_flag(EMCalAna::kProcessTrk);
+  emcal_ana->set_flag(EMCalAna::kProcessSF);
+  emcal_ana->set_flag(EMCalAna::kProcessTower);
+//  emcal_ana->set_flag(EMCalAna::kProcessTrk);
 //  emcal_ana->Verbosity(5);
   se->registerSubsystem(emcal_ana);
 
