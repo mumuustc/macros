@@ -1,7 +1,6 @@
 int Fun4All_G4_sPHENIX(
-		       const int nEvents = 1000,
+		       const int nEvents = 100,
 		       const char * inputFile = "data/G4Hits_sPHENIX_gamma_eta0_4GeV-0044.root",
-		       const char * outputFile = "G4sPHENIX.root",
            const char * embed_input_file = "/sphenix/data/data02/review_2017-08-02/sHijing/fm_0-4.list"
 		       )
 {
@@ -463,7 +462,7 @@ int Fun4All_G4_sPHENIX(
   se->registerSubsystem(emcal_ana);
 
   Fun4AllDstOutputManager *out = new Fun4AllDstOutputManager("DSTOUT",
-      outputFile);
+      string(inputFile) + string("_DST.root"));
   out->AddNode("Sync");
   out->AddNode("UpsilonPair");
   out->AddNode("EMCalTrk");
@@ -538,6 +537,13 @@ int Fun4All_G4_sPHENIX(
   //-----
 
   se->End();
+
+  //temp lines for QA modules
+  {
+    gSystem->Load("libqa_modules");
+    QAHistManagerDef::saveQARootFile(string(inputFile) + "_qa.root");
+  }
+
   std::cout << "All done" << std::endl;
   delete se;
   gSystem->Exit(0);
