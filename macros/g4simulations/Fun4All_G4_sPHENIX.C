@@ -1,6 +1,6 @@
 int Fun4All_G4_sPHENIX(
-		       const int nEvents = 1,
-		       const char * inputFile = "/sphenix/data/data02/review_2017-08-02/vtx_z_10_1.4T/single_particle/photon_4GeV/fieldmap/G4Hits_sPHENIX_gamma_eta0_4GeV-0044.root",
+		       const int nEvents = 1000,
+		       const char * inputFile = "data/G4Hits_sPHENIX_gamma_eta0_4GeV-0044.root",
 		       const char * outputFile = "G4sPHENIX.root",
            const char * embed_input_file = "/sphenix/data/data02/review_2017-08-02/sHijing/fm_0-4.list"
 		       )
@@ -50,7 +50,7 @@ int Fun4All_G4_sPHENIX(
   
   bool do_pipe = true;
   
-  bool do_svtx = true;
+  bool do_svtx = false;
   bool do_svtx_cell = do_svtx && true;
   bool do_svtx_track = do_svtx_cell && true;
   bool do_svtx_eval = do_svtx_track && true;
@@ -65,7 +65,7 @@ int Fun4All_G4_sPHENIX(
   bool do_cemc_eval = do_cemc_cluster && true;
 
 
-  bool do_hcalin = true;
+  bool do_hcalin = false;
   bool do_hcalin_cell = do_hcalin && true;
   bool do_hcalin_twr = do_hcalin_cell && true;
   bool do_hcalin_cluster = do_hcalin_twr && true;
@@ -73,7 +73,7 @@ int Fun4All_G4_sPHENIX(
 
   bool do_magnet = true;
   
-  bool do_hcalout = true;
+  bool do_hcalout = false;
   bool do_hcalout_cell = do_hcalout && true;
   bool do_hcalout_twr = do_hcalout_cell && true;
   bool do_hcalout_cluster = do_hcalout_twr && true;
@@ -82,9 +82,9 @@ int Fun4All_G4_sPHENIX(
   bool do_global = true;
   bool do_global_fastsim = true;
   
-  bool do_calotrigger = true && do_cemc_twr;
+  bool do_calotrigger = true && do_cemc_twr && do_hcalin_twr && do_hcalout_twr;
 
-  bool do_jet_reco = true;
+  bool do_jet_reco = false;
   bool do_jet_eval = do_jet_reco &&true;
 
   // HI Jet Reco for jet simulations in Au+Au (default is false for
@@ -469,6 +469,52 @@ int Fun4All_G4_sPHENIX(
   out->AddNode("EMCalTrk");
   out->AddNode("GlobalVertexMap");
   se->registerOutputManager(out);
+
+  //temp lines for QA modules
+  {
+
+    gSystem->Load("libqa_modules");
+
+    if (do_cemc)
+      se->registerSubsystem(new QAG4SimulationCalorimeter("CEMC"));
+    if (do_hcalin)
+      se->registerSubsystem(new QAG4SimulationCalorimeter("HCALIN"));
+    if (do_hcalout)
+      se->registerSubsystem(new QAG4SimulationCalorimeter("HCALOUT"));
+
+    if (do_svtx_track)
+    {
+      QAG4SimulationCalorimeterSum *calo_qa =
+          new QAG4SimulationCalorimeterSum();
+      //    calo_qa->Verbosity(10);
+      se->registerSubsystem(calo_qa);
+        }
+
+      if (do_jet_reco)
+        {
+          QAG4SimulationJet * calo_jet7 = new QAG4SimulationJet(
+              "AntiKt_Truth_r07");
+          calo_jet7->add_reco_jet("AntiKt_Tower_r07");
+          calo_jet7->add_reco_jet("AntiKt_Cluster_r07");
+          calo_jet7->add_reco_jet("AntiKt_Track_r07");
+//    calo_jet7->Verbosity(20);
+          se->registerSubsystem(calo_jet7);
+
+          QAG4SimulationJet * calo_jet7 = new QAG4SimulationJet(
+              "AntiKt_Truth_r04");
+          calo_jet7->add_reco_jet("AntiKt_Tower_r04");
+          calo_jet7->add_reco_jet("AntiKt_Cluster_r04");
+          calo_jet7->add_reco_jet("AntiKt_Track_r04");
+          se->registerSubsystem(calo_jet7);
+
+          QAG4SimulationJet * calo_jet7 = new QAG4SimulationJet(
+              "AntiKt_Truth_r02");
+          calo_jet7->add_reco_jet("AntiKt_Tower_r02");
+          calo_jet7->add_reco_jet("AntiKt_Cluster_r02");
+          calo_jet7->add_reco_jet("AntiKt_Track_r02");
+          se->registerSubsystem(calo_jet7);
+        }
+    }
 
   //-----------------
   // Event processing
