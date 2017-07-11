@@ -16,8 +16,9 @@ void G4Init(bool do_svtx = true,
             bool do_EEMC = true,
             bool do_DIRC = true,
             bool do_RICH = true,
-            bool do_Aerogel = true
-	    ) {
+            bool do_Aerogel = true,
+            int n_TPC_layers = 40)
+{
 
   // load detector/material macros and execute Init() function
 
@@ -28,8 +29,8 @@ void G4Init(bool do_svtx = true,
     }
   if (do_svtx)
     {
-      gROOT->LoadMacro("G4_Svtx_maps+tpc.C");
-      SvtxInit();
+      gROOT->LoadMacro("G4_Svtx_maps_ladders+intt_ladders+tpc_KalmanPatRec.C"); 
+      SvtxInit(n_TPC_layers);
     }
 
   if (do_preshower)
@@ -148,7 +149,10 @@ int G4Setup(const int absorberactive = 0,
 
   PHG4Reco* g4Reco = new PHG4Reco();
   g4Reco->set_rapidity_coverage(1.1); // according to drawings
-
+// uncomment to set QGSP_BERT_HP physics list for productions 
+// (default is QGSP_BERT for speed)
+  //  g4Reco->SetPhysicsList("QGSP_BERT_HP"); 
+ 
   if (decayType != TPythia6Decayer::kAll) {
     g4Reco->set_force_decay(decayType);
   }

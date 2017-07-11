@@ -8,7 +8,8 @@ void G4Init(bool do_svtx = true,
 	    bool do_hcalin = true,
 	    bool do_magnet = true,
 	    bool do_hcalout = true,
-	    bool do_pipe = true)
+	    bool do_pipe = true,
+	    int n_TPC_layers = 40)
   {
 
   // load detector/material macros and execute Init() function
@@ -20,16 +21,8 @@ void G4Init(bool do_svtx = true,
     }  
   if (do_svtx)
     {
-      gROOT->LoadMacro("G4_Svtx.C");                 // default MIE projections
-      //gROOT->LoadMacro("G4_Svtx_maps+IT+tpc.C"); // Reference design for 2016 tracking review
-      //gROOT->LoadMacro("G4_Svtx_pixels+strips.C"); // testing
-      //gROOT->LoadMacro("G4_Svtx_pixels+tpc.C");    // testing
-      //gROOT->LoadMacro("G4_Svtx_maps+strips.C");   // testing
-      //gROOT->LoadMacro("G4_Svtx_maps+tpc.C");      // testing
-      //gROOT->LoadMacro("G4_Svtx_maps_7layers.C");  // testing
-      //gROOT->LoadMacro("G4_Svtx_maps_5layers.C");  // testing
-      //gROOT->LoadMacro("G4_Svtx_ladders.C");       // testing (new geometries)
-      SvtxInit();
+      gROOT->LoadMacro("G4_Svtx_maps_ladders+intt_ladders+tpc_KalmanPatRec.C"); 
+      SvtxInit(n_TPC_layers);
     }
 
   if (do_preshower) 
@@ -91,6 +84,9 @@ int G4Setup(const int absorberactive = 0,
 
   PHG4Reco* g4Reco = new PHG4Reco();
   g4Reco->set_rapidity_coverage(1.1); // according to drawings
+// uncomment to set QGSP_BERT_HP physics list for productions 
+// (default is QGSP_BERT for speed)
+  //  g4Reco->SetPhysicsList("QGSP_BERT_HP"); 
   if (decayType != TPythia6Decayer::kAll) {
     g4Reco->set_force_decay(decayType);
   }
