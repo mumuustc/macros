@@ -6,7 +6,7 @@ int Fun4All_G4_sPHENIX(
 		       )
 {
   // Set the number of TPC layer
-  const int n_TPC_layers = 40;  // use 60 for backward compatibility only
+  const int n_TPC_layers = 60;  // use 60 for backward compatibility only
   
   //===============
   // Input options
@@ -19,7 +19,7 @@ int Fun4All_G4_sPHENIX(
   //
   // In case reading production output, please double check your G4Setup_sPHENIX.C and G4_*.C consistent with those in the production macro folder
   // E.g. /sphenix/sim//sim01/production/2016-07-21/single_particle/spacal2d/
-  const bool readhits = false;
+  const bool readhits = true;
   // Or:
   // read files in HepMC format (typically output from event generators like hijing or pythia)
   const bool readhepmc = false; // read HepMC files
