@@ -1,14 +1,12 @@
 
-int Fun4All_G4_fsPHENIX(
-		       const int nEvents = 2,
-           const char * inputFile = "/sphenix/sim//sim01/production/2016-07-21/single_particle/spacal2d/fieldmap/G4Hits_sPHENIX_e-_eta0_8GeV-0002.root",
-		       const char * outputFile = "G4fsPHENIX.root",
-           const char * embed_input_file = "/sphenix/sim/sim01/production/2016-07-12/sHijing/spacal2d/G4Hits_sPHENIX_sHijing-0-4.4fm.list"
-		       )
+int Fun4All_G4_EICDetector(
+                           const int nEvents = 2,
+                           const char * inputFile = "/gpfs02/phenix/prod/sPHENIX/preCDR/pro.1-beta.5/single_particle/spacal1d/fieldmap/G4Hits_sPHENIX_e-_eta0_16GeV.root",
+                           const char * outputFile = "G4EICDetector.root"
+                           )
 {
   // Set the number of TPC layer
   const int n_TPC_layers = 60;  // use 60 for backward compatibility only
-
   //===============
   // Input options
   //===============
@@ -25,24 +23,19 @@ int Fun4All_G4_fsPHENIX(
   // Use particle generator
   const bool runpythia8 = false;
   const bool runpythia6 = false;
-  // And
-  // Further choose to embed newly simulated events to a previous simulation. Not compatible with `readhits = true`
-  // In case embedding into a production output, please double check your G4Setup_sPHENIX.C and G4_*.C consistent with those in the production macro folder
-  // E.g. /sphenix/sim//sim01/production/2016-07-21/single_particle/spacal2d/
-  const bool do_embedding = false;
 
   //======================
   // What to run
   //======================
 
   bool do_bbc = true;
-  
+
   bool do_pipe = true;
-  
+
   bool do_svtx = true;
   bool do_svtx_cell = do_svtx && true;
   bool do_svtx_track = do_svtx_cell && true;
-  bool do_svtx_eval = do_svtx_track && false;
+  bool do_svtx_eval = do_svtx_track && true;
 
   bool do_preshower = false;
 
@@ -50,13 +43,13 @@ int Fun4All_G4_fsPHENIX(
   bool do_cemc_cell = do_cemc && true;
   bool do_cemc_twr = do_cemc_cell && true;
   bool do_cemc_cluster = do_cemc_twr && true;
-  bool do_cemc_eval = do_cemc_cluster && false;
+  bool do_cemc_eval = do_cemc_cluster && true;
 
   bool do_hcalin = true;
   bool do_hcalin_cell = do_hcalin && true;
   bool do_hcalin_twr = do_hcalin_cell && true;
   bool do_hcalin_cluster = do_hcalin_twr && true;
-  bool do_hcalin_eval = do_hcalin_cluster && false;
+  bool do_hcalin_eval = do_hcalin_cluster && true;
 
   bool do_magnet = true;
 
@@ -64,7 +57,7 @@ int Fun4All_G4_fsPHENIX(
   bool do_hcalout_cell = do_hcalout && true;
   bool do_hcalout_twr = do_hcalout_cell && true;
   bool do_hcalout_cluster = do_hcalout_twr && true;
-  bool do_hcalout_eval = do_hcalout_cluster && false;
+  bool do_hcalout_eval = do_hcalout_cluster && true;
 
   bool do_global = true;
   bool do_global_fastsim = false;
@@ -75,10 +68,16 @@ int Fun4All_G4_fsPHENIX(
   bool do_fwd_jet_reco = true;
   bool do_fwd_jet_eval = do_fwd_jet_reco && true;
 
-  // fsPHENIX geometry
+  // EICDetector geometry - barrel
+
+  bool do_DIRC = true;
+
+  // EICDetector geometry - 'hadron' direction
 
   bool do_FGEM = true;
-  bool do_FGEM_track = do_FGEM &&  true;
+
+  bool do_RICH = true;
+  bool do_Aerogel = true;
 
   bool do_FEMC = true;
   bool do_FEMC_cell = do_FEMC && true;
@@ -90,8 +89,20 @@ int Fun4All_G4_fsPHENIX(
   bool do_FHCAL_twr = do_FHCAL_cell && true;
   bool do_FHCAL_cluster = do_FHCAL_twr && true;
 
+
+  // EICDetector geometry - 'hadron' direction
+
+  bool do_EGEM = true;
+
+  bool do_EEMC = true;
+  bool do_EEMC_cell = do_EEMC && true;
+  bool do_EEMC_twr = do_EEMC_cell && true;
+  bool do_EEMC_cluster = do_EEMC_twr && true;
+
+  // Other options
+
   bool do_dst_compress = false;
-  
+
   //Option to convert DST to human command readable TTree for quick poke around the outputs
   bool do_DSTReader = true;
   //---------------
@@ -107,20 +118,20 @@ int Fun4All_G4_fsPHENIX(
   gSystem->Load("libg4eval.so");
 
   // establish the geometry and reconstruction setup
-  gROOT->LoadMacro("G4Setup_fsPHENIX.C");
-  G4Init(do_svtx,do_preshower,do_cemc,do_hcalin,do_magnet,do_hcalout,do_pipe,do_FGEM,do_FEMC,do_FHCAL,n_TPC_layers);
+  gROOT->LoadMacro("G4Setup_EICDetector.C");
+  G4Init(do_svtx,do_preshower,do_cemc,do_hcalin,do_magnet,do_hcalout,do_pipe,do_FGEM,do_EGEM,do_FEMC,do_FHCAL,do_EEMC,do_DIRC,do_RICH,do_Aerogel,n_TPC_layers);
 
   int absorberactive = 0; // set to 1 to make all absorbers active volumes
   //  const string magfield = "1.5"; // if like float -> solenoidal field in T, if string use as fieldmap name (including path)
-  const string magfield = "/phenix/upgrades/decadal/fieldmaps/fsPHENIX.2d.root"; // fsPHENIX field map by Cesar Luiz da Silva <slash@rcf.rhic.bnl.gov>, sPHENIX + piston
-  const float magfield_rescale = 1.0; // already adjusted to 1.4T central field
+  const string magfield = "/phenix/upgrades/decadal/fieldmaps/sPHENIX.2d.root"; // if like float -> solenoidal field in T, if string use as fieldmap name (including path)
+  const float magfield_rescale = 1.4/1.5; // scale the map to a 1.4 T field
 
   //---------------
   // Fun4All server
   //---------------
 
   Fun4AllServer *se = Fun4AllServer::instance();
-//  se->Verbosity(0); // uncomment for batch production running with minimal output messages
+  //  se->Verbosity(0); // uncomment for batch production running with minimal output messages
   se->Verbosity(Fun4AllServer::VERBOSITY_SOME); // uncomment for some info for interactive running
   // just if we set some flags somewhere in this macro
   recoConsts *rc = recoConsts::instance();
@@ -142,11 +153,6 @@ int Fun4All_G4_fsPHENIX(
     {
       // Get the hits from a file
       // The input manager is declared later
-      if (do_embedding)
-       {
-         cout <<"Do not support read hits and embed background at the same time."<<endl;
-         exit(1);
-       }
     }
   else if (readhepmc)
     {
@@ -158,10 +164,10 @@ int Fun4All_G4_fsPHENIX(
   else if (runpythia8)
     {
       gSystem->Load("libPHPythia8.so");
-      
+
       PHPythia8* pythia8 = new PHPythia8();
       // see coresoftware/generators/PHPythia8 for example config
-      pythia8->set_config_file("phpythia8.cfg"); 
+      pythia8->set_config_file("phpythia8.cfg");
       se->registerSubsystem(pythia8);
 
       HepMCNodeReader *hr = new HepMCNodeReader();
@@ -185,20 +191,20 @@ int Fun4All_G4_fsPHENIX(
       //gen->add_particles("e-",5); // mu+,e+,proton,pi+,Upsilon
       //gen->add_particles("e+",5); // mu-,e-,anti_proton,pi-
       gen->add_particles("pi-",1); // mu-,e-,anti_proton,pi-
-      if (readhepmc || do_embedding) {
-	gen->set_reuse_existing_vertex(true);
-	gen->set_existing_vertex_offset_vector(0.0,0.0,0.0);
+      if (readhepmc) {
+        gen->set_reuse_existing_vertex(true);
+        gen->set_existing_vertex_offset_vector(0.0,0.0,0.0);
       } else {
-	gen->set_vertex_distribution_function(PHG4SimpleEventGenerator::Uniform,
-					       PHG4SimpleEventGenerator::Uniform,
-					       PHG4SimpleEventGenerator::Uniform);
-	gen->set_vertex_distribution_mean(0.0,0.0,0.0);
-	gen->set_vertex_distribution_width(0.0,0.0,5.0);
+        gen->set_vertex_distribution_function(PHG4SimpleEventGenerator::Uniform,
+                                              PHG4SimpleEventGenerator::Uniform,
+                                              PHG4SimpleEventGenerator::Uniform);
+        gen->set_vertex_distribution_mean(0.0,0.0,0.0);
+        gen->set_vertex_distribution_width(0.0,0.0,5.0);
       }
       gen->set_vertex_size_function(PHG4SimpleEventGenerator::Uniform);
       gen->set_vertex_size_parameters(0.0,0.0);
       gen->set_eta_range(1.4, 3.0);
-      //gen->set_eta_range(3.0, 3.0); //fsPHENIX FWD
+      //gen->set_eta_range(3.0, 3.0); //EICDetector FWD
       gen->set_phi_range(-1.0*TMath::Pi(), 1.0*TMath::Pi());
       //gen->set_phi_range(TMath::Pi()/2-0.1, TMath::Pi()/2-0.1);
       gen->set_p_range(30.0, 30.0);
@@ -213,24 +219,21 @@ int Fun4All_G4_fsPHENIX(
       // Detector description
       //---------------------
 
-      G4Setup(absorberactive, magfield, TPythia6Decayer::kAll,
-	      do_svtx, do_preshower, do_cemc, do_hcalin, do_magnet, do_hcalout, do_pipe,
-	      do_FGEM, do_FEMC, do_FHCAL,
-	      magfield_rescale);
-      
+      G4Setup(absorberactive, magfield, TPythia6Decayer::kAll,do_svtx,do_preshower,do_cemc,do_hcalin,do_magnet,do_hcalout,do_pipe,do_FGEM,do_EGEM,do_FEMC,do_FHCAL,do_EEMC,do_DIRC,do_RICH,do_Aerogel,magfield_rescale);
+
     }
 
   //---------
   // BBC Reco
   //---------
-  
-  if (do_bbc) 
+
+  if (do_bbc)
     {
       gROOT->LoadMacro("G4_Bbc.C");
       BbcInit();
       Bbc_Reco();
     }
-  
+
   //------------------
   // Detector Division
   //------------------
@@ -246,6 +249,8 @@ int Fun4All_G4_fsPHENIX(
   if (do_FEMC_cell) FEMC_Cells();
   if (do_FHCAL_cell) FHCAL_Cells();
 
+  if (do_EEMC_cell) EEMC_Cells();
+
   //-----------------------------
   // CEMC towering and clustering
   //-----------------------------
@@ -256,12 +261,16 @@ int Fun4All_G4_fsPHENIX(
   //-----------------------------
   // HCAL towering and clustering
   //-----------------------------
-  
+
   if (do_hcalin_twr) HCALInner_Towers();
   if (do_hcalin_cluster) HCALInner_Clusters();
 
   if (do_hcalout_twr) HCALOuter_Towers();
   if (do_hcalout_cluster) HCALOuter_Clusters();
+
+  //-----------------------------
+  // e, h direction Calorimeter  towering and clustering
+  //-----------------------------
 
   if (do_FEMC_twr) FEMC_Towers();
   if (do_FEMC_cluster) FEMC_Clusters();
@@ -269,46 +278,43 @@ int Fun4All_G4_fsPHENIX(
   if (do_FHCAL_twr) FHCAL_Towers();
   if (do_FHCAL_cluster) FHCAL_Clusters();
 
+  if (do_EEMC_twr) EEMC_Towers();
+  if (do_EEMC_cluster) EEMC_Clusters();
+
   if (do_dst_compress) ShowerCompress();
-  
+
   //--------------
   // SVTX tracking
   //--------------
 
   if (do_svtx_track) Svtx_Reco();
 
-  //--------------
-  // FGEM tracking
-  //--------------
-
-  if(do_FGEM_track) FGEM_FastSim_Reco();
-
   //-----------------
   // Global Vertexing
   //-----------------
 
-  if (do_global) 
+  if (do_global)
     {
       gROOT->LoadMacro("G4_Global.C");
       Global_Reco();
     }
 
-  else if (do_global_fastsim) 
+  else if (do_global_fastsim)
     {
       gROOT->LoadMacro("G4_Global.C");
       Global_FastSim();
-    }  
-  
+    }
+
   //---------
   // Jet reco
   //---------
 
-  if (do_jet_reco) 
+  if (do_jet_reco)
     {
       gROOT->LoadMacro("G4_Jets.C");
       Jet_Reco();
     }
- 
+
   if (do_fwd_jet_reco)
     {
       gROOT->LoadMacro("G4_FwdJets.C");
@@ -330,7 +336,7 @@ int Fun4All_G4_fsPHENIX(
 
   if (do_fwd_jet_eval) Jet_FwdEval("g4fwdjet_eval.root");
 
-  //-------------- 
+  //--------------
   // IO management
   //--------------
 
@@ -340,19 +346,6 @@ int Fun4All_G4_fsPHENIX(
       Fun4AllInputManager *hitsin = new Fun4AllDstInputManager("DSTin");
       hitsin->fileopen(inputFile);
       se->registerInputManager(hitsin);
-    }
-  if (do_embedding)
-    {
-      if (embed_input_file == NULL)
-        {
-          cout << "Missing embed_input_file! Exit";
-          exit(3);
-        }
-
-      Fun4AllDstInputManager *in1 = new Fun4AllNoSyncDstInputManager("DSTinEmbed");
-      //      in1->AddFile(embed_input_file); // if one use a single input file
-      in1->AddListFile(embed_input_file); // RecommendedL: if one use a text list of many input files
-      se->registerInputManager(in1);
     }
   if (readhepmc)
     {
@@ -371,26 +364,29 @@ int Fun4All_G4_fsPHENIX(
   if (do_DSTReader)
     {
       //Convert DST to human command readable TTree for quick poke around the outputs
-      gROOT->LoadMacro("G4_DSTReader_fsPHENIX.C");
+      gROOT->LoadMacro("G4_DSTReader_EICDetector.C");
 
-      G4DSTreader_fsPHENIX( outputFile, //
-          /*int*/ absorberactive ,
-          /*bool*/ do_svtx ,
-          /*bool*/ do_preshower ,
-          /*bool*/ do_cemc ,
-          /*bool*/ do_hcalin ,
-          /*bool*/ do_magnet ,
-          /*bool*/ do_hcalout ,
-          /*bool*/ do_cemc_twr ,
-          /*bool*/ do_hcalin_twr ,
-          /*bool*/ do_magnet  ,
-	  /*bool*/ do_hcalout_twr,
-    /*bool*/ do_FGEM,
-	  /*bool*/ do_FHCAL,
-	  /*bool*/ do_FHCAL_twr,
-	  /*bool*/ do_FEMC,
-	  /*bool*/ do_FEMC_twr
-          );
+      G4DSTreader_EICDetector( outputFile, //
+                               /*int*/ absorberactive ,
+                               /*bool*/ do_svtx ,
+                               /*bool*/ do_preshower ,
+                               /*bool*/ do_cemc ,
+                               /*bool*/ do_hcalin ,
+                               /*bool*/ do_magnet ,
+                               /*bool*/ do_hcalout ,
+                               /*bool*/ do_cemc_twr ,
+                               /*bool*/ do_hcalin_twr ,
+                               /*bool*/ do_magnet  ,
+                               /*bool*/ do_hcalout_twr,
+                               /*bool*/ do_FGEM,
+                               /*bool*/ do_EGEM,
+                               /*bool*/ do_FHCAL,
+                               /*bool*/ do_FHCAL_twr,
+                               /*bool*/ do_FEMC,
+                               /*bool*/ do_FEMC_twr,
+			       /*bool*/ do_EEMC,
+			       /*bool*/ do_EEMC_twr
+                               );
     }
 
   //Fun4AllDstOutputManager *out = new Fun4AllDstOutputManager("DSTOUT", outputFile);
