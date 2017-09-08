@@ -1,3 +1,10 @@
+//Inner HCal construction macro
+
+//Inner HCal absorber material selector:
+//false - Default, absorber material is SS310
+//true - Choose if you want Aluminum
+const bool inner_hcal_material_Al = false;
+
 // Init is called by G4Setup.C
 void HCalInnerInit() {}
 
@@ -11,9 +18,15 @@ double HCalInner(PHG4Reco* g4Reco,
   gSystem->Load("libg4detectors.so");
   gSystem->Load("libg4testbench.so");
 
+
   PHG4InnerHcalSubsystem *hcal = new PHG4InnerHcalSubsystem("HCALIN");
   // these are the parameters you can change with their default settings
   // hcal->set_string_param("material","SS310");
+  if(inner_hcal_material_Al)
+    {
+      cout <<"HCalInner - construct inner HCal absorber with G4_Al"<<endl;
+      hcal->set_string_param("material","G4_Al");
+    }
   // hcal->set_int_param("ncross",4);
   // hcal->set_int_param("n_scinti_tiles",12);
   // hcal->set_int_param("light_scint_model",1);
@@ -128,19 +141,34 @@ void HCALInner_Towers(int verbosity = 0) {
   TowerBuilder->Verbosity(verbosity);
   se->registerSubsystem( TowerBuilder );
 
+  // From 2016 Test beam sim
   RawTowerDigitizer *TowerDigitizer = new RawTowerDigitizer("HcalInRawTowerDigitizer");
   TowerDigitizer->Detector("HCALIN");
-  TowerDigitizer->Verbosity(verbosity);
-  TowerDigitizer->set_digi_algorithm(RawTowerDigitizer::kNo_digitization);
-  se->registerSubsystem( TowerDigitizer );
+//  TowerDigitizer->set_raw_tower_node_prefix("RAW_LG");
+  TowerDigitizer->set_digi_algorithm(
+       RawTowerDigitizer::kSimple_photon_digitalization);
+  TowerDigitizer->set_pedstal_central_ADC(0);
+  TowerDigitizer->set_pedstal_width_ADC(1); // From Jin's guess. No EMCal High Gain data yet! TODO: update
+  TowerDigitizer->set_photonelec_ADC(32. / 5.);
+  TowerDigitizer->set_photonelec_yield_visible_GeV(32. / 5 / (0.4e-3));
+  TowerDigitizer->set_zero_suppression_ADC(-0); // no-zero suppression
+  se->registerSubsystem(TowerDigitizer);
+
+  //Default sampling fraction for SS310
+  double visible_sample_fraction_HCALIN = 0.0631283 ; //, /gpfs/mnt/gpfs04/sphenix/user/jinhuang/prod_analysis/hadron_shower_res_nightly/./G4Hits_sPHENIX_pi-_eta0_16GeV-0000.root_qa.rootQA_Draw_HCALIN_G4Hit.pdf
+
+  if(inner_hcal_material_Al) visible_sample_fraction_HCALIN = 0.162166; //for "G4_Al", Abhisek Sen <sen.abhisek@gmail.com>
 
   RawTowerCalibration *TowerCalibration = new RawTowerCalibration("HcalInRawTowerCalibration");
   TowerCalibration->Detector("HCALIN");
-  TowerCalibration->Verbosity(verbosity);
+//  TowerCalibration->set_raw_tower_node_prefix("RAW_LG");
+//  TowerCalibration->set_calib_tower_node_prefix("CALIB_LG");
   TowerCalibration->set_calib_algorithm(RawTowerCalibration::kSimple_linear_calibration);
-  TowerCalibration->set_calib_const_GeV_ADC(1./0.067);// muon sampling fraction from Abhisek Sen, 2015 SBU simulation workfest
+  TowerCalibration->set_calib_const_GeV_ADC(0.4e-3 / visible_sample_fraction_HCALIN);
   TowerCalibration->set_pedstal_ADC(0);
-  se->registerSubsystem( TowerCalibration );
+  TowerCalibration->set_zero_suppression_GeV(-1); // no-zero suppression
+  se->registerSubsystem(TowerCalibration);
+
   return;
 }
 
