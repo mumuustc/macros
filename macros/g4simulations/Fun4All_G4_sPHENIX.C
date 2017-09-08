@@ -5,7 +5,9 @@ int Fun4All_G4_sPHENIX(
            const char * embed_input_file = "/sphenix/sim/sim01/production/2016-07-12/sHijing/spacal2d/G4Hits_sPHENIX_sHijing-0-4.4fm.list"
 		       )
 {
-
+  // Set the number of TPC layer
+  const int n_TPC_layers = 40;  // use 60 for backward compatibility only
+  
   //===============
   // Input options
   //===============
@@ -25,15 +27,20 @@ int Fun4All_G4_sPHENIX(
   // Use pythia
   const bool runpythia8 = true;
   const bool runpythia6 = false;
-  // else
-  // Use particle generator (default simple generator)
-  // or gun/ very simple generator
-  const bool usegun = false;
-  // And
+  //
+  // **** And ****
   // Further choose to embed newly simulated events to a previous simulation. Not compatible with `readhits = true`
   // In case embedding into a production output, please double check your G4Setup_sPHENIX.C and G4_*.C consistent with those in the production macro folder
-  // E.g. /sphenix/sim//sim01/production/2016-07-21/single_particle/spacal2d/
+  // E.g. /sphenix/data/data02/review_2017-08-02/
   const bool do_embedding = false;
+
+  // Besides the above flags. One can further choose to further put in following particles in Geant4 simulation
+  // Use multi-particle generator (PHG4SimpleEventGenerator), see the code block below to choose particle species and kinematics
+  const bool particles = true && !readhits;
+  // or gun/ very simple single particle gun generator
+  const bool usegun = false && !readhits;
+  // Throw single Upsilons, may be embedded in Hijing by setting readhepmc flag also  (note, careful to set Z vertex equal to Hijing events)
+  const bool upsilons = false && !readhits;
 
   //======================
   // What to run
@@ -48,9 +55,9 @@ int Fun4All_G4_sPHENIX(
   bool do_svtx_track = do_svtx_cell && true;
   bool do_svtx_eval = do_svtx_track && true;
 
-  bool do_preshower = false;
-  
-  bool do_cemc = false;
+  bool do_pstof = false;
+
+  bool do_cemc = true;
   bool do_cemc_cell = do_cemc && true;
   bool do_cemc_twr = do_cemc_cell && true;
   bool do_cemc_cluster = do_cemc_twr && true;
@@ -73,10 +80,15 @@ int Fun4All_G4_sPHENIX(
   bool do_global = true;
   bool do_global_fastsim = true;
   
-  bool do_calotrigger = false;
+  bool do_calotrigger = false && do_cemc_twr && do_hcalin_twr && do_hcalout_twr;
 
   bool do_jet_reco = true;
-  bool do_jet_eval = false;
+  bool do_jet_eval = do_jet_reco &&true;
+
+  // HI Jet Reco for jet simulations in Au+Au (default is false for
+  // single particle / p+p simulations, or for Au+Au simulations which
+  // don't care about jets)
+  bool do_HIjetreco = false && do_jet_reco && do_cemc_twr && do_hcalin_twr && do_hcalout_twr;
 
   bool do_dst_compress = false;
 
@@ -96,12 +108,12 @@ int Fun4All_G4_sPHENIX(
 
   // establish the geometry and reconstruction setup
   gROOT->LoadMacro("G4Setup_sPHENIX.C");
-  G4Init(do_svtx,do_preshower,do_cemc,do_hcalin,do_magnet,do_hcalout,do_pipe);
+  G4Init(do_svtx,do_pstof,do_cemc,do_hcalin,do_magnet,do_hcalout,do_pipe,n_TPC_layers);
 
   int absorberactive = 1; // set to 1 to make all absorbers active volumes
-    const string magfield = "0"; // if like float -> solenoidal field in T, if string use as fieldmap name (including path)
-//  const string magfield = "/phenix/upgrades/decadal/fieldmaps/sPHENIX.2d.root"; // if like float -> solenoidal field in T, if string use as fieldmap name (including path)
-  const float magfield_rescale = 1.4/1.5; // scale the map to a 1.4 T field
+  //  const string magfield = "1.5"; // if like float -> solenoidal field in T, if string use as fieldmap name (including path)
+  const string magfield = "/phenix/upgrades/decadal/fieldmaps/sPHENIX.2d.root"; // if like float -> solenoidal field in T, if string use as fieldmap name (including path)
+  const float magfield_rescale = -1.4/1.5; // scale the map to a 1.4 T field
 
   //---------------
   // Fun4All server
@@ -181,12 +193,14 @@ int Fun4All_G4_sPHENIX(
       HepMCNodeReader *hr = new HepMCNodeReader();
       se->registerSubsystem(hr);
     }
-  else
-    {
+
+  // If "readhepMC" is also set, the particles will be embedded in Hijing events
+  if(particles)
+    {      
       // toss low multiplicity dummy events
       PHG4SimpleEventGenerator *gen = new PHG4SimpleEventGenerator();
-      gen->add_particles("e-",1); // mu+,e+,proton,pi+,Upsilon
-      // gen->add_particles("e+",5); // mu-,e-,anti_proton,pi-
+      gen->add_particles("pi-",2); // mu+,e+,proton,pi+,Upsilon
+      //gen->add_particles("pi+",100); // 100 pion option
       if (readhepmc || do_embedding)
 	{
 	  gen->set_reuse_existing_vertex(true);
@@ -202,16 +216,16 @@ int Fun4All_G4_sPHENIX(
 	}
       gen->set_vertex_size_function(PHG4SimpleEventGenerator::Uniform);
       gen->set_vertex_size_parameters(0.0, 0.0);
-      gen->set_eta_range(-0.5, 0.5);
+      gen->set_eta_range(-1.0, 1.0);
       gen->set_phi_range(-1.0 * TMath::Pi(), 1.0 * TMath::Pi());
-      gen->set_pt_range(0.1, 10.0);
+      //gen->set_pt_range(0.1, 50.0);
+      gen->set_pt_range(0.1, 20.0);
       gen->Embed(1);
       gen->Verbosity(0);
-      if (! usegun)
-	{
-	  se->registerSubsystem(gen);
-	}
-      else
+
+      se->registerSubsystem(gen);
+    }
+      if (usegun)
 	{
 	  PHG4ParticleGun *gun = new PHG4ParticleGun();
 	  //  gun->set_name("anti_proton");
@@ -230,15 +244,56 @@ int Fun4All_G4_sPHENIX(
 	  pgen->set_mom_range(10,10);
 	  pgen->set_phi_range(5.3/180.*TMath::Pi(),5.7/180.*TMath::Pi());
 	  se->registerSubsystem(pgen);
-	  pgen = new PHG4ParticleGenerator();
-          pgen->set_name("geantino");
-	  pgen->set_z_range(0,0);
-	  pgen->set_eta_range(0.01,0.01);
-	  pgen->set_mom_range(10,10);
-	  pgen->set_phi_range(-0.2/180.*TMath::Pi(),0.2/180.*TMath::Pi());
-	  se->registerSubsystem(pgen);
 	}
-    }
+
+      // If "readhepMC" is also set, the Upsilons will be embedded in Hijing events, if 'particles" is set, the Upsilons will be embedded in whatever particles are thrown
+      if(upsilons)
+	{
+	  // run upsilons for momentum, dca performance, alone or embedded in Hijing
+      
+	  PHG4ParticleGeneratorVectorMeson *vgen = new PHG4ParticleGeneratorVectorMeson();
+	  vgen->add_decay_particles("e+","e-",0); // i = decay id
+	  // event vertex
+	  if (readhepmc || do_embedding || particles)
+	    {
+	      vgen->set_reuse_existing_vertex(true);
+	    }
+	  else
+	    {
+	      vgen->set_vtx_zrange(-10.0, +10.0);
+	    }
+
+	  // Note: this rapidity range completely fills the acceptance of eta = +/- 1 unit
+	  vgen->set_rapidity_range(-1.0, +1.0);
+	  vgen->set_pt_range(0.0, 10.0);
+      
+	  int istate = 1;
+      
+	  if(istate == 1)
+	    {
+	      // Upsilon(1S)
+	      vgen->set_mass(9.46);
+	      vgen->set_width(54.02e-6);
+	    }
+	  else if (istate == 2)
+	    {
+	      // Upsilon(2S)
+	      vgen->set_mass(10.0233);
+	      vgen->set_width(31.98e-6);
+	    }
+	  else
+	    {
+	      // Upsilon(3S)
+	      vgen->set_mass(10.3552);
+	      vgen->set_width(20.32e-6);
+	    }
+      
+	  vgen->Verbosity(0);
+	  vgen->Embed(2);
+	  se->registerSubsystem(vgen);
+      
+	  cout << "Upsilon generator for istate = " << istate << " created and registered "  << endl;	  
+	}      
 
   if (!readhits)
     {
@@ -247,7 +302,7 @@ int Fun4All_G4_sPHENIX(
       //---------------------
 
       G4Setup(absorberactive, magfield, TPythia6Decayer::kAll,
-	      do_svtx, do_preshower, do_cemc, do_hcalin, do_magnet, do_hcalout, do_pipe, magfield_rescale);
+	      do_svtx, do_pstof, do_cemc, do_hcalin, do_magnet, do_hcalout, do_pipe, magfield_rescale);
     }
 
   //---------
@@ -278,7 +333,7 @@ int Fun4All_G4_sPHENIX(
 
   if (do_cemc_twr) CEMC_Towers();
   if (do_cemc_cluster) CEMC_Clusters();
-
+  
   //-----------------------------
   // HCAL towering and clustering
   //-----------------------------
@@ -332,19 +387,25 @@ int Fun4All_G4_sPHENIX(
       gROOT->LoadMacro("G4_Jets.C");
       Jet_Reco();
     }
+
+  if (do_HIjetreco) {
+      gROOT->LoadMacro("G4_HIJetReco.C");
+      HIJetReco();
+  }
+
   //----------------------
   // Simulation evaluation
   //----------------------
 
-  if (do_svtx_eval) Svtx_Eval("g4svtx_eval.root");
+  if (do_svtx_eval) Svtx_Eval(string(outputFile) + "_g4svtx_eval.root");
 
-  if (do_cemc_eval) CEMC_Eval("g4cemc_eval.root");
+  if (do_cemc_eval) CEMC_Eval(string(outputFile) + "_g4cemc_eval.root");
 
-  if (do_hcalin_eval) HCALInner_Eval("g4hcalin_eval.root");
+  if (do_hcalin_eval) HCALInner_Eval(string(outputFile) + "_g4hcalin_eval.root");
 
-  if (do_hcalout_eval) HCALOuter_Eval("g4hcalout_eval.root");
+  if (do_hcalout_eval) HCALOuter_Eval(string(outputFile) + "_g4hcalout_eval.root");
 
-  if (do_jet_eval) Jet_Eval("g4jet_eval.root");
+  if (do_jet_eval) Jet_Eval(string(outputFile) + "_g4jet_eval.root");
 
 
 
@@ -354,6 +415,9 @@ int Fun4All_G4_sPHENIX(
 
   if (readhits)
     {
+      //meta-lib for DST objects used in simulation outputs
+      gSystem->Load("libg4dst.so");
+
       // Hits file
       Fun4AllInputManager *hitsin = new Fun4AllDstInputManager("DSTin");
       hitsin->fileopen(inputFile);
@@ -367,6 +431,9 @@ int Fun4All_G4_sPHENIX(
           exit(3);
         }
 
+      //meta-lib for DST objects used in simulation outputs
+      gSystem->Load("libg4dst.so");
+
       Fun4AllDstInputManager *in1 = new Fun4AllNoSyncDstInputManager("DSTinEmbed");
       //      in1->AddFile(embed_input_file); // if one use a single input file
       in1->AddListFile(embed_input_file); // RecommendedL: if one use a text list of many input files
@@ -374,6 +441,9 @@ int Fun4All_G4_sPHENIX(
     }
   if (readhepmc)
     {
+      //meta-lib for DST objects used in simulation outputs
+      gSystem->Load("libg4dst.so");
+
       Fun4AllInputManager *in = new Fun4AllHepMCInputManager( "DSTIN");
       se->registerInputManager( in );
       se->fileopen( in->Name().c_str(), inputFile );
@@ -469,7 +539,7 @@ int Fun4All_G4_sPHENIX(
       G4DSTreader( outputFile, //
           /*int*/ absorberactive ,
           /*bool*/ do_svtx ,
-          /*bool*/ do_preshower ,
+          /*bool*/ do_pstof ,
           /*bool*/ do_cemc ,
           /*bool*/ do_hcalin ,
           /*bool*/ do_magnet ,
