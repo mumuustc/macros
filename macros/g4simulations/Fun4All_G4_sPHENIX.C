@@ -1,6 +1,6 @@
 int Fun4All_G4_sPHENIX(
 		       const int nEvents = 1,
-		       const char * inputFile = "/sphenix/data/data02/review_2017-08-02/single_particle/spacal2d/fieldmap/G4Hits_sPHENIX_e-_eta0_8GeV-0002.root",
+		       const char * inputFile = "/sphenix/sim/sim01/sHijing/sHijing_0-12fm.dat",
 		       const char * outputFile = "G4sPHENIX.root",
            const char * embed_input_file = "/sphenix/data/data02/review_2017-08-02/sHijing/fm_0-4.list"
 		       )
@@ -22,10 +22,10 @@ int Fun4All_G4_sPHENIX(
   const bool readhits = false;
   // Or:
   // read files in HepMC format (typically output from event generators like hijing or pythia)
-  const bool readhepmc = false; // read HepMC files
+  const bool readhepmc = true; // read HepMC files
   // Or:
   // Use pythia
-  const bool runpythia8 = true;
+  const bool runpythia8 = false;
   const bool runpythia6 = false;
   //
   // **** And ****
@@ -36,7 +36,7 @@ int Fun4All_G4_sPHENIX(
 
   // Besides the above flags. One can further choose to further put in following particles in Geant4 simulation
   // Use multi-particle generator (PHG4SimpleEventGenerator), see the code block below to choose particle species and kinematics
-  const bool particles = false && !readhits;
+  const bool particles = true && !readhits;
   // or gun/ very simple single particle gun generator
   const bool usegun = false && !readhits;
   // Throw single Upsilons, may be embedded in Hijing by setting readhepmc flag also  (note, careful to set Z vertex equal to Hijing events)
@@ -46,12 +46,12 @@ int Fun4All_G4_sPHENIX(
   // What to run
   //======================
 
-  bool do_bbc = false;
+  bool do_bbc = true;
   
   bool do_pipe = true;
   
   bool do_svtx = true;
-  bool do_svtx_cell = do_svtx && false;
+  bool do_svtx_cell = do_svtx && true;
   bool do_svtx_track = do_svtx_cell && true;
   bool do_svtx_eval = do_svtx_track && true;
 
@@ -78,8 +78,8 @@ int Fun4All_G4_sPHENIX(
   bool do_hcalout_cluster = do_hcalout_twr && true;
   bool do_hcalout_eval = do_hcalout_cluster && true;
   
-  bool do_global = false;
-  bool do_global_fastsim = false;
+  bool do_global = true;
+  bool do_global_fastsim = true;
   
   bool do_calotrigger = true && do_cemc_twr && do_hcalin_twr && do_hcalout_twr;
 
@@ -155,6 +155,8 @@ int Fun4All_G4_sPHENIX(
       // this module is needed to read the HepMC records into our G4 sims
       // but only if you read HepMC input files
       HepMCNodeReader *hr = new HepMCNodeReader();
+      // smear z vtx uniformly by +-10 cm (positive means gaussian smearing)
+      hr->SmearVertex(0,0,-10.);
       se->registerSubsystem(hr);
     }
   else if (runpythia8)
@@ -196,7 +198,12 @@ int Fun4All_G4_sPHENIX(
     {      
       // toss low multiplicity dummy events
       PHG4SimpleEventGenerator *gen = new PHG4SimpleEventGenerator();
-      gen->add_particles("pi-",2); // mu+,e+,proton,pi+,Upsilon
+      gen->add_particles("pi-",15); // mu+,e+,proton,pi+,Upsilon
+      gen->add_particles("pi+",15); // mu+,e+,proton,pi+,Upsilon
+      gen->add_particles("kaon-",15); // mu+,e+,proton,pi+,Upsilon
+      gen->add_particles("kaon+",15); // mu+,e+,proton,pi+,Upsilon
+      gen->add_particles("proton",15); // mu+,e+,proton,pi+,Upsilon
+      gen->add_particles("anti_proton",15); // mu+,e+,proton,pi+,Upsilon
       //gen->add_particles("pi+",100); // 100 pion option
       if (readhepmc || do_embedding)
 	{
@@ -216,7 +223,7 @@ int Fun4All_G4_sPHENIX(
       gen->set_eta_range(-1.0, 1.0);
       gen->set_phi_range(-1.0 * TMath::Pi(), 1.0 * TMath::Pi());
       //gen->set_pt_range(0.1, 50.0);
-      gen->set_pt_range(0.1, 20.0);
+      gen->set_pt_range(0.25, 30.0);
       gen->Embed(1);
       gen->Verbosity(0);
 
