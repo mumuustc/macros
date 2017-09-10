@@ -198,12 +198,12 @@ int Fun4All_G4_sPHENIX(
     {      
       // toss low multiplicity dummy events
       PHG4SimpleEventGenerator *gen = new PHG4SimpleEventGenerator();
-      gen->add_particles("pi-",15); // mu+,e+,proton,pi+,Upsilon
-      gen->add_particles("pi+",15); // mu+,e+,proton,pi+,Upsilon
-      gen->add_particles("kaon-",15); // mu+,e+,proton,pi+,Upsilon
-      gen->add_particles("kaon+",15); // mu+,e+,proton,pi+,Upsilon
-      gen->add_particles("proton",15); // mu+,e+,proton,pi+,Upsilon
-      gen->add_particles("anti_proton",15); // mu+,e+,proton,pi+,Upsilon
+      gen->add_particles("pi-",5); // mu+,e+,proton,pi+,Upsilon
+      gen->add_particles("pi+",5); // mu+,e+,proton,pi+,Upsilon
+      gen->add_particles("kaon-",5); // mu+,e+,proton,pi+,Upsilon
+      gen->add_particles("kaon+",5); // mu+,e+,proton,pi+,Upsilon
+      gen->add_particles("proton",5); // mu+,e+,proton,pi+,Upsilon
+      gen->add_particles("anti_proton",5); // mu+,e+,proton,pi+,Upsilon
       //gen->add_particles("pi+",100); // 100 pion option
       if (readhepmc || do_embedding)
 	{
