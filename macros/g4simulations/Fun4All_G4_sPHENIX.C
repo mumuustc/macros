@@ -1,6 +1,6 @@
 int Fun4All_G4_sPHENIX(
-		       const int nEvents = 1,
-		       const char * inputFile = "/sphenix/data/data02/review_2017-08-02/single_particle/spacal2d/fieldmap/G4Hits_sPHENIX_pi-_eta0_16GeV-0002.root",
+		       const int nEvents = 10,
+		       const char * inputFile = "/sphenix/data/data02/HF-production-bjet-pp200/pythia8/G4Hits_Pythia8_bjet_211000_212000.root",
 		       const char * outputFile = "data/G4sPHENIX.root",
            const char * embed_input_file = "/sphenix/data/data02/review_2017-08-02/sHijing/fm_0-4.list"
 		       )
@@ -463,9 +463,8 @@ int Fun4All_G4_sPHENIX(
     }
 
   //temp lines for QA modules
+  if (gSystem->Load("libqa_modules") == 0)
   {
-
-    gSystem->Load("libqa_modules");
 
     if (do_cemc)
       se->registerSubsystem( new QAG4SimulationCalorimeter("CEMC") );
