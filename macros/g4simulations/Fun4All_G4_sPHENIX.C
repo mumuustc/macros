@@ -152,12 +152,7 @@ int Fun4All_G4_sPHENIX(
     }
   else if (readhepmc)
     {
-      // this module is needed to read the HepMC records into our G4 sims
-      // but only if you read HepMC input files
-      HepMCNodeReader *hr = new HepMCNodeReader();
-      // smear z vtx uniformly by +-10 cm (positive means gaussian smearing)
-      hr->SmearVertex(0,0,-10.);
-      se->registerSubsystem(hr);
+      // action is performed in later stage at the input manager level
     }
   else if (runpythia8)
     {
@@ -177,9 +172,6 @@ int Fun4All_G4_sPHENIX(
 
       se->registerSubsystem(pythia8);
       pythia8->print_config();
-
-      HepMCNodeReader *hr = new HepMCNodeReader();
-      se->registerSubsystem(hr);
     }
   else if (runpythia6)
     {
@@ -188,9 +180,6 @@ int Fun4All_G4_sPHENIX(
       PHPythia6 *pythia6 = new PHPythia6();
       pythia6->set_config_file("phpythia6.cfg");
       se->registerSubsystem(pythia6);
-
-      HepMCNodeReader *hr = new HepMCNodeReader();
-      se->registerSubsystem(hr);
     }
 
   // If "readhepMC" is also set, the particles will be embedded in Hijing events
