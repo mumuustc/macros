@@ -22,7 +22,7 @@ int Fun4All_G4_sPHENIX(
   const bool readhits = false;
   // Or:
   // read files in HepMC format (typically output from event generators like hijing or pythia)
-  const bool readhepmc = false; // read HepMC files
+  const bool readhepmc = true; // read HepMC files
   // Or:
   // Use pythia
   const bool runpythia8 = false;
@@ -186,7 +186,7 @@ int Fun4All_G4_sPHENIX(
     {      
       // toss low multiplicity dummy events
       PHG4SimpleEventGenerator *gen = new PHG4SimpleEventGenerator();
-      gen->add_particles("pi-",2); // mu+,e+,proton,pi+,Upsilon
+      gen->add_particles("pi-",100); // mu+,e+,proton,pi+,Upsilon
       //gen->add_particles("pi+",100); // 100 pion option
       if (readhepmc || do_embedding || runpythia8 || runpythia6)
 	{
@@ -429,16 +429,31 @@ int Fun4All_G4_sPHENIX(
       //meta-lib for DST objects used in simulation outputs
       gSystem->Load("libg4dst.so");
 
+      // the in time collision
       Fun4AllHepMCInputManager *in = new Fun4AllHepMCInputManager( "HepMCInput_1");
       se->registerInputManager( in );
-      se->fileopen( in->Name().c_str(), inputFile );
-      //in->set_vertex_distribution_width(100e-4,100e-4,30,0);//optional collision smear in space time
-      //in->set_vertex_distribution_mean(0,0,1,0);//optional collision central position shift in space time
+      se->fileopen( in->Name().c_str(), "/sphenix/sim/sim01/sHijing/sHijing_0-4fm.dat" );
+      in->set_vertex_distribution_width(0,0,10,0);//optional collision smear in space time
+      in->set_vertex_distribution_mean(0,0,0,0);//optional collision central position shift in space time
+      in->set_vertex_distribution_function(PHHepMCGenHelper::Uniform,PHHepMCGenHelper::Uniform,PHHepMCGenHelper::Uniform,PHHepMCGenHelper::Uniform);
       //! embedding ID for the event
       //! positive ID is the embedded event of interest, e.g. jetty event from pythia
       //! negative IDs are backgrounds, .e.g out of time pile up collisions
       //! Usually, ID = 0 means the primary Au+Au collision background
-      //in->set_embedding_id(2);
+      in->set_embedding_id(0);
+
+      // the out time collision - same crossing, smear 5 ns
+      Fun4AllHepMCInputManager *in = new Fun4AllHepMCInputManager( "HepMCInput_2");
+      se->registerInputManager( in );
+      se->fileopen( in->Name().c_str(), "/sphenix/sim/sim01/sHijing/sHijing_0-12fm.dat" );
+      in->set_vertex_distribution_width(100e-4,100e-4,30,5);//optional collision smear in space time
+      in->set_vertex_distribution_mean(0,0,0,0);//optional collision central position shift in space time. Shift by 100ns to place it to the next crossing
+      in->set_vertex_distribution_function(PHHepMCGenHelper::Gaus,PHHepMCGenHelper::Gaus,PHHepMCGenHelper::Gaus,PHHepMCGenHelper::Uniform);
+      //! embedding ID for the event
+      //! positive ID is the embedded event of interest, e.g. jetty event from pythia
+      //! negative IDs are backgrounds, .e.g out of time pile up collisions
+      //! Usually, ID = 0 means the primary Au+Au collision background
+      in->set_embedding_id(-1);
     }
   else
     {
