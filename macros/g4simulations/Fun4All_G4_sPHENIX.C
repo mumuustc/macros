@@ -43,7 +43,7 @@ int Fun4All_G4_sPHENIX(
   const bool upsilons = false && !readhits;
   // Event pile up simulation with collision rate in Hz MB collisions.
   // Note please follow up the macro to verify the settings for beam parameters
-  const double pileup_collision_rate = 0; // 100e3 for 100kHz nominal AuAu collision rate.
+  const double pileup_collision_rate = 100e3; // 100e3 for 100kHz nominal AuAu collision rate.
 
   //======================
   // What to run
@@ -434,16 +434,16 @@ int Fun4All_G4_sPHENIX(
       //! Usually, ID = 0 means the primary Au+Au collision background
       in->set_embedding_id(1);
 
-      Fun4AllHepMCInputManager *in = new Fun4AllHepMCInputManager( "HepMCInput_2");
-      se->registerInputManager( in );
-      se->fileopen( in->Name().c_str(), inputFile );
-      //in->set_vertex_distribution_width(100e-4,100e-4,30,0);//optional collision smear in space time
-      in->set_vertex_distribution_mean(0,0,1,0);//optional collision central position shift in space time
-      //! embedding ID for the event
-      //! positive ID is the embedded event of interest, e.g. jetty event from pythia
-      //! negative IDs are backgrounds, .e.g out of time pile up collisions
-      //! Usually, ID = 0 means the primary Au+Au collision background
-      in->set_embedding_id(2);
+//      Fun4AllHepMCInputManager *in = new Fun4AllHepMCInputManager( "HepMCInput_2");
+//      se->registerInputManager( in );
+//      se->fileopen( in->Name().c_str(), inputFile );
+//      //in->set_vertex_distribution_width(100e-4,100e-4,30,0);//optional collision smear in space time
+//      in->set_vertex_distribution_mean(0,0,1,0);//optional collision central position shift in space time
+//      //! embedding ID for the event
+//      //! positive ID is the embedded event of interest, e.g. jetty event from pythia
+//      //! negative IDs are backgrounds, .e.g out of time pile up collisions
+//      //! Usually, ID = 0 means the primary Au+Au collision background
+//      in->set_embedding_id(2);
     }
   else
     {
@@ -461,11 +461,12 @@ int Fun4All_G4_sPHENIX(
 
     Fun4AllHepMCPileupInputManager *in = new Fun4AllHepMCPileupInputManager( "HepMCPileupInput");
     se->registerInputManager( in );
-    pileup->AddFile("/sphenix/sim/sim01/sHijing/sHijing_0-12fm.dat");// this file will be
+    pileup->AddFile("/sphenix/sim/sim01/sHijing/sHijing_9-11fm.dat");// this file will be
     //in->set_vertex_distribution_width(100e-4,100e-4,30,5);//override collision smear in space time
     //in->set_vertex_distribution_mean(0,0,0,0);//override collision central position shift in space time
     //in->set_time_window(-17500.,+17500.); // override timing window in ns
     //in->set_collision_rate(100e3); // override collisions rate in Hz
+    in->Verbosity(3);
   }
 
   if (do_DSTReader)
