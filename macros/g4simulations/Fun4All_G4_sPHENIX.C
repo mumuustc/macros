@@ -22,10 +22,10 @@ int Fun4All_G4_sPHENIX(
   const bool readhits = false;
   // Or:
   // read files in HepMC format (typically output from event generators like hijing or pythia)
-  const bool readhepmc = true; // read HepMC files
+  const bool readhepmc = false; // read HepMC files
   // Or:
   // Use pythia
-  const bool runpythia8 = false;
+  const bool runpythia8 = true;
   const bool runpythia6 = false;
   //
   // **** And ****
@@ -43,7 +43,7 @@ int Fun4All_G4_sPHENIX(
   const bool upsilons = false && !readhits;
   // Event pile up simulation with collision rate in Hz MB collisions.
   // Note please follow up the macro to verify the settings for beam parameters
-  const double pileup_collision_rate = 100e3; // 100e3 for 100kHz nominal AuAu collision rate.
+  const double pileup_collision_rate = 0; // 100e3 for 100kHz nominal AuAu collision rate.
 
   //======================
   // What to run
@@ -201,7 +201,7 @@ int Fun4All_G4_sPHENIX(
       gen->set_phi_range(-1.0 * TMath::Pi(), 1.0 * TMath::Pi());
       //gen->set_pt_range(0.1, 50.0);
       gen->set_pt_range(0.1, 20.0);
-      gen->Embed(1);
+      gen->Embed(2);
       gen->Verbosity(0);
 
       se->registerSubsystem(gen);
