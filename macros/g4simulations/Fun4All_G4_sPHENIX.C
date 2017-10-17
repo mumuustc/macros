@@ -1,5 +1,5 @@
 int Fun4All_G4_sPHENIX(
-		       const int nEvents = 1,
+		       const int nEvents = 20,
 		       const char * inputFile = "/sphenix/sim/sim01/sHijing/sHijing_9-11fm.dat",
 		       const char * outputFile = "G4sPHENIX.root",
            const char * embed_input_file = "/sphenix/data/data02/review_2017-08-02/sHijing/fm_0-4.list"
@@ -426,7 +426,8 @@ int Fun4All_G4_sPHENIX(
       Fun4AllHepMCInputManager *in = new Fun4AllHepMCInputManager( "HepMCInput_1");
       se->registerInputManager( in );
       se->fileopen( in->Name().c_str(), inputFile );
-      //in->set_vertex_distribution_width(100e-4,100e-4,30,0);//optional collision smear in space time
+      in->set_vertex_distribution_function(PHHepMCGenHelper::Uniform,PHHepMCGenHelper::Uniform,PHHepMCGenHelper::Uniform,PHHepMCGenHelper::Uniform);
+      in->set_vertex_distribution_width(0,0,10,0);//optional collision smear in space time
       //in->set_vertex_distribution_mean(0,0,1,0);//optional collision central position shift in space time
       //! embedding ID for the event
       //! positive ID is the embedded event of interest, e.g. jetty event from pythia
@@ -459,14 +460,14 @@ int Fun4All_G4_sPHENIX(
     // add random beam collisions following a collision diamond and rate from a HepMC stream
 
 
-    Fun4AllHepMCPileupInputManager *in = new Fun4AllHepMCPileupInputManager( "HepMCPileupInput");
-    se->registerInputManager( in );
+    Fun4AllHepMCPileupInputManager *pileup = new Fun4AllHepMCPileupInputManager( "HepMCPileupInput");
+    se->registerInputManager( pileup );
     pileup->AddFile("/sphenix/sim/sim01/sHijing/sHijing_9-11fm.dat");// this file will be
-    //in->set_vertex_distribution_width(100e-4,100e-4,30,5);//override collision smear in space time
-    //in->set_vertex_distribution_mean(0,0,0,0);//override collision central position shift in space time
-    //in->set_time_window(-17500.,+17500.); // override timing window in ns
-    //in->set_collision_rate(100e3); // override collisions rate in Hz
-    in->Verbosity(3);
+    //pileup->set_vertex_distribution_width(100e-4,100e-4,30,5);//override collision smear in space time
+    //pileup->set_vertex_distribution_mean(0,0,0,0);//override collision central position shift in space time
+    //pileup->set_time_window(-17500.,+17500.); // override timing window in ns
+    //pileup->set_collision_rate(100e3); // override collisions rate in Hz
+    pileup->Verbosity(3);
   }
 
   if (do_DSTReader)
