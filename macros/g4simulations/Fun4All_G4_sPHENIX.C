@@ -1,6 +1,6 @@
 int Fun4All_G4_sPHENIX(
 		       const int nEvents = 1,
-		       const char * inputFile = "/sphenix/data/data02/review_2017-08-02/single_particle/spacal2d/fieldmap/G4Hits_sPHENIX_e-_eta0_8GeV-0002.root",
+		       const char * inputFile = "/sphenix/sim/sim01/sHijing/sHijing_9-11fm.dat",
 		       const char * outputFile = "G4sPHENIX.root",
            const char * embed_input_file = "/sphenix/data/data02/review_2017-08-02/sHijing/fm_0-4.list"
 		       )
@@ -22,7 +22,7 @@ int Fun4All_G4_sPHENIX(
   const bool readhits = false;
   // Or:
   // read files in HepMC format (typically output from event generators like hijing or pythia)
-  const bool readhepmc = false; // read HepMC files
+  const bool readhepmc = true; // read HepMC files
   // Or:
   // Use pythia
   const bool runpythia8 = false;
@@ -57,22 +57,22 @@ int Fun4All_G4_sPHENIX(
 
   bool do_pstof = false;
 
-  bool do_cemc = true;
+  bool do_cemc = false;
   bool do_cemc_cell = do_cemc && true;
   bool do_cemc_twr = do_cemc_cell && true;
   bool do_cemc_cluster = do_cemc_twr && true;
   bool do_cemc_eval = do_cemc_cluster && true;
 
 
-  bool do_hcalin = true;
+  bool do_hcalin = false;
   bool do_hcalin_cell = do_hcalin && true;
   bool do_hcalin_twr = do_hcalin_cell && true;
   bool do_hcalin_cluster = do_hcalin_twr && true;
   bool do_hcalin_eval = do_hcalin_cluster && true;
 
-  bool do_magnet = true;
+  bool do_magnet = false;
   
-  bool do_hcalout = true;
+  bool do_hcalout = false;
   bool do_hcalout_cell = do_hcalout && true;
   bool do_hcalout_twr = do_hcalout_cell && true;
   bool do_hcalout_cluster = do_hcalout_twr && true;
@@ -83,7 +83,7 @@ int Fun4All_G4_sPHENIX(
   
   bool do_calotrigger = true && do_cemc_twr && do_hcalin_twr && do_hcalout_twr;
 
-  bool do_jet_reco = true;
+  bool do_jet_reco = false;
   bool do_jet_eval = do_jet_reco &&true;
 
   // HI Jet Reco for jet simulations in Au+Au (default is false for
@@ -121,7 +121,7 @@ int Fun4All_G4_sPHENIX(
   //---------------
 
   Fun4AllServer *se = Fun4AllServer::instance();
-  se->Verbosity(0);
+  se->Verbosity(01);
   // just if we set some flags somewhere in this macro
   recoConsts *rc = recoConsts::instance();
   // By default every random number generator uses
@@ -420,7 +420,15 @@ int Fun4All_G4_sPHENIX(
       //meta-lib for DST objects used in simulation outputs
       gSystem->Load("libg4dst.so");
 
-      Fun4AllInputManager *in = new Fun4AllHepMCInputManager( "DSTIN");
+      Fun4AllHepMCInputManager *in = new Fun4AllHepMCInputManager( "HepMCInput_1");
+      //in->set_vertex_distribution_width(100e-4,100e-4,30,0);//optional collision smear in space time
+      in->set_vertex_distribution_mean(0,0,1,0);//optional collision central position shift in space time
+      //! embedding ID for the event
+      //! positive ID is the embedded event of interest, e.g. jetty event from pythia
+      //! negative IDs are backgrounds, .e.g out of time pile up collisions
+      //! Usually, ID = 0 means the primary Au+Au collision background
+      in->set_embedding_id(2); //
+      in->Verbosity(2);
       se->registerInputManager( in );
       se->fileopen( in->Name().c_str(), inputFile );
     }
