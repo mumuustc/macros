@@ -123,7 +123,7 @@ int Fun4All_G4_sPHENIX(
   //---------------
 
   Fun4AllServer *se = Fun4AllServer::instance();
-  se->Verbosity(0);
+  se->Verbosity(1);
   // just if we set some flags somewhere in this macro
   recoConsts *rc = recoConsts::instance();
   // By default every random number generator uses
@@ -463,6 +463,8 @@ int Fun4All_G4_sPHENIX(
     // add random beam collisions following a collision diamond and rate from a HepMC stream
     Fun4AllHepMCPileupInputManager *pileup = new Fun4AllHepMCPileupInputManager("HepMCPileupInput");
     se->registerInputManager(pileup);
+    pileup->set_collision_rate(pileup_collision_rate);
+//    pileup->Verbosity(1);
     pileup->AddFile("./phpythia8_200GeVMB_hepmc.dat.gz");  // HepMC events used in pile up collisions. You can add multiple files, and the file list will be reused.
     //pileup->set_vertex_distribution_width(100e-4,100e-4,30,5);//override collision smear in space time
     //pileup->set_vertex_distribution_mean(0,0,0,0);//override collision central position shift in space time
