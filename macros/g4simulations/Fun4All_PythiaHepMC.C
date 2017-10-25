@@ -1,5 +1,5 @@
 int Fun4All_PythiaHepMC(
-    const int nEvents = 100,
+    const int nEvents = 1000,
     const char *inputFile = "phpythia8_MB.cfg",
     const char *outputFile = "phpythia8_MB")
 {
