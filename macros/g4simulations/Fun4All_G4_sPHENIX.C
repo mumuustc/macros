@@ -59,7 +59,7 @@ int Fun4All_G4_sPHENIX(
 
   bool do_pstof = false;
 
-  bool do_cemc = true;
+  bool do_cemc = false;
   bool do_cemc_cell = do_cemc && true;
   bool do_cemc_twr = do_cemc_cell && true;
   bool do_cemc_cluster = do_cemc_twr && true;
@@ -84,7 +84,7 @@ int Fun4All_G4_sPHENIX(
 
   bool do_calotrigger = false && do_cemc_twr && do_hcalin_twr && do_hcalout_twr;
 
-  bool do_jet_reco = true;
+  bool do_jet_reco = false;
   bool do_jet_eval = do_jet_reco && true;
 
   // HI Jet Reco for jet simulations in Au+Au (default is false for
@@ -472,76 +472,6 @@ int Fun4All_G4_sPHENIX(
     //pileup->set_collision_rate(100e3); // override collisions rate in Hz
   }
 
-  //temp lines for QA modules
-  {
-    gSystem->Load("libqa_modules");
-
-    if (do_jet_reco)
-    {
-      QAG4SimulationJet *calo_jet7 = new QAG4SimulationJet(
-          "AntiKt_Truth_r07", QAG4SimulationJet::kProcessTruthSpectrum);
-      se->registerSubsystem(calo_jet7);
-
-      QAG4SimulationJet *calo_jet7 = new QAG4SimulationJet(
-          "AntiKt_Truth_r04", QAG4SimulationJet::kProcessTruthSpectrum);
-      se->registerSubsystem(calo_jet7);
-
-      QAG4SimulationJet *calo_jet7 = new QAG4SimulationJet(
-          "AntiKt_Truth_r02", QAG4SimulationJet::kProcessTruthSpectrum);
-      se->registerSubsystem(calo_jet7);
-    }
-  }
-
-  // HF jet trigger moudle
-  assert(gSystem->Load("libHFJetTruthGeneration") == 0);
-  {
-    if (do_jet_reco)
-    {
-      HFJetTruthTrigger *jt = new HFJetTruthTrigger(
-          "HFJetTruthTrigger.root_r07", 5, "AntiKt_Truth_r07");
-      //            jt->Verbosity(HFJetTruthTrigger::VERBOSITY_MORE);
-      jt->set_pt_min(10);
-      jt->set_eta_min(-4);
-      jt->set_eta_max(4);
-      se->registerSubsystem(jt);
-
-      HFJetTruthTrigger *jt = new HFJetTruthTrigger(
-          "HFJetTruthTrigger.root_r04", 5, "AntiKt_Truth_r04");
-      //            jt->Verbosity(HFJetTruthTrigger::VERBOSITY_MORE);MORE);
-      jt->set_pt_min(10);
-      jt->set_eta_min(-4);
-      jt->set_eta_max(4);
-      se->registerSubsystem(jt);
-
-      HFJetTruthTrigger *jt = new HFJetTruthTrigger(
-          "HFJetTruthTrigger.root_r02", 5, "AntiKt_Truth_r02");
-      //            jt->Verbosity(HFJetTruthTrigger::VERBOSITY_MORE);MORE);
-      jt->set_pt_min(10);
-      jt->set_eta_min(-4);
-      jt->set_eta_max(4);
-      se->registerSubsystem(jt);
-    }
-  }
-
-  // HF jet analysis moudle
-  if (gSystem->Load("libslt") == 0)
-  {
-    if (do_jet_reco)
-    {
-      SoftLeptonTaggingTruth *slt = new SoftLeptonTaggingTruth(
-          "AntiKt_Truth_r07");
-      se->registerSubsystem(slt);
-
-      SoftLeptonTaggingTruth *slt = new SoftLeptonTaggingTruth(
-          "AntiKt_Truth_r04");
-      //          slt->Verbosity(1);
-      se->registerSubsystem(slt);
-
-      SoftLeptonTaggingTruth *slt = new SoftLeptonTaggingTruth(
-          "AntiKt_Truth_r02");
-      se->registerSubsystem(slt);
-    }
-  }
 
   if (do_DSTReader)
   {
@@ -565,6 +495,10 @@ int Fun4All_G4_sPHENIX(
   Fun4AllDstOutputManager *out = new Fun4AllDstOutputManager("DSTOUT", outputFile);
   if (do_dst_compress) DstCompress(out);
   se->registerOutputManager(out);
+
+  Fun4AllHepMCOutputManager *out1 = new Fun4AllHepMCOutputManager("HepMCOUT", string(outputFile) + string("_hepmc.dat.gz"));
+  out1->set_embedding_id(1); //! output the pythia sub-event
+  se->registerOutputManager(out1);
 
   //-----------------
   // Event processing
