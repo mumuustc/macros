@@ -1,7 +1,7 @@
 int Fun4All_PythiaHepMC(
     const int nEvents = 1000,
-    const char *inputFile = "phpythia8_MB.cfg",
-    const char *outputFile = "phpythia8_MB")
+    const char *inputFile = "phpythia8.cfg",
+    const char *outputFile = "phpythia8_200GeVMB")
 {
   gSystem->Load("libfun4all.so");
   gSystem->Load("libPHPythia8.so");
