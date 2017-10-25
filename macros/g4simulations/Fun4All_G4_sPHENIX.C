@@ -42,7 +42,8 @@ int Fun4All_G4_sPHENIX(
   const bool upsilons = false && !readhits;
   // Event pile up simulation with collision rate in Hz MB collisions.
   // Note please follow up the macro to verify the settings for beam parameters
-  const double pileup_collision_rate = 0;  // 100e3 for 100kHz nominal AuAu collision rate.
+  const double pileup_collision_rate = 1.2e7;  // 100e3 for 100kHz nominal AuAu collision rate.
+                                           // 1.2e7 Hz for max 200 GeV p+p collision [Table 4 sPH-TRG-000: sPHENIX five-year (2022-2026) running scenario and luminosity projections]
 
   //======================
   // What to run
@@ -462,7 +463,7 @@ int Fun4All_G4_sPHENIX(
     // add random beam collisions following a collision diamond and rate from a HepMC stream
     Fun4AllHepMCPileupInputManager *pileup = new Fun4AllHepMCPileupInputManager("HepMCPileupInput");
     se->registerInputManager(pileup);
-    pileup->AddFile("/sphenix/sim/sim01/sHijing/sHijing_0-12fm.dat");  // HepMC events used in pile up collisions. You can add multiple files, and the file list will be reused.
+    pileup->AddFile("./phpythia8_200GeVMB_hepmc.dat.gz");  // HepMC events used in pile up collisions. You can add multiple files, and the file list will be reused.
     //pileup->set_vertex_distribution_width(100e-4,100e-4,30,5);//override collision smear in space time
     //pileup->set_vertex_distribution_mean(0,0,0,0);//override collision central position shift in space time
     pileup->set_time_window(-35000.,+35000.); // override timing window in ns
