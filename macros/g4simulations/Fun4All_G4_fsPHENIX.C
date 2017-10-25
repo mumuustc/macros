@@ -148,10 +148,7 @@ int Fun4All_G4_fsPHENIX(
     }
   else if (readhepmc)
     {
-      // this module is needed to read the HepMC records into our G4 sims
-      // but only if you read HepMC input files
-      HepMCNodeReader *hr = new HepMCNodeReader();
-      se->registerSubsystem(hr);
+    // action is performed in later stage at the input manager level
     }
   else if (runpythia8)
     {
@@ -186,9 +183,6 @@ int Fun4All_G4_fsPHENIX(
       PHPythia6 *pythia6 = new PHPythia6();
       pythia6->set_config_file("phpythia6.cfg");
       se->registerSubsystem(pythia6);
-
-      HepMCNodeReader *hr = new HepMCNodeReader();
-      se->registerSubsystem(hr);
     }
   else
     {

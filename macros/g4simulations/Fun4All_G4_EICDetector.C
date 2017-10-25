@@ -116,11 +116,6 @@ int Fun4All_G4_EICDetector(
   bool do_EEMC_cluster = do_EEMC_twr && true;
   bool do_EEMC_eval = do_EEMC_cluster && true;
 
-
-  // Extended IR
-  bool do_ExtendedIR = true;
-
-
   // Other options
   bool do_global = true;
   bool do_global_fastsim = false;
@@ -158,7 +153,7 @@ int Fun4All_G4_EICDetector(
 
   // establish the geometry and reconstruction setup
   gROOT->LoadMacro("G4Setup_EICDetector.C");
-  G4Init(do_svtx,do_cemc,do_hcalin,do_magnet,do_hcalout,do_pipe,do_FGEM,do_EGEM,do_FEMC,do_FHCAL,do_EEMC,do_DIRC,do_RICH,do_Aerogel,n_TPC_layers,do_ExtendedIR);
+  G4Init(do_svtx,do_cemc,do_hcalin,do_magnet,do_hcalout,do_pipe,do_FGEM,do_EGEM,do_FEMC,do_FHCAL,do_EEMC,do_DIRC,do_RICH,do_Aerogel,n_TPC_layers);
 
   int absorberactive = 0; // set to 1 to make all absorbers active volumes
   //  const string magfield = "1.5"; // if like float -> solenoidal field in T, if string use as fieldmap name (including path)
@@ -196,10 +191,7 @@ int Fun4All_G4_EICDetector(
     }
   else if (readhepmc)
     {
-      // this module is needed to read the HepMC records into our G4 sims
-      // but only if you read HepMC input files
-      HepMCNodeReader *hr = new HepMCNodeReader();
-      se->registerSubsystem(hr);
+    // action is performed in later stage at the input manager level
     }
   else if (readeictree)
     {
@@ -208,9 +200,6 @@ int Fun4All_G4_EICDetector(
       eicr->OpenInputFile(inputFile);
 
       se->registerSubsystem(eicr);
-
-      HepMCNodeReader *hr = new HepMCNodeReader();
-      se->registerSubsystem(hr);
     }
   else if (runpythia8)
     {
@@ -220,9 +209,6 @@ int Fun4All_G4_EICDetector(
       // see coresoftware/generators/PHPythia8 for example config
       pythia8->set_config_file("phpythia8.cfg");
       se->registerSubsystem(pythia8);
-
-      HepMCNodeReader *hr = new HepMCNodeReader();
-      se->registerSubsystem(hr);
     }
   else if (runpythia6)
     {
@@ -232,9 +218,6 @@ int Fun4All_G4_EICDetector(
       // see coresoftware/generators/PHPythia6 for example config
       pythia6->set_config_file("phpythia6_ep.cfg");
       se->registerSubsystem(pythia6);
-
-      HepMCNodeReader *hr = new HepMCNodeReader();
-      se->registerSubsystem(hr);
     }
   else if (runhepgen)
     {
@@ -247,9 +230,6 @@ int Fun4All_G4_EICDetector(
       hepgen->set_momentum_electron(-20);
       hepgen->set_momentum_hadron(250);
       se->registerSubsystem(hepgen);
-
-      HepMCNodeReader *hr = new HepMCNodeReader();
-      se->registerSubsystem(hr);
     }
   else if (runsartre)
     {
@@ -270,9 +250,6 @@ int Fun4All_G4_EICDetector(
       pTrig->PrintConfig();
       mysartre->register_trigger((PHSartreGenTrigger *)pTrig);
       se->registerSubsystem(mysartre);
-
-      HepMCNodeReader *hr = new HepMCNodeReader();
-      se->registerSubsystem(hr);
     }
 
   // If "readhepMC" is also set, the particles will be embedded in Hijing events
@@ -385,7 +362,8 @@ int Fun4All_G4_EICDetector(
       G4Setup(absorberactive, magfield, TPythia6Decayer::kAll,
               do_svtx,do_cemc,do_hcalin,do_magnet,do_hcalout,do_pipe,
               do_FGEM,do_EGEM,do_FEMC,do_FHCAL,do_EEMC,do_DIRC,do_RICH,do_Aerogel,
-              do_ExtendedIR,magfield_rescale);
+              magfield_rescale);
+
     }
 
   //---------
