@@ -1,6 +1,6 @@
 int Fun4All_G4_sPHENIX(
     const int nEvents = 1,
-    const char *inputFile = "/sphenix/data/data02/review_2017-08-02/single_particle/spacal2d/fieldmap/G4Hits_sPHENIX_e-_eta0_8GeV-0002.root",
+    const char *inputFile = "/sphenix/sim/sim01/sHijing/sHijing_9-11fm.dat",
     const char *outputFile = "G4sPHENIX.root",
     const char *embed_input_file = "/sphenix/data/data02/review_2017-08-02/sHijing/fm_0-4.list")
 {
@@ -163,8 +163,14 @@ int Fun4All_G4_sPHENIX(
     {
       gSystem->Load("libPHPythia8.so");
 
-      PHPythia8 *pythia8 = new PHPythia8();
+      PHPy8JetTrigger *theTrigger = new PHPy8JetTrigger();
+      theTrigger->SetEtaHighLow(-.7, .7);
+      theTrigger->SetJetR(.4);
+      theTrigger->SetMinJetPt(20);
+
+      PHPythia8* pythia8 = new PHPythia8();
       // see coresoftware/generators/PHPythia8 for example config
+      pythia8->register_trigger(theTrigger);
       pythia8->set_config_file("phpythia8.cfg");
       if (readhepmc)
         pythia8->set_reuse_vertex(0);  // reuse vertex of subevent with embedding ID of 0
@@ -440,13 +446,13 @@ int Fun4All_G4_sPHENIX(
     Fun4AllHepMCInputManager *in = new Fun4AllHepMCInputManager("HepMCInput_1");
     se->registerInputManager(in);
     se->fileopen(in->Name().c_str(), inputFile);
-    //in->set_vertex_distribution_width(100e-4,100e-4,30,0);//optional collision smear in space time
+    in->set_vertex_distribution_width(0,0,10,0);//optional collision smear in space time
     //in->set_vertex_distribution_mean(0,0,1,0);//optional collision central position shift in space time
     //! embedding ID for the event
     //! positive ID is the embedded event of interest, e.g. jetty event from pythia
     //! negative IDs are backgrounds, .e.g out of time pile up collisions
     //! Usually, ID = 0 means the primary Au+Au collision background
-    //in->set_embedding_id(2);
+    in->set_embedding_id(0);
   }
   else
   {
