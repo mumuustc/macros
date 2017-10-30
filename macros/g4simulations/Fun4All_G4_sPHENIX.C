@@ -63,13 +63,13 @@ int Fun4All_G4_sPHENIX(
   bool do_cemc_cell = do_cemc && false;
   bool do_cemc_twr = do_cemc_cell && true;
   bool do_cemc_cluster = do_cemc_twr && true;
-  bool do_cemc_eval = true;
+  bool do_cemc_eval = false;
 
   bool do_hcalin = true;
   bool do_hcalin_cell = do_hcalin && false;
   bool do_hcalin_twr = do_hcalin_cell && true;
   bool do_hcalin_cluster = do_hcalin_twr && true;
-  bool do_hcalin_eval = true;
+  bool do_hcalin_eval = false;
 
   bool do_magnet = true;
 
@@ -77,7 +77,7 @@ int Fun4All_G4_sPHENIX(
   bool do_hcalout_cell = do_hcalout && false;
   bool do_hcalout_twr = do_hcalout_cell && true;
   bool do_hcalout_cluster = do_hcalout_twr && true;
-  bool do_hcalout_eval = true;
+  bool do_hcalout_eval = false;
 
   bool do_global = false;
   bool do_global_fastsim = false;
@@ -90,7 +90,7 @@ int Fun4All_G4_sPHENIX(
   // HI Jet Reco for jet simulations in Au+Au (default is false for
   // single particle / p+p simulations, or for Au+Au simulations which
   // don't care about jets)
-  bool do_HIjetreco = true && do_jet_reco && do_cemc_twr && do_hcalin_twr && do_hcalout_twr;
+  bool do_HIjetreco = true && do_jet_reco ;
 
   bool do_dst_compress = false;
 
