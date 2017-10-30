@@ -495,6 +495,38 @@ int Fun4All_G4_sPHENIX(
                 /*bool*/ do_hcalout_twr);
   }
 
+  // HF jet trigger moudle
+  if (gSystem->Load("libHFJetTruthGeneration") == 0);
+    {
+      if (do_jet_reco)
+        {
+          HFJetTruthTrigger * jt = new HFJetTruthTrigger(
+              "HFJetTruthTrigger.root_r07",5 , "AntiKt_Truth_r07");
+//            jt->Verbosity(HFJetTruthTrigger::VERBOSITY_MORE);
+          jt->set_pt_min(10);
+          jt->set_eta_min(-4);
+          jt->set_eta_max(4);
+          se->registerSubsystem(jt);
+
+          HFJetTruthTrigger * jt = new HFJetTruthTrigger(
+              "HFJetTruthTrigger.root_r04",5 , "AntiKt_Truth_r04");
+//            jt->Verbosity(HFJetTruthTrigger::VERBOSITY_MORE);MORE);
+          jt->set_pt_min(10);
+          jt->set_eta_min(-4);
+          jt->set_eta_max(4);
+          se->registerSubsystem(jt);
+
+          HFJetTruthTrigger * jt = new HFJetTruthTrigger(
+              "HFJetTruthTrigger.root_r02",5 , "AntiKt_Truth_r02");
+//            jt->Verbosity(HFJetTruthTrigger::VERBOSITY_MORE);MORE);
+          jt->set_pt_min(10);
+          jt->set_eta_min(-4);
+          jt->set_eta_max(4);
+          se->registerSubsystem(jt);
+        }
+    }
+
+
   //  Fun4AllDstOutputManager *out = new Fun4AllDstOutputManager("DSTOUT", outputFile);
   // if (do_dst_compress) DstCompress(out);
   //  se->registerOutputManager(out);
