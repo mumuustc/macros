@@ -1,7 +1,7 @@
 int Fun4All_G4_sPHENIX(
     const int nEvents = 1,
-    const char *inputFile = "/sphenix/sim/sim01/sHijing/sHijing_9-11fm.dat",
-    const char *outputFile = "G4sPHENIX.root",
+    const char *inputFile = "G4sPHENIX.root",
+    const char *outputFile = "G4sPHENIX2.root",
     const char *embed_input_file = "/sphenix/data/data02/review_2017-08-02/sHijing/fm_0-4.list")
 {
   // Set the number of TPC layer
@@ -18,13 +18,13 @@ int Fun4All_G4_sPHENIX(
   //
   // In case reading production output, please double check your G4Setup_sPHENIX.C and G4_*.C consistent with those in the production macro folder
   // E.g. /sphenix/sim//sim01/production/2016-07-21/single_particle/spacal2d/
-  const bool readhits = false;
+  const bool readhits = true;
   // Or:
   // read files in HepMC format (typically output from event generators like hijing or pythia)
-  const bool readhepmc = true;  // read HepMC files
+  const bool readhepmc = false;  // read HepMC files
   // Or:
   // Use pythia
-  const bool runpythia8 = true;
+  const bool runpythia8 = false;
   const bool runpythia6 = false;
   //
   // **** And ****
@@ -48,44 +48,44 @@ int Fun4All_G4_sPHENIX(
   // What to run
   //======================
 
-  bool do_bbc = true;
+  bool do_bbc = false;
 
   bool do_pipe = true;
 
   bool do_svtx = true;
-  bool do_svtx_cell = do_svtx && true;
+  bool do_svtx_cell = do_svtx && false;
   bool do_svtx_track = do_svtx_cell && true;
-  bool do_svtx_eval = do_svtx_track && true;
+  bool do_svtx_eval = true;
 
   bool do_pstof = false;
 
   bool do_cemc = true;
-  bool do_cemc_cell = do_cemc && true;
+  bool do_cemc_cell = do_cemc && false;
   bool do_cemc_twr = do_cemc_cell && true;
   bool do_cemc_cluster = do_cemc_twr && true;
-  bool do_cemc_eval = do_cemc_cluster && true;
+  bool do_cemc_eval = true;
 
   bool do_hcalin = true;
-  bool do_hcalin_cell = do_hcalin && true;
+  bool do_hcalin_cell = do_hcalin && false;
   bool do_hcalin_twr = do_hcalin_cell && true;
   bool do_hcalin_cluster = do_hcalin_twr && true;
-  bool do_hcalin_eval = do_hcalin_cluster && true;
+  bool do_hcalin_eval = true;
 
   bool do_magnet = true;
 
   bool do_hcalout = true;
-  bool do_hcalout_cell = do_hcalout && true;
+  bool do_hcalout_cell = do_hcalout && false;
   bool do_hcalout_twr = do_hcalout_cell && true;
   bool do_hcalout_cluster = do_hcalout_twr && true;
-  bool do_hcalout_eval = do_hcalout_cluster && true;
+  bool do_hcalout_eval = true;
 
-  bool do_global = true;
-  bool do_global_fastsim = true;
+  bool do_global = false;
+  bool do_global_fastsim = false;
 
-  bool do_calotrigger = true && do_cemc_twr && do_hcalin_twr && do_hcalout_twr;
+  bool do_calotrigger = false && do_cemc_twr && do_hcalin_twr && do_hcalout_twr;
 
-  bool do_jet_reco = true;
-  bool do_jet_eval = do_jet_reco && true;
+  bool do_jet_reco = false;
+  bool do_jet_eval = true;
 
   // HI Jet Reco for jet simulations in Au+Au (default is false for
   // single particle / p+p simulations, or for Au+Au simulations which
