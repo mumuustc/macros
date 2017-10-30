@@ -35,7 +35,7 @@ int Fun4All_G4_sPHENIX(
 
   // Besides the above flags. One can further choose to further put in following particles in Geant4 simulation
   // Use multi-particle generator (PHG4SimpleEventGenerator), see the code block below to choose particle species and kinematics
-  const bool particles = false && !readhits;
+  const bool particles = true && !readhits;
   // or gun/ very simple single particle gun generator
   const bool usegun = false && !readhits;
   // Throw single Upsilons, may be embedded in Hijing by setting readhepmc flag also  (note, careful to set Z vertex equal to Hijing events)
@@ -193,9 +193,15 @@ int Fun4All_G4_sPHENIX(
     // If "readhepMC" is also set, the particles will be embedded in Hijing events
     if (particles)
     {
+      // This is a trick for current vertex seeding method to analyze pythia productions
+      // One of the pythia vertexes are used as vertex seeding in the pattern recognition stage.
+      // However, some pythia vertex contain long decays leading to a failed the vertex seeding and pattern recognition
+      // Solution is to add a soft photon tagging the primary collision vertex from HepMC records
+      // It has highest embedding ID and therefore, the highest priority during the seeding vertex selection.
+
       // toss low multiplicity dummy events
       PHG4SimpleEventGenerator *gen = new PHG4SimpleEventGenerator();
-      gen->add_particles("pi-", 2);  // mu+,e+,proton,pi+,Upsilon
+      gen->add_particles("gamma", 1);  // mu+,e+,proton,pi+,Upsilon
       //gen->add_particles("pi+",100); // 100 pion option
       if (readhepmc || do_embedding || runpythia8 || runpythia6)
       {
@@ -212,10 +218,10 @@ int Fun4All_G4_sPHENIX(
       }
       gen->set_vertex_size_function(PHG4SimpleEventGenerator::Uniform);
       gen->set_vertex_size_parameters(0.0, 0.0);
-      gen->set_eta_range(-1.0, 1.0);
+      gen->set_eta_range(-5.0, -5.0);
       gen->set_phi_range(-1.0 * TMath::Pi(), 1.0 * TMath::Pi());
       //gen->set_pt_range(0.1, 50.0);
-      gen->set_pt_range(0.1, 20.0);
+      gen->set_pt_range(0.1, .1);
       gen->Embed(2);
       gen->Verbosity(0);
 
@@ -447,6 +453,7 @@ int Fun4All_G4_sPHENIX(
     se->registerInputManager(in);
     se->fileopen(in->Name().c_str(), inputFile);
     in->set_vertex_distribution_width(0,0,10,0);//optional collision smear in space time
+    in->set_vertex_distribution_function(PHHepMCGenHelper::Uniform,PHHepMCGenHelper::Uniform,PHHepMCGenHelper::Uniform,PHHepMCGenHelper::Uniform);
     //in->set_vertex_distribution_mean(0,0,1,0);//optional collision central position shift in space time
     //! embedding ID for the event
     //! positive ID is the embedded event of interest, e.g. jetty event from pythia
