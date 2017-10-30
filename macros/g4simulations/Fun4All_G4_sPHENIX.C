@@ -92,7 +92,7 @@ int Fun4All_G4_sPHENIX(
   // don't care about jets)
   bool do_HIjetreco = false && do_jet_reco && do_cemc_twr && do_hcalin_twr && do_hcalout_twr;
 
-  bool do_dst_compress = false;
+  bool do_dst_compress = true;
 
   //Option to convert DST to human command readable TTree for quick poke around the outputs
   bool do_DSTReader = false;
