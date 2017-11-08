@@ -151,8 +151,7 @@ double Svtx(PHG4Reco* g4Reco, double radius,
   double inner_readout_radius = 30.;
   if (inner_readout_radius<radius)  inner_readout_radius = radius;
 
-  string tpcgas = "G4_Ar";
-  //string tpcgas = "sPHENIX_TPC_Gas";  // leave this change until later - will require some parameter retuning
+  string tpcgas = "sPHENIX_TPC_Gas";  //  Ne(90%) CF4(10%) - defined in g4main/PHG4Reco.cc
 
   // Layer of inert TPC gas from 20-30 cm
   if (inner_readout_radius - radius > 0) {
@@ -311,7 +310,7 @@ void Svtx_Cells(int verbosity = 0)
   // set cylinder cell TPC cell sizes
   for (int i=n_maps_layer + n_intt_layer;i<Max_si_layer;++i) {
     svtx_cells->cellsize(i, tpc_cell_x, tpc_cell_y);
-    svtx_cells->set_timing_window(i, -14000.0, +14000.0);
+    svtx_cells->set_timing_window(i, -35000.0, +35000.0);
   }
   
   se->registerSubsystem(svtx_cells);
@@ -487,9 +486,9 @@ void Svtx_Reco(int verbosity = 0)
   //------------------
   // Track Projections
   //------------------
-    PHG4SvtxTrackProjection* projection = new PHG4SvtxTrackProjection();
-    projection->Verbosity(verbosity);
-    se->registerSubsystem( projection );
+  PHG4GenFitTrackProjection *projection = new PHG4GenFitTrackProjection();
+  projection->Verbosity(verbosity);
+  se->registerSubsystem( projection );
 
   /*  
   //----------------------
