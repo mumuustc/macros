@@ -1,6 +1,6 @@
 int Fun4All_G4_sPHENIX(
     const int nEvents = 1,
-    const char *inputFile = "/sphenix/sim/sim01/sHijing/sHijing_9-11fm.dat",
+    const char *inputFile = "/sphenix/sim/sim01/sHijing/sHijing_0-4fm.dat",
     const char *outputFile = "G4sPHENIX.root",
     const char *embed_input_file = "/sphenix/data/data02/review_2017-08-02/sHijing/fm_0-4.list")
 {
