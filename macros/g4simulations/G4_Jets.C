@@ -5,9 +5,13 @@ void Jet_Reco(int verbosity = 0) {
   
   Fun4AllServer *se = Fun4AllServer::instance();
 
+  // analyze the embedded p+p jet event for Truth jets
+  TruthJetInput * ji = new TruthJetInput(Jet::PARTICLE);
+  ji->add_embedding_flag(1);
+
   // truth particle level jets
   JetReco *truthjetreco = new JetReco();
-  truthjetreco->add_input(new TruthJetInput(Jet::PARTICLE));
+  truthjetreco->add_input(ji);
   truthjetreco->add_algo(new FastJetAlgo(Jet::ANTIKT,0.2),"AntiKt_Truth_r02");
   truthjetreco->add_algo(new FastJetAlgo(Jet::ANTIKT,0.3),"AntiKt_Truth_r03");
   truthjetreco->add_algo(new FastJetAlgo(Jet::ANTIKT,0.4),"AntiKt_Truth_r04");
@@ -17,6 +21,21 @@ void Jet_Reco(int verbosity = 0) {
   truthjetreco->add_algo(new FastJetAlgo(Jet::ANTIKT,0.8),"AntiKt_Truth_r08");
   truthjetreco->set_algo_node("ANTIKT");
   truthjetreco->set_input_node("TRUTH");
+  truthjetreco->Verbosity(verbosity);
+  se->registerSubsystem(truthjetreco);
+
+  // truth particle level jets
+  JetReco *truthjetreco = new JetReco();
+  truthjetreco->add_input(new TruthJetInput(Jet::PARTICLE));
+  truthjetreco->add_algo(new FastJetAlgo(Jet::ANTIKT,0.2),"AntiKt_Truth_Embedded_r02");
+  truthjetreco->add_algo(new FastJetAlgo(Jet::ANTIKT,0.3),"AntiKt_Truth_Embedded_r03");
+  truthjetreco->add_algo(new FastJetAlgo(Jet::ANTIKT,0.4),"AntiKt_Truth_Embedded_r04");
+  truthjetreco->add_algo(new FastJetAlgo(Jet::ANTIKT,0.5),"AntiKt_Truth_Embedded_r05");
+  truthjetreco->add_algo(new FastJetAlgo(Jet::ANTIKT,0.6),"AntiKt_Truth_Embedded_r06");
+  truthjetreco->add_algo(new FastJetAlgo(Jet::ANTIKT,0.7),"AntiKt_Truth_Embedded_r07");
+  truthjetreco->add_algo(new FastJetAlgo(Jet::ANTIKT,0.8),"AntiKt_Truth_Embedded_r08");
+  truthjetreco->set_algo_node("ANTIKT");
+  truthjetreco->set_input_node("TRUTH_EMBEDDED");
   truthjetreco->Verbosity(verbosity);
   se->registerSubsystem(truthjetreco);
 

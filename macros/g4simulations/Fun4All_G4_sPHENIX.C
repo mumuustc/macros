@@ -2,9 +2,9 @@
 using namespace std;
 
 int Fun4All_G4_sPHENIX(
-    const int nEvents = 1,
-    const char *inputFile = "/sphenix/sim/sim01/sHijing/sHijing_0-4fm.dat",
-    const char *outputFile = "G4sPHENIX.root",
+    const int nEvents = 10,
+    const char *inputFile = "/sphenix/data/data02/HF-production-bjet-AuAu200/fm_0-4/pythia8/G4Hits_AuAu200_Pythia8_bjet_0-4fm_096800_096850.root",
+    const char *outputFile = "G4sPHENIX2.root",
     const char *embed_input_file = "/sphenix/data/data02/review_2017-08-02/sHijing/fm_0-4.list")
 {
   // Set the number of TPC layer
@@ -21,7 +21,7 @@ int Fun4All_G4_sPHENIX(
   //
   // In case reading production output, please double check your G4Setup_sPHENIX.C and G4_*.C consistent with those in the production macro folder
   // E.g. /sphenix/sim//sim01/production/2016-07-21/single_particle/spacal2d/
-  const bool readhits = false;
+  const bool readhits = true;
   // Or:
   // read files in HepMC format (typically output from event generators like hijing or pythia)
   const bool readhepmc = true;  // read HepMC files
@@ -38,7 +38,7 @@ int Fun4All_G4_sPHENIX(
 
   // Besides the above flags. One can further choose to further put in following particles in Geant4 simulation
   // Use multi-particle generator (PHG4SimpleEventGenerator), see the code block below to choose particle species and kinematics
-  const bool particles = true && !readhits;
+  const bool particles = false && !readhits;
   // or gun/ very simple single particle gun generator
   const bool usegun = false && !readhits;
   // Throw single Upsilons, may be embedded in Hijing by setting readhepmc flag also  (note, careful to set Z vertex equal to Hijing events)
@@ -51,51 +51,52 @@ int Fun4All_G4_sPHENIX(
   // What to run
   //======================
 
-  bool do_bbc = true;
+  bool do_bbc = false;
 
   bool do_pipe = true;
 
   bool do_svtx = true;
-  bool do_svtx_cell = do_svtx && true;
+  bool do_svtx_cell = do_svtx && false;
   bool do_svtx_track = do_svtx_cell && true;
-  bool do_svtx_eval = do_svtx_track && false;
+  bool do_svtx_eval = true;
 
   bool do_pstof = false;
 
   bool do_cemc = true;
-  bool do_cemc_cell = do_cemc && true;
+  bool do_cemc_cell = do_cemc && false;
   bool do_cemc_twr = do_cemc_cell && true;
   bool do_cemc_cluster = do_cemc_twr && true;
   bool do_cemc_eval = do_cemc_cluster && false;
 
   bool do_hcalin = true;
-  bool do_hcalin_cell = do_hcalin && true;
+  bool do_hcalin_cell = do_hcalin && false;
   bool do_hcalin_twr = do_hcalin_cell && true;
   bool do_hcalin_cluster = do_hcalin_twr && true;
   bool do_hcalin_eval = do_hcalin_cluster && false;
+  bool do_hcalin_eval = false;
 
   bool do_magnet = true;
 
   bool do_hcalout = true;
-  bool do_hcalout_cell = do_hcalout && true;
+  bool do_hcalout_cell = do_hcalout && false;
   bool do_hcalout_twr = do_hcalout_cell && true;
   bool do_hcalout_cluster = do_hcalout_twr && true;
   bool do_hcalout_eval = do_hcalout_cluster && false;
 
-  bool do_global = true;
-  bool do_global_fastsim = true;
+  bool do_global = false;
+  bool do_global_fastsim = false;
 
   bool do_calotrigger = false && do_cemc_twr && do_hcalin_twr && do_hcalout_twr;
 
-  bool do_jet_reco = false;
+  bool do_jet_reco = true;
   bool do_jet_eval = do_jet_reco && true;
 
-  // HI Jet Reco for p+Au / Au+Au collisions (default is false for
-  // single particle / p+p-only simulations, or for p+Au / Au+Au
-  // simulations which don't particularly care about jets)
-  bool do_HIjetreco = false && do_cemc_twr && do_hcalin_twr && do_hcalout_twr;
+  // HI Jet Reco for jet simulations in Au+Au (default is false for
+  // single particle / p+p simulations, or for Au+Au simulations which
+  // don't care about jets)
+  bool do_HIjetreco = true && do_jet_reco ;
 
-  bool do_dst_compress = true;
+  bool do_dst_compress = false;
 
   //Option to convert DST to human command readable TTree for quick poke around the outputs
   bool do_DSTReader = false;
@@ -125,7 +126,7 @@ int Fun4All_G4_sPHENIX(
   //---------------
 
   Fun4AllServer *se = Fun4AllServer::instance();
-  se->Verbosity(0);
+  se->Verbosity(01);
   // just if we set some flags somewhere in this macro
   recoConsts *rc = recoConsts::instance();
   // By default every random number generator uses
@@ -518,9 +519,41 @@ int Fun4All_G4_sPHENIX(
                 /*bool*/ do_hcalout_twr);
   }
 
-    Fun4AllDstOutputManager *out = new Fun4AllDstOutputManager("DSTOUT", outputFile);
-   if (do_dst_compress) DstCompress(out);
-    se->registerOutputManager(out);
+  // HF jet trigger moudle
+  if (gSystem->Load("libHFJetTruthGeneration") == 0);
+    {
+      if (do_jet_reco)
+        {
+          HFJetTruthTrigger * jt = new HFJetTruthTrigger(
+              "HFJetTruthTrigger.root_r07",5 , "AntiKt_Truth_r07");
+//            jt->Verbosity(HFJetTruthTrigger::VERBOSITY_MORE);
+          jt->set_pt_min(10);
+          jt->set_eta_min(-4);
+          jt->set_eta_max(4);
+          se->registerSubsystem(jt);
+
+          HFJetTruthTrigger * jt = new HFJetTruthTrigger(
+              "HFJetTruthTrigger.root_r04",5 , "AntiKt_Truth_r04");
+//            jt->Verbosity(HFJetTruthTrigger::VERBOSITY_MORE);MORE);
+          jt->set_pt_min(10);
+          jt->set_eta_min(-4);
+          jt->set_eta_max(4);
+          se->registerSubsystem(jt);
+
+          HFJetTruthTrigger * jt = new HFJetTruthTrigger(
+              "HFJetTruthTrigger.root_r02",5 , "AntiKt_Truth_r02");
+//            jt->Verbosity(HFJetTruthTrigger::VERBOSITY_MORE);MORE);
+          jt->set_pt_min(10);
+          jt->set_eta_min(-4);
+          jt->set_eta_max(4);
+          se->registerSubsystem(jt);
+        }
+    }
+
+
+  //  Fun4AllDstOutputManager *out = new Fun4AllDstOutputManager("DSTOUT", outputFile);
+  // if (do_dst_compress) DstCompress(out);
+  //  se->registerOutputManager(out);
 
   //-----------------
   // Event processing
