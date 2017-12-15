@@ -24,10 +24,10 @@ int Fun4All_G4_sPHENIX(
   const bool readhits = true;
   // Or:
   // read files in HepMC format (typically output from event generators like hijing or pythia)
-  const bool readhepmc = true;  // read HepMC files
+  const bool readhepmc = false;  // read HepMC files
   // Or:
   // Use pythia
-  const bool runpythia8 = true;
+  const bool runpythia8 = false;
   const bool runpythia6 = false;
   //
   // **** And ****
