@@ -2,7 +2,7 @@
 using namespace std;
 
 int Fun4All_G4_sPHENIX(
-    const int nEvents = 10,
+    const int nEvents = 2,
     const char *inputFile = "/sphenix/data/data02/HF-production-bjet-AuAu200/fm_0-4/pythia8/G4Hits_AuAu200_Pythia8_bjet_0-4fm_096800_096850.root",
     const char *outputFile = "G4sPHENIX2.root",
     const char *embed_input_file = "/sphenix/data/data02/review_2017-08-02/sHijing/fm_0-4.list")
