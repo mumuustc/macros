@@ -2,8 +2,8 @@
 using namespace std;
 
 int Fun4All_G4_sPHENIX(
-    const int nEvents = 100,
-    const char *inputFile = "/sphenix/sim/sim01/sHijing/sHijing_0-12fm.dat",
+    const int nEvents = 50,
+    const char *inputFile = "/sphenix/sim/sim01/sHijing/sHijing_9-11fm.dat",
     const char *outputFile = "G4sPHENIX.root",
     const char *embed_input_file = "/sphenix/data/data02/review_2017-08-02/sHijing/fm_0-4.list")
 {
@@ -45,7 +45,7 @@ int Fun4All_G4_sPHENIX(
   const bool upsilons = false && !readhits;
   // Event pile up simulation with collision rate in Hz MB collisions.
   // Note please follow up the macro to verify the settings for beam parameters
-  const double pileup_collision_rate = 0;  // 100e3 for 100kHz nominal AuAu collision rate.
+  const double pileup_collision_rate = 100e3;  // 100e3 for 100kHz nominal AuAu collision rate.
 
   //======================
   // What to run
@@ -62,7 +62,7 @@ int Fun4All_G4_sPHENIX(
 
   bool do_pstof = false;
 
-  bool do_cemc = true;
+  bool do_cemc = false;
   bool do_cemc_cell = do_cemc && false;
   bool do_cemc_twr = do_cemc_cell && true;
   bool do_cemc_cluster = do_cemc_twr && true;
@@ -466,7 +466,7 @@ int Fun4All_G4_sPHENIX(
     Fun4AllHepMCPileupInputManager *pileup = new Fun4AllHepMCPileupInputManager("HepMCPileupInput");
     se->registerInputManager(pileup);
 
-    const string pileupfile("/sphenix/sim/sim01/sHijing/sHijing_0-12fm.dat");
+    const string pileupfile("/sphenix/sim/sim01/sHijing/sHijing_9-11fm.dat");
     pileup->AddFile(pileupfile);  // HepMC events used in pile up collisions. You can add multiple files, and the file list will be reused.
     //pileup->set_vertex_distribution_width(100e-4,100e-4,30,5);//override collision smear in space time
     //pileup->set_vertex_distribution_mean(0,0,0,0);//override collision central position shift in space time
@@ -524,7 +524,7 @@ int Fun4All_G4_sPHENIX(
     return;
   }
 
-  se->skip(300);
+  se->skip(200);
   se->run(nEvents);
 
   //-----
