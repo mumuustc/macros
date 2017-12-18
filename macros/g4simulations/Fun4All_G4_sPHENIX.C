@@ -2,7 +2,7 @@
 using namespace std;
 
 int Fun4All_G4_sPHENIX(
-    const int nEvents = 50,
+    const int nEvents = 2,
     const char *inputFile = "/sphenix/sim/sim01/sHijing/sHijing_9-11fm.dat",
     const char *outputFile = "G4sPHENIX.root",
     const char *embed_input_file = "/sphenix/data/data02/review_2017-08-02/sHijing/fm_0-4.list")
@@ -55,7 +55,7 @@ int Fun4All_G4_sPHENIX(
 
   bool do_pipe = true;
 
-  bool do_svtx = true;
+  bool do_svtx = false;
   bool do_svtx_cell = do_svtx && true;
   bool do_svtx_track = do_svtx_cell && true;
   bool do_svtx_eval = do_svtx_track && true;
@@ -450,6 +450,9 @@ int Fun4All_G4_sPHENIX(
     //! negative IDs are backgrounds, .e.g out of time pile up collisions
     //! Usually, ID = 0 means the primary Au+Au collision background
     //in->set_embedding_id(2);
+
+
+//    in->Verbosity(4);
   }
   else
   {
@@ -461,13 +464,19 @@ int Fun4All_G4_sPHENIX(
 
   if (pileup_collision_rate > 0)
   {
+
+    const string pileupfile("/sphenix/sim/sim01/sHijing/sHijing_9-11fm.dat");
+    const int n_pileup_skip = 100;
+
+
     // pile up simulation.
     // add random beam collisions following a collision diamond and rate from a HepMC stream
     Fun4AllHepMCPileupInputManager *pileup = new Fun4AllHepMCPileupInputManager("HepMCPileupInput");
     se->registerInputManager(pileup);
 
-    const string pileupfile("/sphenix/sim/sim01/sHijing/sHijing_9-11fm.dat");
-    pileup->AddFile(pileupfile);  // HepMC events used in pile up collisions. You can add multiple files, and the file list will be reused.
+
+    se->fileopen(pileup->Name().c_str(), pileupfile.c_str());
+//    pileup->AddFile(pileupfile);  // HepMC events used in pile up collisions. You can add multiple files, and the file list will be reused.
     //pileup->set_vertex_distribution_width(100e-4,100e-4,30,5);//override collision smear in space time
     //pileup->set_vertex_distribution_mean(0,0,0,0);//override collision central position shift in space time
     pileup->set_collision_rate(pileup_collision_rate);
@@ -484,6 +493,10 @@ int Fun4All_G4_sPHENIX(
     pileup->set_time_window(time_window_minus, time_window_plus);  // override timing window in ns
     cout << "Collision pileup enabled using file " << pileupfile << " with collision rate " << pileup_collision_rate
          << " and time window " << time_window_minus << " to " << time_window_plus << endl;
+
+    pileup->Verbosity(4);
+    pileup->PushBackEvents(-n_pileup_skip);
+
   }
 
   if (do_DSTReader)
@@ -524,7 +537,7 @@ int Fun4All_G4_sPHENIX(
     return;
   }
 
-  se->skip(200);
+  se->skip(2);
   se->run(nEvents);
 
   //-----
