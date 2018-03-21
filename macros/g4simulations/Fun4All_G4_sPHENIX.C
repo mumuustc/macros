@@ -171,11 +171,17 @@ int Fun4All_G4_sPHENIX(
       pythia8->set_config_file("phpythia8.cfg");
       if (readhepmc)
         pythia8->set_reuse_vertex(0);  // reuse vertex of subevent with embedding ID of 0
-       pythia8->set_vertex_distribution_width(0,0,10,0); // additional vertex smearing if needed, more vertex options available
-       pythia8->set_vertex_distribution_function(PHG4SimpleEventGenerator::Uniform,
-           PHG4SimpleEventGenerator::Uniform,
-           PHG4SimpleEventGenerator::Uniform,
-           PHG4SimpleEventGenerator::Uniform);
+      else
+      {
+        // generate 10-cm flat vertex in z
+
+        pythia8->set_vertex_distribution_width(0,0,10,0); // additional vertex smearing if needed, more vertex options available
+        pythia8->set_vertex_distribution_function(PHG4SimpleEventGenerator::Uniform,
+            PHG4SimpleEventGenerator::Uniform,
+            PHG4SimpleEventGenerator::Uniform,
+            PHG4SimpleEventGenerator::Uniform);
+
+      }
       se->registerSubsystem(pythia8);
     }
 
