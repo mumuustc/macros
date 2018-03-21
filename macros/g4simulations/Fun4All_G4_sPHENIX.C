@@ -25,7 +25,7 @@ int Fun4All_G4_sPHENIX(
   const bool readhepmc = false;  // read HepMC files
   // Or:
   // Use pythia
-  const bool runpythia8 = false;
+  const bool runpythia8 = true;
   const bool runpythia6 = false;
   //
   // **** And ****
@@ -36,7 +36,7 @@ int Fun4All_G4_sPHENIX(
 
   // Besides the above flags. One can further choose to further put in following particles in Geant4 simulation
   // Use multi-particle generator (PHG4SimpleEventGenerator), see the code block below to choose particle species and kinematics
-  const bool particles = true && !readhits;
+  const bool particles = false && !readhits;
   // or gun/ very simple single particle gun generator
   const bool usegun = false && !readhits;
   // Throw single Upsilons, may be embedded in Hijing by setting readhepmc flag also  (note, careful to set Z vertex equal to Hijing events)
@@ -171,7 +171,11 @@ int Fun4All_G4_sPHENIX(
       pythia8->set_config_file("phpythia8.cfg");
       if (readhepmc)
         pythia8->set_reuse_vertex(0);  // reuse vertex of subevent with embedding ID of 0
-      // pythia8->set_vertex_distribution_width(0,0,10,0); // additional vertex smearing if needed, more vertex options available
+       pythia8->set_vertex_distribution_width(0,0,10,0); // additional vertex smearing if needed, more vertex options available
+       pythia8->set_vertex_distribution_function(PHG4SimpleEventGenerator::Uniform,
+           PHG4SimpleEventGenerator::Uniform,
+           PHG4SimpleEventGenerator::Uniform,
+           PHG4SimpleEventGenerator::Uniform);
       se->registerSubsystem(pythia8);
     }
 
