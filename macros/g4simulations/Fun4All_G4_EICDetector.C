@@ -1,6 +1,6 @@
 int Fun4All_G4_EICDetector(
                            const int nEvents = 10,
-                           const char * inputFile = "/sphenix/data/data02/review_2017-08-02/single_particle/spacal2d/fieldmap/G4Hits_sPHENIX_e-_eta0_8GeV-0002.root",
+                           const char * inputFile = "phpythia6.cfg",
                            const char * outputFile = "G4EICDetector.root"
                            )
 {
@@ -215,7 +215,7 @@ int Fun4All_G4_EICDetector(
 
       PHPythia6 *pythia6 = new PHPythia6();
       // see coresoftware/generators/PHPythia6 for example config
-      pythia6->set_config_file("phpythia6.cfg");
+      pythia6->set_config_file(inputFile);
       pythia6->set_vertex_distribution_width(0.005,0.005,1,0);
 //      pythia6->save_ascii("phpythia6.dat");
       se->registerSubsystem(pythia6);
