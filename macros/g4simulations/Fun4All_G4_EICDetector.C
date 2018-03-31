@@ -1,5 +1,5 @@
 int Fun4All_G4_EICDetector(
-                           const int nEvents = 1,
+                           const int nEvents = 10,
                            const char * inputFile = "/sphenix/data/data02/review_2017-08-02/single_particle/spacal2d/fieldmap/G4Hits_sPHENIX_e-_eta0_8GeV-0002.root",
                            const char * outputFile = "G4EICDetector.root"
                            )
@@ -30,7 +30,7 @@ int Fun4All_G4_EICDetector(
   const bool runpythia8 = false;
   // Or:
   // Use Pythia 6
-  const bool runpythia6 = false;
+  const bool runpythia6 = true;
   // Or:
   // Use HEPGen
   const bool runhepgen = false;
@@ -44,7 +44,7 @@ int Fun4All_G4_EICDetector(
   // Use multi-particle generator (PHG4SimpleEventGenerator), see the code block below to choose particle species and kinematics
   const bool particles = false && !readhits;
   // or gun/ very simple single particle gun generator
-  const bool usegun = true && !readhits;
+  const bool usegun = false && !readhits;
   // Throw single Upsilons, may be embedded in Hijing by setting readhepmc flag also  (note, careful to set Z vertex equal to Hijing events)
   const bool upsilons = false && !readhits;
 
@@ -68,13 +68,13 @@ int Fun4All_G4_EICDetector(
   bool do_cemc_cell = do_cemc && true;
   bool do_cemc_twr = do_cemc_cell && true;
   bool do_cemc_cluster = do_cemc_twr && true;
-  bool do_cemc_eval = do_cemc_cluster && true;
+  bool do_cemc_eval = do_cemc_cluster && false;
 
   bool do_hcalin = true;
   bool do_hcalin_cell = do_hcalin && true;
   bool do_hcalin_twr = do_hcalin_cell && true;
   bool do_hcalin_cluster = do_hcalin_twr && true;
-  bool do_hcalin_eval = do_hcalin_cluster && true;
+  bool do_hcalin_eval = do_hcalin_cluster && false;
 
   bool do_magnet = true;
 
@@ -82,7 +82,7 @@ int Fun4All_G4_EICDetector(
   bool do_hcalout_cell = do_hcalout && true;
   bool do_hcalout_twr = do_hcalout_cell && true;
   bool do_hcalout_cluster = do_hcalout_twr && true;
-  bool do_hcalout_eval = do_hcalout_cluster && true;
+  bool do_hcalout_eval = do_hcalout_cluster && false;
 
   // EICDetector geometry - barrel
   bool do_DIRC = true;
@@ -91,20 +91,20 @@ int Fun4All_G4_EICDetector(
   bool do_FGEM = true;
   bool do_FGEM_track = do_FGEM &&  true;
 
-  bool do_RICH = true;
+  bool do_RICH = false;
   bool do_Aerogel = true;
 
   bool do_FEMC = true;
   bool do_FEMC_cell = do_FEMC && true;
   bool do_FEMC_twr = do_FEMC_cell && true;
   bool do_FEMC_cluster = do_FEMC_twr && true;
-  bool do_FEMC_eval = do_FEMC_cluster && true;
+  bool do_FEMC_eval = do_FEMC_cluster && false;
 
   bool do_FHCAL = true;
   bool do_FHCAL_cell = do_FHCAL && true;
   bool do_FHCAL_twr = do_FHCAL_cell && true;
   bool do_FHCAL_cluster = do_FHCAL_twr && true;
-  bool do_FHCAL_eval = do_FHCAL_cluster && true;
+  bool do_FHCAL_eval = do_FHCAL_cluster && false;
 
   // EICDetector geometry - 'electron' direction
   bool do_EGEM = true;
@@ -114,7 +114,7 @@ int Fun4All_G4_EICDetector(
   bool do_EEMC_cell = do_EEMC && true;
   bool do_EEMC_twr = do_EEMC_cell && true;
   bool do_EEMC_cluster = do_EEMC_twr && true;
-  bool do_EEMC_eval = do_EEMC_cluster && true;
+  bool do_EEMC_eval = do_EEMC_cluster && false;
 
   // Other options
   bool do_global = true;
@@ -122,10 +122,10 @@ int Fun4All_G4_EICDetector(
 
   bool do_calotrigger = false && do_cemc_twr && do_hcalin_twr && do_hcalout_twr;
 
-  bool do_jet_reco = true;
+  bool do_jet_reco = false;
   bool do_jet_eval = do_jet_reco && true;
 
-  bool do_fwd_jet_reco = true;
+  bool do_fwd_jet_reco = false;
   bool do_fwd_jet_eval = do_fwd_jet_reco && true;
 
   // HI Jet Reco for jet simulations in Au+Au (default is false for
@@ -164,7 +164,7 @@ int Fun4All_G4_EICDetector(
   //---------------
 
   Fun4AllServer *se = Fun4AllServer::instance();
-  se->Verbosity(0); // uncomment for batch production running with minimal output messages
+  se->Verbosity(01); // uncomment for batch production running with minimal output messages
   // se->Verbosity(Fun4AllServer::VERBOSITY_SOME); // uncomment for some info for interactive running
 
   // just if we set some flags somewhere in this macro
@@ -215,7 +215,9 @@ int Fun4All_G4_EICDetector(
 
       PHPythia6 *pythia6 = new PHPythia6();
       // see coresoftware/generators/PHPythia6 for example config
-      pythia6->set_config_file("phpythia6_ep.cfg");
+      pythia6->set_config_file("phpythia6.cfg");
+      pythia6->set_vertex_distribution_width(0.005,0.005,1,0);
+//      pythia6->save_ascii("phpythia6.dat");
       se->registerSubsystem(pythia6);
     }
   else if (runhepgen)
@@ -565,9 +567,9 @@ int Fun4All_G4_EICDetector(
                                );
     }
 
-  //Fun4AllDstOutputManager *out = new Fun4AllDstOutputManager("DSTOUT", outputFile);
-  //if (do_dst_compress) DstCompress(out);
-  //se->registerOutputManager(out);
+//  Fun4AllDstOutputManager *out = new Fun4AllDstOutputManager("DSTOUT", outputFile);
+//  if (do_dst_compress) DstCompress(out);
+//  se->registerOutputManager(out);
 
   //-----------------
   // Event processing
@@ -591,6 +593,7 @@ int Fun4All_G4_EICDetector(
   //-----
 
   se->End();
+  se->PrintTimer();
   std::cout << "All done" << std::endl;
   delete se;
   gSystem->Exit(0);

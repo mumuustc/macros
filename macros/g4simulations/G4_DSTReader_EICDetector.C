@@ -44,7 +44,7 @@ G4DSTreader_EICDetector( const char * outputFile = "G4sPHENIXCells.root",//
                                          string(outputFile) + string("_DSTReader.root"));
   ana->set_save_particle(true);
   ana->set_load_all_particle(false);
-  ana->set_load_active_particle(true);
+  ana->set_load_active_particle(false);
   ana->set_save_vertex(true);
 
   if (debug)
@@ -59,57 +59,57 @@ G4DSTreader_EICDetector( const char * outputFile = "G4sPHENIXCells.root",//
           ana->AddNode("SVTX");
         }
 
-      if (do_cemc)
-        {
-          ana->AddNode("CEMC");
-          if (absorberactive)
-            {
-              ana->AddNode("ABSORBER_CEMC");
-              ana->AddNode("CEMC_ELECTRONICS");
-              ana->AddNode("CEMC_SPT");
-            }
-        }
-
-      if (do_hcalin)
-        {
-          ana->AddNode("HCALIN");
-          if (absorberactive)
-            ana->AddNode("ABSORBER_HCALIN");
-        }
-
-      if (do_magnet)
-        {
-          if (absorberactive)
-            ana->AddNode("MAGNET");
-        }
-
-      if (do_hcalout)
-        {
-          ana->AddNode("HCALOUT");
-          if (absorberactive)
-            ana->AddNode("ABSORBER_HCALOUT");
-        }
-
-      if (do_FHCAL)
-        {
-          ana->AddNode("FHCAL");
-          if (absorberactive)
-            ana->AddNode("ABSORBER_FHCAL");
-        }
-
-      if (do_FEMC)
-        {
-          ana->AddNode("FEMC");
-          if (absorberactive)
-            ana->AddNode("ABSORBER_FEMC");
-        }
-
-      if (do_EEMC)
-        {
-          ana->AddNode("EEMC");
-          if (absorberactive)
-            ana->AddNode("ABSORBER_EEMC");
-        }
+//      if (do_cemc)
+//        {
+//          ana->AddNode("CEMC");
+//          if (absorberactive)
+//            {
+//              ana->AddNode("ABSORBER_CEMC");
+//              ana->AddNode("CEMC_ELECTRONICS");
+//              ana->AddNode("CEMC_SPT");
+//            }
+//        }
+//
+//      if (do_hcalin)
+//        {
+//          ana->AddNode("HCALIN");
+//          if (absorberactive)
+//            ana->AddNode("ABSORBER_HCALIN");
+//        }
+//
+//      if (do_magnet)
+//        {
+//          if (absorberactive)
+//            ana->AddNode("MAGNET");
+//        }
+//
+//      if (do_hcalout)
+//        {
+//          ana->AddNode("HCALOUT");
+//          if (absorberactive)
+//            ana->AddNode("ABSORBER_HCALOUT");
+//        }
+//
+//      if (do_FHCAL)
+//        {
+//          ana->AddNode("FHCAL");
+//          if (absorberactive)
+//            ana->AddNode("ABSORBER_FHCAL");
+//        }
+//
+//      if (do_FEMC)
+//        {
+//          ana->AddNode("FEMC");
+//          if (absorberactive)
+//            ana->AddNode("ABSORBER_FEMC");
+//        }
+//
+//      if (do_EEMC)
+//        {
+//          ana->AddNode("EEMC");
+//          if (absorberactive)
+//            ana->AddNode("ABSORBER_EEMC");
+//        }
 
       if (do_FGEM)
         {
@@ -136,39 +136,39 @@ G4DSTreader_EICDetector( const char * outputFile = "G4sPHENIXCells.root",//
   ana->set_tower_zero_sup(1e-6);
   if (do_cemc_twr)
     {
-      ana->AddTower("SIM_CEMC");
+//      ana->AddTower("SIM_CEMC");
       ana->AddTower("RAW_CEMC");
-      ana->AddTower("CALIB_CEMC");
+//      ana->AddTower("CALIB_CEMC");
     }
   if (do_hcalin_twr)
     {
-      ana->AddTower("SIM_HCALIN");
+//      ana->AddTower("SIM_HCALIN");
       ana->AddTower("RAW_HCALIN");
-      ana->AddTower("CALIB_HCALIN");
+//      ana->AddTower("CALIB_HCALIN");
     }
   if (do_hcalout_twr)
     {
-      ana->AddTower("SIM_HCALOUT");
+//      ana->AddTower("SIM_HCALOUT");
       ana->AddTower("RAW_HCALOUT");
-      ana->AddTower("CALIB_HCALOUT");
+//      ana->AddTower("CALIB_HCALOUT");
     }
   if (do_FHCAL_twr)
     {
-      ana->AddTower("SIM_FHCAL");
+//      ana->AddTower("SIM_FHCAL");
       ana->AddTower("RAW_FHCAL");
-      ana->AddTower("CALIB_FHCAL");
+//      ana->AddTower("CALIB_FHCAL");
     }
   if (do_FEMC_twr)
     {
-      ana->AddTower("SIM_FEMC");
+//      ana->AddTower("SIM_FEMC");
       ana->AddTower("RAW_FEMC");
-      ana->AddTower("CALIB_FEMC");
+//      ana->AddTower("CALIB_FEMC");
     }
   if (do_EEMC_twr)
     {
-      ana->AddTower("SIM_EEMC");
+//      ana->AddTower("SIM_EEMC");
       ana->AddTower("RAW_EEMC");
-      ana->AddTower("CALIB_EEMC");
+//      ana->AddTower("CALIB_EEMC");
     }
 
   // Jets disabled for now

@@ -141,6 +141,7 @@ int G4Setup(const int absorberactive = 0,
 
   // read-in HepMC events to Geant4 if there is any
   HepMCNodeReader *hr = new HepMCNodeReader();
+//  hr->Verbosity(10);
   se->registerSubsystem(hr);
 
   PHG4Reco* g4Reco = new PHG4Reco();
