@@ -56,7 +56,8 @@ G4DSTreader_EICDetector( const char * outputFile = "G4sPHENIXCells.root",//
     {
       if (do_svtx)
         {
-          ana->AddNode("SVTX");
+        ana->AddNode("MAPS");
+        ana->AddNode("SVTX");
         }
 
 //      if (do_cemc)
@@ -127,47 +128,47 @@ G4DSTreader_EICDetector( const char * outputFile = "G4sPHENIXCells.root",//
           ana->AddNode("EGEM_2");
         }
 
-      ana->AddNode("BH_1");
-      ana->AddNode("BH_FORWARD_PLUS");
-      ana->AddNode("BH_FORWARD_NEG");
+//      ana->AddNode("BH_1");
+//      ana->AddNode("BH_FORWARD_PLUS");
+//      ana->AddNode("BH_FORWARD_NEG");
 
     }
 
   ana->set_tower_zero_sup(1e-6);
   if (do_cemc_twr)
     {
-//      ana->AddTower("SIM_CEMC");
-      ana->AddTower("RAW_CEMC");
+      ana->AddTower("SIM_CEMC");
+//      ana->AddTower("RAW_CEMC");
 //      ana->AddTower("CALIB_CEMC");
     }
   if (do_hcalin_twr)
     {
-//      ana->AddTower("SIM_HCALIN");
-      ana->AddTower("RAW_HCALIN");
+      ana->AddTower("SIM_HCALIN");
+//      ana->AddTower("RAW_HCALIN");
 //      ana->AddTower("CALIB_HCALIN");
     }
   if (do_hcalout_twr)
     {
-//      ana->AddTower("SIM_HCALOUT");
-      ana->AddTower("RAW_HCALOUT");
+      ana->AddTower("SIM_HCALOUT");
+//      ana->AddTower("RAW_HCALOUT");
 //      ana->AddTower("CALIB_HCALOUT");
     }
   if (do_FHCAL_twr)
     {
-//      ana->AddTower("SIM_FHCAL");
-      ana->AddTower("RAW_FHCAL");
+      ana->AddTower("SIM_FHCAL");
+//      ana->AddTower("RAW_FHCAL");
 //      ana->AddTower("CALIB_FHCAL");
     }
   if (do_FEMC_twr)
     {
-//      ana->AddTower("SIM_FEMC");
-      ana->AddTower("RAW_FEMC");
+      ana->AddTower("SIM_FEMC");
+//      ana->AddTower("RAW_FEMC");
 //      ana->AddTower("CALIB_FEMC");
     }
   if (do_EEMC_twr)
     {
-//      ana->AddTower("SIM_EEMC");
-      ana->AddTower("RAW_EEMC");
+      ana->AddTower("SIM_EEMC");
+//      ana->AddTower("RAW_EEMC");
 //      ana->AddTower("CALIB_EEMC");
     }
 

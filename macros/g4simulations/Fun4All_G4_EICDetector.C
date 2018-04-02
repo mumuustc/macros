@@ -1,5 +1,5 @@
 int Fun4All_G4_EICDetector(
-                           const int nEvents = 10,
+                           const int nEvents = 1,
                            const char * inputFile = "phpythia6.cfg",
                            const char * outputFile = "G4EICDetector.root"
                            )
