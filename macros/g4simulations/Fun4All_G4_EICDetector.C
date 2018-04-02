@@ -1,6 +1,7 @@
 int Fun4All_G4_EICDetector(
-                           const int nEvents = 1,
-                           const char * inputFile = "phpythia6.cfg",
+                           const int nEvents = 2,
+                           const int nSkip = 1,
+                           const char * inputFile = "/phenix/u/jinhuang/links/sPHENIX_work/EIC/EventGen/pythia.ep.20x250.1Mevents.RadCor=0_DST.root",
                            const char * outputFile = "G4EICDetector.root"
                            )
 {
@@ -30,7 +31,7 @@ int Fun4All_G4_EICDetector(
   const bool runpythia8 = false;
   // Or:
   // Use Pythia 6
-  const bool runpythia6 = true;
+  const bool runpythia6 = false;
   // Or:
   // Use HEPGen
   const bool runhepgen = false;
@@ -519,7 +520,7 @@ int Fun4All_G4_EICDetector(
   // IO management
   //--------------
 
-  if (readhits)
+//  if (readhits)
     {
       // Hits file
       Fun4AllInputManager *hitsin = new Fun4AllDstInputManager("DSTin");
@@ -586,6 +587,7 @@ int Fun4All_G4_EICDetector(
       return;
     }
 
+  se->skip(nSkip);
   se->run(nEvents);
 
   //-----
