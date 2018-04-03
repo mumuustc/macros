@@ -67,7 +67,7 @@
 # remove low energy stuff
 /vis/filtering/trajectories/create/attributeFilter
 /vis/filtering/trajectories/attributeFilter-0/setAttribute IMag
-/vis/filtering/trajectories/attributeFilter-0/addInterval 10 MeV 1000 GeV
+/vis/filtering/trajectories/attributeFilter-0/addInterval 20 MeV 1000 GeV
 #
 /vis/scene/endOfEventAction accumulate
 #
