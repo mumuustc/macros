@@ -27,6 +27,7 @@
 # list of available graphics systems at some point.
 #/vis/open OGLIX
 /vis/open OGLSX 1200x900-0+0
+# increase display limit for more complex detectors
 /vis/ogl/set/displayListLimit 500000
 /vis/viewer/set/viewpointThetaPhi 240 -10
 /vis/viewer/addCutawayPlane 0 0 0 m 1 0 0
@@ -67,7 +68,7 @@
 # remove low energy stuff
 /vis/filtering/trajectories/create/attributeFilter
 /vis/filtering/trajectories/attributeFilter-0/setAttribute IMag
-/vis/filtering/trajectories/attributeFilter-0/addInterval 20 MeV 1000 GeV
+/vis/filtering/trajectories/attributeFilter-0/addInterval 200 MeV 1000 GeV
 #
 /vis/scene/endOfEventAction accumulate
 #
