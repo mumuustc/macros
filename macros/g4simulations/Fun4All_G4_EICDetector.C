@@ -576,7 +576,7 @@ int Fun4All_G4_EICDetector(
   //-----
 
   se->End();
-  se->PrintTimer();
+//  se->PrintTimer();
   std::cout << "All done" << std::endl;
   delete se;
   gSystem->Exit(0);
