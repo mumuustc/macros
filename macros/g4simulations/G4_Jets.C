@@ -6,7 +6,7 @@ void Jet_Reco(int verbosity = 0) {
   Fun4AllServer *se = Fun4AllServer::instance();
 
   // truth particle level jets
-  JetReco *truthjetreco = new JetReco();
+  JetReco *truthjetreco = new JetReco("JetReco_ANTIKT_TRUTH");
   TruthJetInput * truth_input = new TruthJetInput(Jet::PARTICLE);
   truth_input->add_embedding_flag(1); // use subevent with embedding ID = 1 only (p+p truth event)
   truthjetreco->add_input(truth_input);
@@ -23,7 +23,7 @@ void Jet_Reco(int verbosity = 0) {
   se->registerSubsystem(truthjetreco);
 
   // tower jets
-  JetReco *towerjetreco = new JetReco();
+  JetReco *towerjetreco = new JetReco("JetReco_ANTIKT_TOWER");
   towerjetreco->add_input(new TowerJetInput(Jet::CEMC_TOWER));
   towerjetreco->add_input(new TowerJetInput(Jet::HCALIN_TOWER));
   towerjetreco->add_input(new TowerJetInput(Jet::HCALOUT_TOWER));
@@ -40,7 +40,7 @@ void Jet_Reco(int verbosity = 0) {
   se->registerSubsystem(towerjetreco);
 
   // cluster jets
-  JetReco *clusterjetreco = new JetReco();
+  JetReco *clusterjetreco = new JetReco("JetReco_ANTIKT_CLUSTER");
   clusterjetreco->add_input(new ClusterJetInput(Jet::CEMC_CLUSTER));
   clusterjetreco->add_input(new ClusterJetInput(Jet::HCALIN_CLUSTER));
   clusterjetreco->add_input(new ClusterJetInput(Jet::HCALOUT_CLUSTER));
@@ -54,7 +54,7 @@ void Jet_Reco(int verbosity = 0) {
   clusterjetreco->set_algo_node("ANTIKT");
   clusterjetreco->set_input_node("CLUSTER");
   clusterjetreco->Verbosity(verbosity);
-  se->registerSubsystem(clusterjetreco);
+//  se->registerSubsystem(clusterjetreco);
   
   // track jets - only enable if you have tracking
 //  JetReco *trackjetreco = new JetReco();

@@ -2,9 +2,9 @@
 
 using namespace std;
 
-void Fun4All_TestBeam(int nEvents = 100,
-                      const char *input_file = "/sphenix/data/data03//phnxreco/sphenix/t1044/fnal/beam/beam_00000406-0000.prdf",
-                      const char *output_file = "data/beam_00000406.root")
+void Fun4All_TestBeam(int nEvents = 10000,
+                      const char *input_file = "/sphenix/data/data03//phnxreco/sphenix/t1044/fnal/beam/beam_00002311-0000.prdf",
+                      const char *output_file = "data/beam_00002311.root")
 {
   gSystem->Load("libfun4all");
   gSystem->Load("libPrototype4.so");
@@ -85,6 +85,7 @@ void Fun4All_TestBeam(int nEvents = 100,
     //    calib->GetCalibrationParameters().set_int_param("use_chan_calibration", 0);
     calib->GetCalibrationParameters().ReadFromFile("CEMC", "xml", 0, 0,
                                                    string(getenv("CALIBRATIONROOT")) + string("/Prototype4/Calibration/"));  // calibration database
+    calib->Verbosity(1);
     se->registerSubsystem(calib);
   }
 
@@ -445,4 +446,5 @@ void Fun4All_TestBeam(int nEvents = 100,
   se->run(nEvents);
 
   se->End();
+  se->PrintTimer();
 }

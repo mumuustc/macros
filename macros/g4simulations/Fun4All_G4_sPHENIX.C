@@ -10,7 +10,8 @@ using namespace std;
 //!                             Please make your own list for production output file selection from /sphenix/sim/sim01/cd1_review/sHijing/fm_0-4/ and /sphenix/sim/sim01/cd1_review/sHijing/fm_4-8/
 int Fun4All_G4_sPHENIX(
     const int nEvents = 10,
-    const char *inputFile = "/sphenix/sim/sim01/cd1_review/single_particle/fieldmap/G4Hits_sPHENIX_e-_eta0.30_16GeV-0003.root", // Example HepMC for jets to be embedded
+//    const char *inputFile = "/sphenix/sim/sim01/cd1_review/sHijing/fm_4-8/G4Hits_AuAu200_hijing_4-8fm_009050_009100.root", // Example HepMC for jets to be embedded
+    const char *inputFile = "/sphenix/sim/sim01/cd1_review/sHijing/fm_0-4/G4Hits_AuAu200_hijing_0-4fm_005050_005100.root", // Example HepMC for jets to be embedded
     const char *outputFile = "G4sPHENIX.root",
     const char *embed_input_file = "/sphenix/user/jinhuang/tmp/jet-production/production_verification_fm_4-8_dst.list" // Example list file
         )
@@ -62,7 +63,7 @@ int Fun4All_G4_sPHENIX(
   bool do_pipe = true;
 
   bool do_svtx = true;
-  bool do_svtx_cell = do_svtx && true;
+  bool do_svtx_cell = do_svtx && false;
   bool do_svtx_track = do_svtx_cell && true; // disabled. note: tracking reco takes time.
   bool do_svtx_eval = do_svtx_track && true;
 
@@ -78,7 +79,7 @@ int Fun4All_G4_sPHENIX(
   bool do_hcalin_cell = do_hcalin && true;
   bool do_hcalin_twr = do_hcalin_cell && true;
   bool do_hcalin_cluster = do_hcalin_twr && true;
-  bool do_hcalin_eval = do_hcalin_cluster && true;
+  bool do_hcalin_eval = do_hcalin_cluster && false;
 
   bool do_magnet = true;
 
@@ -86,7 +87,7 @@ int Fun4All_G4_sPHENIX(
   bool do_hcalout_cell = do_hcalout && true;
   bool do_hcalout_twr = do_hcalout_cell && true;
   bool do_hcalout_cluster = do_hcalout_twr && true;
-  bool do_hcalout_eval = do_hcalout_cluster && true;
+  bool do_hcalout_eval = do_hcalout_cluster && false;
 
   //! forward flux return plug door. Out of acceptance and off by default.
   bool do_plugdoor = false;
@@ -97,7 +98,7 @@ int Fun4All_G4_sPHENIX(
   bool do_calotrigger = true && do_cemc_twr && do_hcalin_twr && do_hcalout_twr;
 
   bool do_jet_reco = true;
-  bool do_jet_eval = do_jet_reco && true;
+  bool do_jet_eval = do_jet_reco && false;
 
   // HI Jet Reco for p+Au / Au+Au collisions (default is false for
   // single particle / p+p-only simulations, or for p+Au / Au+Au
@@ -524,9 +525,9 @@ int Fun4All_G4_sPHENIX(
                 /*bool*/ do_hcalout_twr);
   }
 
-//  Fun4AllDstOutputManager *out = new Fun4AllDstOutputManager("DSTOUT", outputFile);
-//  if (do_dst_compress) DstCompress(out);
-//    se->registerOutputManager(out);
+  Fun4AllDstOutputManager *out = new Fun4AllDstOutputManager("DSTOUT", outputFile);
+  if (do_dst_compress) DstCompress(out);
+    se->registerOutputManager(out);
 
   //-----------------
   // Event processing
@@ -550,6 +551,10 @@ int Fun4All_G4_sPHENIX(
   //-----
 
   se->End();
+
+
+  se->PrintTimer();
+
   std::cout << "All done" << std::endl;
   delete se;
   gSystem->Exit(0);
