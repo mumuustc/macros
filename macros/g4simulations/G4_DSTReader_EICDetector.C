@@ -22,8 +22,6 @@ G4DSTreader_EICDetector( const char * outputFile = "G4sPHENIXCells.root",//
                          bool do_hcalin_twr = true, //
                          bool do_magnet = true, //
                          bool do_hcalout_twr = true, //
-                         bool do_FGEM = true, //
-                         bool do_EGEM = true, //
                          bool do_FHCAL = true, //
                          bool do_FHCAL_twr = true, //
                          bool do_FEMC = true, //
@@ -44,7 +42,7 @@ G4DSTreader_EICDetector( const char * outputFile = "G4sPHENIXCells.root",//
                                          string(outputFile) + string("_DSTReader.root"));
   ana->set_save_particle(true);
   ana->set_load_all_particle(false);
-  ana->set_load_active_particle(false);
+  ana->set_load_active_particle(true);
   ana->set_save_vertex(true);
 
   if (debug)
@@ -56,64 +54,11 @@ G4DSTreader_EICDetector( const char * outputFile = "G4sPHENIXCells.root",//
     {
       if (do_svtx)
         {
-        ana->AddNode("MAPS");
-        ana->AddNode("SVTX");
-        }
-
-//      if (do_cemc)
-//        {
-//          ana->AddNode("CEMC");
-//          if (absorberactive)
-//            {
-//              ana->AddNode("ABSORBER_CEMC");
-//              ana->AddNode("CEMC_ELECTRONICS");
-//              ana->AddNode("CEMC_SPT");
-//            }
-//        }
-//
-//      if (do_hcalin)
-//        {
-//          ana->AddNode("HCALIN");
-//          if (absorberactive)
-//            ana->AddNode("ABSORBER_HCALIN");
-//        }
-//
-//      if (do_magnet)
-//        {
-//          if (absorberactive)
-//            ana->AddNode("MAGNET");
-//        }
-//
-//      if (do_hcalout)
-//        {
-//          ana->AddNode("HCALOUT");
-//          if (absorberactive)
-//            ana->AddNode("ABSORBER_HCALOUT");
-//        }
-//
-//      if (do_FHCAL)
-//        {
-//          ana->AddNode("FHCAL");
-//          if (absorberactive)
-//            ana->AddNode("ABSORBER_FHCAL");
-//        }
-//
-//      if (do_FEMC)
-//        {
-//          ana->AddNode("FEMC");
-//          if (absorberactive)
-//            ana->AddNode("ABSORBER_FEMC");
-//        }
-//
-//      if (do_EEMC)
-//        {
-//          ana->AddNode("EEMC");
-//          if (absorberactive)
-//            ana->AddNode("ABSORBER_EEMC");
-//        }
-
-      if (do_FGEM)
-        {
+          ana->AddNode("SVTX");
+          ana->AddNode("EGEM_0");
+          ana->AddNode("EGEM_1");
+          ana->AddNode("EGEM_2");
+          ana->AddNode("EGEM_3");
           ana->AddNode("FGEM_0");
           ana->AddNode("FGEM_1");
           ana->AddNode("FGEM_2");
@@ -121,16 +66,61 @@ G4DSTreader_EICDetector( const char * outputFile = "G4sPHENIXCells.root",//
           ana->AddNode("FGEM_4");
         }
 
-      if (do_EGEM)
+      if (do_cemc)
         {
-          ana->AddNode("EGEM_0");
-          ana->AddNode("EGEM_1");
-          ana->AddNode("EGEM_2");
+          ana->AddNode("CEMC");
+          if (absorberactive)
+            {
+              ana->AddNode("ABSORBER_CEMC");
+              ana->AddNode("CEMC_ELECTRONICS");
+              ana->AddNode("CEMC_SPT");
+            }
         }
 
-//      ana->AddNode("BH_1");
-//      ana->AddNode("BH_FORWARD_PLUS");
-//      ana->AddNode("BH_FORWARD_NEG");
+      if (do_hcalin)
+        {
+          ana->AddNode("HCALIN");
+          if (absorberactive)
+            ana->AddNode("ABSORBER_HCALIN");
+        }
+
+      if (do_magnet)
+        {
+          if (absorberactive)
+            ana->AddNode("MAGNET");
+        }
+
+      if (do_hcalout)
+        {
+          ana->AddNode("HCALOUT");
+          if (absorberactive)
+            ana->AddNode("ABSORBER_HCALOUT");
+        }
+
+      if (do_FHCAL)
+        {
+          ana->AddNode("FHCAL");
+          if (absorberactive)
+            ana->AddNode("ABSORBER_FHCAL");
+        }
+
+      if (do_FEMC)
+        {
+          ana->AddNode("FEMC");
+          if (absorberactive)
+            ana->AddNode("ABSORBER_FEMC");
+        }
+
+      if (do_EEMC)
+        {
+          ana->AddNode("EEMC");
+          if (absorberactive)
+            ana->AddNode("ABSORBER_EEMC");
+        }
+
+      ana->AddNode("BH_1");
+      ana->AddNode("BH_FORWARD_PLUS");
+      ana->AddNode("BH_FORWARD_NEG");
 
     }
 
@@ -138,38 +128,38 @@ G4DSTreader_EICDetector( const char * outputFile = "G4sPHENIXCells.root",//
   if (do_cemc_twr)
     {
       ana->AddTower("SIM_CEMC");
-//      ana->AddTower("RAW_CEMC");
-//      ana->AddTower("CALIB_CEMC");
+      ana->AddTower("RAW_CEMC");
+      ana->AddTower("CALIB_CEMC");
     }
   if (do_hcalin_twr)
     {
       ana->AddTower("SIM_HCALIN");
-//      ana->AddTower("RAW_HCALIN");
-//      ana->AddTower("CALIB_HCALIN");
+      ana->AddTower("RAW_HCALIN");
+      ana->AddTower("CALIB_HCALIN");
     }
   if (do_hcalout_twr)
     {
       ana->AddTower("SIM_HCALOUT");
-//      ana->AddTower("RAW_HCALOUT");
-//      ana->AddTower("CALIB_HCALOUT");
+      ana->AddTower("RAW_HCALOUT");
+      ana->AddTower("CALIB_HCALOUT");
     }
   if (do_FHCAL_twr)
     {
       ana->AddTower("SIM_FHCAL");
-//      ana->AddTower("RAW_FHCAL");
-//      ana->AddTower("CALIB_FHCAL");
+      ana->AddTower("RAW_FHCAL");
+      ana->AddTower("CALIB_FHCAL");
     }
   if (do_FEMC_twr)
     {
       ana->AddTower("SIM_FEMC");
-//      ana->AddTower("RAW_FEMC");
-//      ana->AddTower("CALIB_FEMC");
+      ana->AddTower("RAW_FEMC");
+      ana->AddTower("CALIB_FEMC");
     }
   if (do_EEMC_twr)
     {
       ana->AddTower("SIM_EEMC");
-//      ana->AddTower("RAW_EEMC");
-//      ana->AddTower("CALIB_EEMC");
+      ana->AddTower("RAW_EEMC");
+      ana->AddTower("CALIB_EEMC");
     }
 
   // Jets disabled for now
