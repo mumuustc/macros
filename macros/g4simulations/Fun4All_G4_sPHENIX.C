@@ -10,7 +10,7 @@ using namespace std;
 //!                             Please make your own list for production output file selection from /sphenix/sim/sim01/cd1_review/sHijing/fm_0-4/ and /sphenix/sim/sim01/cd1_review/sHijing/fm_4-8/
 int Fun4All_G4_sPHENIX(
     const int nEvents = 10,
-    const char *inputFile = "/sphenix/sim/sim01/cd1_review/single_particle/fieldmap/G4Hits_sPHENIX_e-_eta0.30_16GeV-0003.root", // Example HepMC for jets to be embedded
+    const char *inputFile = "/sphenix/sim/sim01/cd1_review/single_particle/fieldmap/G4Hits_sPHENIX_pi-_eta0.30_16GeV-0003.root", // Example HepMC for jets to be embedded
     const char *outputFile = "G4sPHENIX.root",
     const char *embed_input_file = "/sphenix/user/jinhuang/tmp/jet-production/production_verification_fm_4-8_dst.list" // Example list file
         )
@@ -527,6 +527,13 @@ int Fun4All_G4_sPHENIX(
 //  Fun4AllDstOutputManager *out = new Fun4AllDstOutputManager("DSTOUT", outputFile);
 //  if (do_dst_compress) DstCompress(out);
 //    se->registerOutputManager(out);
+
+
+  gSystem->Load("libmyjetanalysis");
+
+  MyJetAnalysis *myJetAnalysis = new MyJetAnalysis("AntiKt_Tower_r04","AntiKt_Truth_r04","myjetanalysis.root");
+  se->registerSubsystem(myJetAnalysis);
+
 
   //-----------------
   // Event processing
