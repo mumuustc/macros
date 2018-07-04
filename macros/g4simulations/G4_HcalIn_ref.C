@@ -87,7 +87,7 @@ double HCalInner(PHG4Reco* g4Reco,
 
   radius = hcal->get_double_param("outer_radius");
 
-  HCalInner_SupportRing(g4Reco,absorberactive);
+//  HCalInner_SupportRing(g4Reco,absorberactive);
   
   radius += no_overlapp;
   return radius;
