@@ -193,7 +193,7 @@ int Fun4All_G4_sPHENIX(
       // toss low multiplicity dummy events
       PHG4SimpleEventGenerator *gen = new PHG4SimpleEventGenerator();
       gen->add_particles("e-", 1);  // mu+,e+,proton,pi+,Upsilon
-      gen->add_particles("e+",1); // 100 pion option
+      gen->add_particles("e+", 1);  // 100 pion option
       if (readhepmc || do_embedding || runpythia8 || runpythia6)
       {
         gen->set_reuse_existing_vertex(true);
@@ -205,14 +205,68 @@ int Fun4All_G4_sPHENIX(
                                               PHG4SimpleEventGenerator::Uniform,
                                               PHG4SimpleEventGenerator::Uniform);
         gen->set_vertex_distribution_mean(0.0, 0.0, 0.0);
-        gen->set_vertex_distribution_width(0.0, 0.0, 5.0);
+        gen->set_vertex_distribution_width(0.0, 0.0, 0.0);
       }
       gen->set_vertex_size_function(PHG4SimpleEventGenerator::Uniform);
       gen->set_vertex_size_parameters(0.0, 0.0);
-      gen->set_eta_range(-.1, .1);
-      gen->set_phi_range(0, 0);
+      gen->set_eta_range(-.01, .01);
+      gen->set_phi_range(TMath::Pi()/2, TMath::Pi()/2);
       //gen->set_pt_range(0.1, 50.0);
-      gen->set_pt_range(5, 5.0);
+      gen->set_pt_range(1, 1.0);
+      gen->Embed(2);
+      gen->Verbosity(0);
+
+      se->registerSubsystem(gen);
+
+      gen = new PHG4SimpleEventGenerator();
+      gen->add_particles("e-", 1);  // mu+,e+,proton,pi+,Upsilon
+      gen->add_particles("e+", 1);  // 100 pion option
+      if (readhepmc || do_embedding || runpythia8 || runpythia6)
+      {
+        gen->set_reuse_existing_vertex(true);
+        gen->set_existing_vertex_offset_vector(0.0, 0.0, 0.0);
+      }
+      else
+      {
+        gen->set_vertex_distribution_function(PHG4SimpleEventGenerator::Uniform,
+                                              PHG4SimpleEventGenerator::Uniform,
+                                              PHG4SimpleEventGenerator::Uniform);
+        gen->set_vertex_distribution_mean(0.0, 0.0, 0.0);
+        gen->set_vertex_distribution_width(0.0, 0.0, 0.0);
+      }
+      gen->set_vertex_size_function(PHG4SimpleEventGenerator::Uniform);
+      gen->set_vertex_size_parameters(0.0, 0.0);
+      gen->set_eta_range(-.01, .01);
+      gen->set_phi_range(TMath::Pi()/2, TMath::Pi()/2);
+      //gen->set_pt_range(0.1, 50.0);
+      gen->set_pt_range(2, 2.0);
+      gen->Embed(2);
+      gen->Verbosity(0);
+
+      se->registerSubsystem(gen);
+
+      gen = new PHG4SimpleEventGenerator();
+      gen->add_particles("e-", 1);  // mu+,e+,proton,pi+,Upsilon
+      gen->add_particles("e+", 1);  // 100 pion option
+      if (readhepmc || do_embedding || runpythia8 || runpythia6)
+      {
+        gen->set_reuse_existing_vertex(true);
+        gen->set_existing_vertex_offset_vector(0.0, 0.0, 0.0);
+      }
+      else
+      {
+        gen->set_vertex_distribution_function(PHG4SimpleEventGenerator::Uniform,
+                                              PHG4SimpleEventGenerator::Uniform,
+                                              PHG4SimpleEventGenerator::Uniform);
+        gen->set_vertex_distribution_mean(0.0, 0.0, 0.0);
+        gen->set_vertex_distribution_width(0.0, 0.0, 0.0);
+      }
+      gen->set_vertex_size_function(PHG4SimpleEventGenerator::Uniform);
+      gen->set_vertex_size_parameters(0.0, 0.0);
+      gen->set_eta_range(-.01, .01);
+      gen->set_phi_range(TMath::Pi()/2, TMath::Pi()/2);
+      //gen->set_pt_range(0.1, 50.0);
+      gen->set_pt_range(4, 4.0);
       gen->Embed(2);
       gen->Verbosity(0);
 
