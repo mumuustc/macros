@@ -2,7 +2,7 @@
 using namespace std;
 
 int Fun4All_G4_sPHENIX(
-    const int nEvents = 1,
+    const int nEvents = 100,
     const char *inputFile = "/sphenix/data/data02/review_2017-08-02/single_particle/spacal2d/fieldmap/G4Hits_sPHENIX_e-_eta0_8GeV-0002.root",
     const char *outputFile = "G4sPHENIX.root",
     const char *embed_input_file = "/sphenix/data/data02/review_2017-08-02/sHijing/fm_0-4.list")
@@ -61,20 +61,20 @@ int Fun4All_G4_sPHENIX(
   bool do_pstof = false;
 
   bool do_cemc = true;
-  bool do_cemc_cell = do_cemc && true;
+  bool do_cemc_cell = do_cemc && false;
   bool do_cemc_twr = do_cemc_cell && true;
   bool do_cemc_cluster = do_cemc_twr && true;
   bool do_cemc_eval = do_cemc_cluster && true;
 
-  bool do_hcalin = true;
+  bool do_hcalin = false;
   bool do_hcalin_cell = do_hcalin && true;
   bool do_hcalin_twr = do_hcalin_cell && true;
   bool do_hcalin_cluster = do_hcalin_twr && true;
   bool do_hcalin_eval = do_hcalin_cluster && true;
 
-  bool do_magnet = true;
+  bool do_magnet = false;
 
-  bool do_hcalout = true;
+  bool do_hcalout = false;
   bool do_hcalout_cell = do_hcalout && true;
   bool do_hcalout_twr = do_hcalout_cell && true;
   bool do_hcalout_cluster = do_hcalout_twr && true;
@@ -88,7 +88,7 @@ int Fun4All_G4_sPHENIX(
 
   bool do_calotrigger = true && do_cemc_twr && do_hcalin_twr && do_hcalout_twr;
 
-  bool do_jet_reco = true;
+  bool do_jet_reco = false;
   bool do_jet_eval = do_jet_reco && true;
 
   // HI Jet Reco for p+Au / Au+Au collisions (default is false for
@@ -115,7 +115,7 @@ int Fun4All_G4_sPHENIX(
   gROOT->LoadMacro("G4Setup_sPHENIX.C");
   G4Init(do_svtx, do_pstof, do_cemc, do_hcalin, do_magnet, do_hcalout, do_pipe, do_plugdoor);
 
-  int absorberactive = 1;  // set to 1 to make all absorbers active volumes
+  int absorberactive = 0;  // set to 1 to make all absorbers active volumes
   //  const string magfield = "1.5"; // if like float -> solenoidal field in T, if string use as fieldmap name (including path)
   const string magfield = "/phenix/upgrades/decadal/fieldmaps/sPHENIX.2d.root";  // if like float -> solenoidal field in T, if string use as fieldmap name (including path)
   const float magfield_rescale = -1.4 / 1.5;                                     // scale the map to a 1.4 T field
@@ -125,7 +125,7 @@ int Fun4All_G4_sPHENIX(
   //---------------
 
   Fun4AllServer *se = Fun4AllServer::instance();
-  se->Verbosity(0);
+  se->Verbosity(1);
   // just if we set some flags somewhere in this macro
   recoConsts *rc = recoConsts::instance();
   // By default every random number generator uses
@@ -192,8 +192,7 @@ int Fun4All_G4_sPHENIX(
     {
       // toss low multiplicity dummy events
       PHG4SimpleEventGenerator *gen = new PHG4SimpleEventGenerator();
-      gen->add_particles("pi-", 2);  // mu+,e+,proton,pi+,Upsilon
-      //gen->add_particles("pi+",100); // 100 pion option
+      gen->add_particles("mu-", 1);  // mu+,e+,proton,pi+,Upsilon
       if (readhepmc || do_embedding || runpythia8 || runpythia6)
       {
         gen->set_reuse_existing_vertex(true);
@@ -205,14 +204,14 @@ int Fun4All_G4_sPHENIX(
                                               PHG4SimpleEventGenerator::Uniform,
                                               PHG4SimpleEventGenerator::Uniform);
         gen->set_vertex_distribution_mean(0.0, 0.0, 0.0);
-        gen->set_vertex_distribution_width(0.0, 0.0, 5.0);
+        gen->set_vertex_distribution_width(0.0, 0.0, 0.0);
       }
       gen->set_vertex_size_function(PHG4SimpleEventGenerator::Uniform);
       gen->set_vertex_size_parameters(0.0, 0.0);
-      gen->set_eta_range(-1.0, 1.0);
+      gen->set_eta_range(.1, .1);
       gen->set_phi_range(-1.0 * TMath::Pi(), 1.0 * TMath::Pi());
       //gen->set_pt_range(0.1, 50.0);
-      gen->set_pt_range(0.1, 20.0);
+      gen->set_pt_range(1000,1000);
       gen->Embed(2);
       gen->Verbosity(0);
 
@@ -235,8 +234,8 @@ int Fun4All_G4_sPHENIX(
       pgen->set_name("geantino");
       pgen->set_z_range(0, 0);
       pgen->set_eta_range(0.01, 0.01);
-      pgen->set_mom_range(10, 10);
-      pgen->set_phi_range(5.3 / 180. * TMath::Pi(), 5.7 / 180. * TMath::Pi());
+      pgen->set_mom_range(1000, 1000);
+      pgen->set_phi_range(- TMath::Pi(),  TMath::Pi());
       se->registerSubsystem(pgen);
     }
 

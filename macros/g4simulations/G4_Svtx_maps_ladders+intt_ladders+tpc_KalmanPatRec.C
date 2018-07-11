@@ -590,6 +590,18 @@ void Svtx_Reco(int verbosity = 0)
   Fun4AllServer* se = Fun4AllServer::instance();
 
   //----------------------------------
+  // Charge stat.
+  //----------------------------------
+
+  gSystem->Load("libtpcdaq.so");
+
+  TPCIntegratedCharge* integratedChage = new TPCIntegratedCharge(
+      n_maps_layer + n_intt_layer, Max_si_layer - 1, "TPCIntegratedCharge.root");
+//  integratedChage->Verbosity(3);
+  se->registerSubsystem(integratedChage);
+
+
+  //----------------------------------
   // Digitize the cell energy into ADC
   //----------------------------------
   PHG4SvtxDigitizer* digi = new PHG4SvtxDigitizer();

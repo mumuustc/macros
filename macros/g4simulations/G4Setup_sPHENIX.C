@@ -34,7 +34,8 @@ void G4Init(const bool do_svtx = true,
 
   if (do_cemc)
     {
-      gROOT->LoadMacro("G4_CEmc_Spacal.C");
+//    gROOT->LoadMacro("G4_CEmc_Spacal.C");
+    gROOT->LoadMacro("G4_CEmc_EIC.C");
       CEmcInit(72); // make it 2*2*2*3*3 so we can try other combinations
     }
 
