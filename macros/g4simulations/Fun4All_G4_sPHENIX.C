@@ -1,11 +1,12 @@
+#include <iostream>
+using namespace std;
+
 int Fun4All_G4_sPHENIX(
     const int nEvents = 100,
     const char *inputFile = "phpythia8.cfg",
     const char *outputFile = "G4sPHENIXCells.root",
     const char *embed_input_file = "/sphenix/sim/sim01/production/2016-07-12/sHijing/spacal2d/G4Hits_sPHENIX_sHijing-0-4.4fm.list")
 {
-  // Set the number of TPC layer
-  const int n_TPC_layers = 40;  // use 60 for backward compatibility only
 
   //===============
   // Input options
@@ -79,6 +80,9 @@ int Fun4All_G4_sPHENIX(
   bool do_hcalout_cluster = do_hcalout_twr && true;
   bool do_hcalout_eval = do_hcalout_cluster && true;
 
+  //! forward flux return plug door. Out of acceptance and off by default.
+  bool do_plugdoor = false;
+
   bool do_global = true;
   bool do_global_fastsim = true;
 
@@ -87,10 +91,10 @@ int Fun4All_G4_sPHENIX(
   bool do_jet_reco = false;
   bool do_jet_eval = do_jet_reco && true;
 
-  // HI Jet Reco for jet simulations in Au+Au (default is false for
-  // single particle / p+p simulations, or for Au+Au simulations which
-  // don't care about jets)
-  bool do_HIjetreco = false && do_jet_reco && do_cemc_twr && do_hcalin_twr && do_hcalout_twr;
+  // HI Jet Reco for p+Au / Au+Au collisions (default is false for
+  // single particle / p+p-only simulations, or for p+Au / Au+Au
+  // simulations which don't particularly care about jets)
+  bool do_HIjetreco = false && do_cemc_twr && do_hcalin_twr && do_hcalout_twr;
 
   bool do_dst_compress = false;
 
@@ -105,12 +109,11 @@ int Fun4All_G4_sPHENIX(
   gSystem->Load("libphhepmc.so");
   gSystem->Load("libg4testbench.so");
   gSystem->Load("libg4hough.so");
-  gSystem->Load("libcemc.so");
   gSystem->Load("libg4eval.so");
 
   // establish the geometry and reconstruction setup
   gROOT->LoadMacro("G4Setup_sPHENIX.C");
-  G4Init(do_svtx, do_pstof, do_cemc, do_hcalin, do_magnet, do_hcalout, do_pipe, n_TPC_layers);
+  G4Init(do_svtx, do_pstof, do_cemc, do_hcalin, do_magnet, do_hcalout, do_pipe, do_plugdoor);
 
   int absorberactive = 1;  // set to 1 to make all absorbers active volumes
   //  const string magfield = "1.5"; // if like float -> solenoidal field in T, if string use as fieldmap name (including path)
@@ -297,7 +300,7 @@ int Fun4All_G4_sPHENIX(
     //---------------------
 
     G4Setup(absorberactive, magfield, TPythia6Decayer::kAll,
-            do_svtx, do_pstof, do_cemc, do_hcalin, do_magnet, do_hcalout, do_pipe, magfield_rescale);
+            do_svtx, do_pstof, do_cemc, do_hcalin, do_magnet, do_hcalout, do_pipe,do_plugdoor, magfield_rescale);
   }
 
   //---------
@@ -443,8 +446,10 @@ int Fun4All_G4_sPHENIX(
     Fun4AllHepMCInputManager *in = new Fun4AllHepMCInputManager("HepMCInput_1");
     se->registerInputManager(in);
     se->fileopen(in->Name().c_str(), inputFile);
-    //in->set_vertex_distribution_width(100e-4,100e-4,30,0);//optional collision smear in space time
-    //in->set_vertex_distribution_mean(0,0,1,0);//optional collision central position shift in space time
+    //in->set_vertex_distribution_width(100e-4,100e-4,30,0);//optional collision smear in space, time
+    //in->set_vertex_distribution_mean(0,0,1,0);//optional collision central position shift in space, time
+    // //optional choice of vertex distribution function in space, time
+    //in->set_vertex_distribution_function(PHHepMCGenHelper::Gaus,PHHepMCGenHelper::Gaus,PHHepMCGenHelper::Uniform,PHHepMCGenHelper::Gaus);
     //! embedding ID for the event
     //! positive ID is the embedded event of interest, e.g. jetty event from pythia
     //! negative IDs are backgrounds, .e.g out of time pile up collisions
@@ -465,11 +470,25 @@ int Fun4All_G4_sPHENIX(
     // add random beam collisions following a collision diamond and rate from a HepMC stream
     Fun4AllHepMCPileupInputManager *pileup = new Fun4AllHepMCPileupInputManager("HepMCPileupInput");
     se->registerInputManager(pileup);
-    pileup->AddFile("/sphenix/sim/sim01/sHijing/sHijing_0-12fm.dat");  // HepMC events used in pile up collisions. You can add multiple files, and the file list will be reused.
+
+    const string pileupfile("/sphenix/sim/sim01/sHijing/sHijing_0-12fm.dat");
+    pileup->AddFile(pileupfile);  // HepMC events used in pile up collisions. You can add multiple files, and the file list will be reused.
     //pileup->set_vertex_distribution_width(100e-4,100e-4,30,5);//override collision smear in space time
     //pileup->set_vertex_distribution_mean(0,0,0,0);//override collision central position shift in space time
-    pileup->set_time_window(-35000., +35000.);  // override timing window in ns
-    //pileup->set_collision_rate(100e3); // override collisions rate in Hz
+    pileup->set_collision_rate(pileup_collision_rate);
+
+    double time_window_minus = -35000;
+    double time_window_plus = 35000;
+
+    if (do_svtx)
+    {
+      // double TPCDriftVelocity = 6.0 / 1000.0; // cm/ns, which is loaded from G4_SVTX*.C macros
+      time_window_minus = -105.5 / TPCDriftVelocity;  // ns
+      time_window_plus = 105.5 / TPCDriftVelocity;    // ns;
+    }
+    pileup->set_time_window(time_window_minus, time_window_plus);  // override timing window in ns
+    cout << "Collision pileup enabled using file " << pileupfile << " with collision rate " << pileup_collision_rate
+         << " and time window " << time_window_minus << " to " << time_window_plus << endl;
   }
 
 
@@ -516,17 +535,6 @@ int Fun4All_G4_sPHENIX(
   }
 
   se->run(nEvents);
-
-  {
-    gSystem->Load("libqa_modules");
-    QAHistManagerDef::saveQARootFile(string(outputFile) + "_qa.root");
-
-    if (gSystem->Load("libslt") == 0)
-    {
-      SoftLeptonTaggingTruth::getHistoManager()->dumpHistos(
-          string(outputFile) + "_slt.root");
-    }
-  }
 
   //-----
   // Exit
