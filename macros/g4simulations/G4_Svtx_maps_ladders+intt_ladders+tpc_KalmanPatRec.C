@@ -571,6 +571,17 @@ void Svtx_Cells(int verbosity = 0)
 
   se->registerSubsystem(svtx_cells);
 
+  //----------------------------------
+  // Charge stat.
+  //----------------------------------
+
+  gSystem->Load("libtpcdaq.so");
+
+  TPCIntegratedCharge* integratedChage = new TPCIntegratedCharge(
+      n_maps_layer + n_intt_layer, Max_si_layer - 1, "TPCIntegratedCharge.root");
+//  integratedChage->Verbosity(3);
+  se->registerSubsystem(integratedChage);
+
   return;
 }
 
@@ -588,17 +599,6 @@ void Svtx_Reco(int verbosity = 0)
   //---------------
 
   Fun4AllServer* se = Fun4AllServer::instance();
-
-  //----------------------------------
-  // Charge stat.
-  //----------------------------------
-
-  gSystem->Load("libtpcdaq.so");
-
-  TPCIntegratedCharge* integratedChage = new TPCIntegratedCharge(
-      n_maps_layer + n_intt_layer, Max_si_layer - 1, "TPCIntegratedCharge.root");
-//  integratedChage->Verbosity(3);
-  se->registerSubsystem(integratedChage);
 
 
   //----------------------------------

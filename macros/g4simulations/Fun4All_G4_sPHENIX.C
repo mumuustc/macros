@@ -3,7 +3,7 @@ using namespace std;
 
 int Fun4All_G4_sPHENIX(
     const int nEvents = 100,
-    const char *inputFile = "/sphenix/data/data02/review_2017-08-02/single_particle/spacal2d/fieldmap/G4Hits_sPHENIX_e-_eta0_8GeV-0002.root",
+    const char *inputFile = "/sphenix/sim/sim01/sHijing/sHijing_0-4fm_000.dat.gz",
     const char *outputFile = "G4sPHENIX.root",
     const char *embed_input_file = "/sphenix/data/data02/review_2017-08-02/sHijing/fm_0-4.list")
 {
@@ -22,7 +22,7 @@ int Fun4All_G4_sPHENIX(
   const bool readhits = false;
   // Or:
   // read files in HepMC format (typically output from event generators like hijing or pythia)
-  const bool readhepmc = false;  // read HepMC files
+  const bool readhepmc = true;  // read HepMC files
   // Or:
   // Use pythia
   const bool runpythia8 = false;
@@ -36,14 +36,14 @@ int Fun4All_G4_sPHENIX(
 
   // Besides the above flags. One can further choose to further put in following particles in Geant4 simulation
   // Use multi-particle generator (PHG4SimpleEventGenerator), see the code block below to choose particle species and kinematics
-  const bool particles = true && !readhits;
+  const bool particles = false && !readhits;
   // or gun/ very simple single particle gun generator
   const bool usegun = false && !readhits;
   // Throw single Upsilons, may be embedded in Hijing by setting readhepmc flag also  (note, careful to set Z vertex equal to Hijing events)
   const bool upsilons = false && !readhits;
   // Event pile up simulation with collision rate in Hz MB collisions.
   // Note please follow up the macro to verify the settings for beam parameters
-  const double pileup_collision_rate = 0;  // 100e3 for 100kHz nominal AuAu collision rate.
+  const double pileup_collision_rate = 200e3;  // 100e3 for 100kHz nominal AuAu collision rate.
 
   //======================
   // What to run
@@ -55,7 +55,7 @@ int Fun4All_G4_sPHENIX(
 
   bool do_svtx = true;
   bool do_svtx_cell = do_svtx && true;
-  bool do_svtx_track = do_svtx_cell && true;
+  bool do_svtx_track = do_svtx_cell && false;
   bool do_svtx_eval = do_svtx_track && true;
 
   bool do_pstof = false;
