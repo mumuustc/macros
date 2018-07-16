@@ -644,6 +644,20 @@ void Svtx_Reco(int verbosity = 0)
        << " maps+INTT layers set to " << n_maps_layer + n_intt_layer << endl;
  
   se->registerSubsystem(digi);
+
+  //----------------------------------
+  // Data stat.
+  //----------------------------------
+
+  gSystem->Load("libtpcdaq.so");
+
+  TPCDataStreamEmulator* tpcDaqEmu = new TPCDataStreamEmulator(
+      n_maps_layer + n_intt_layer, Max_si_layer - 1);
+//  tpcDaqEmu->Verbosity(3);
+  se->registerSubsystem(tpcDaqEmu);
+
+  return;
+
   
   //-------------------------------------
   // Apply Live Area Inefficiency to Hits
