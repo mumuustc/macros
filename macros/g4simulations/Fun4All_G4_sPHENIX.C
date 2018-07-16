@@ -2,8 +2,8 @@
 using namespace std;
 
 int Fun4All_G4_sPHENIX(
-    const int nEvents = 100,
-    const char *inputFile = "/sphenix/sim/sim01/sHijing/sHijing_0-4fm_000.dat.gz",
+    const int nEvents = 1,
+    const char *inputFile = "/sphenix/sim/sim01/sHijing/sHijing_0-12fm.dat",
     const char *outputFile = "G4sPHENIX.root",
     const char *embed_input_file = "/sphenix/data/data02/review_2017-08-02/sHijing/fm_0-4.list")
 {
@@ -43,7 +43,7 @@ int Fun4All_G4_sPHENIX(
   const bool upsilons = false && !readhits;
   // Event pile up simulation with collision rate in Hz MB collisions.
   // Note please follow up the macro to verify the settings for beam parameters
-  const double pileup_collision_rate = 200e3;  // 100e3 for 100kHz nominal AuAu collision rate.
+  const double pileup_collision_rate = 170e3;  // 100e3 for 100kHz nominal AuAu collision rate.
 
   //======================
   // What to run
