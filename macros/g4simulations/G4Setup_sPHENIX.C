@@ -156,7 +156,7 @@ int G4Setup(const int absorberactive = 0,
 
   //----------------------------------------
   // sPHENIX forward flux return door
-  if (do_plugdoor) PlugDoor(g4Reco, absorberactive);
+  if (do_plugdoor) radius = TMath::Max(radius, PlugDoor(g4Reco, absorberactive));
 
   //----------------------------------------
   // BLACKHOLE
