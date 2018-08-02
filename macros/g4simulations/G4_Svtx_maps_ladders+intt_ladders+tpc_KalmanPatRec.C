@@ -8,8 +8,8 @@ bool tpc_layers_40  = false;
 // Adds second evaluator to process refitted tracks and outputs separate ntuples
 bool use_primary_vertex = false;
 
-const int n_maps_layer = 3;  // must be 0-3, setting it to zero removes MVTX completely, n < 3 gives the first n layers
-const int n_intt_layer = 4;  // must be 0-4, setting this to zero will remove the INTT completely, n < 4 gives you the first n layers
+const int n_maps_layer = 0;  // must be 0-3, setting it to zero removes MVTX completely, n < 3 gives the first n layers
+const int n_intt_layer = 0;  // must be 0-4, setting this to zero will remove the INTT completely, n < 4 gives you the first n layers
 
 int n_tpc_layer_inner = 16;
 double tpc_layer_thick_inner = 1.25 / 2.0;
@@ -315,9 +315,10 @@ double Svtx(PHG4Reco* g4Reco, double radius,
   cyl->set_int_param("lengthviarapidity", 0);
   cyl->set_double_param("length", cage_length);
   cyl->set_string_param("material", "G4_KAPTON");
-  cyl->set_double_param("thickness", cage_thickness);
+  cyl->set_double_param("thickness", cage_thickness - no_overlapp);
   cyl->SuperDetector("SVTXSUPPORT");
   cyl->Verbosity(0);
+  cyl->OverlapCheck(overlapcheck);
   g4Reco->registerSubsystem(cyl);
 
   radius += cage_thickness;
@@ -335,8 +336,9 @@ double Svtx(PHG4Reco* g4Reco, double radius,
     cyl->set_int_param("lengthviarapidity", 0);
     cyl->set_double_param("length", cage_length);
     cyl->set_string_param("material", tpcgas.c_str());
-    cyl->set_double_param("thickness", inner_readout_radius - radius);
+    cyl->set_double_param("thickness", inner_readout_radius - radius - no_overlapp);
     cyl->SuperDetector("SVTXSUPPORT");
+    cyl->OverlapCheck(overlapcheck);
     g4Reco->registerSubsystem(cyl);
   }
 
@@ -357,9 +359,10 @@ double Svtx(PHG4Reco* g4Reco, double radius,
     cyl->set_int_param("lengthviarapidity", 0);
     cyl->set_double_param("length", cage_length);
     cyl->set_string_param("material", tpcgas.c_str());
-    cyl->set_double_param("thickness", tpc_layer_thick_inner - 0.01);
+    cyl->set_double_param("thickness", tpc_layer_thick_inner - no_overlapp);
     cyl->SetActive();
     cyl->SuperDetector("SVTX");
+    cyl->OverlapCheck(overlapcheck);
     g4Reco->registerSubsystem(cyl);
 
     radius += tpc_layer_thick_inner;
@@ -378,9 +381,10 @@ double Svtx(PHG4Reco* g4Reco, double radius,
     cyl->set_int_param("lengthviarapidity", 0);
     cyl->set_double_param("length", cage_length);
     cyl->set_string_param("material", tpcgas.c_str());
-    cyl->set_double_param("thickness", tpc_layer_thick_mid - 0.01);
-    cyl->SetActive();
+    cyl->set_double_param("thickness", tpc_layer_thick_mid - no_overlapp);
+    cyl->SetActive(0);
     cyl->SuperDetector("SVTX");
+    cyl->OverlapCheck(overlapcheck);
     g4Reco->registerSubsystem(cyl);
 
     radius += tpc_layer_thick_mid;
@@ -399,9 +403,10 @@ double Svtx(PHG4Reco* g4Reco, double radius,
     cyl->set_int_param("lengthviarapidity", 0);
     cyl->set_double_param("length", cage_length);
     cyl->set_string_param("material", tpcgas.c_str());
-    cyl->set_double_param("thickness", tpc_layer_thick_outer - 0.01);
-    cyl->SetActive();
+    cyl->set_double_param("thickness", tpc_layer_thick_outer - no_overlapp);
+    cyl->SetActive(0);
     cyl->SuperDetector("SVTX");
+    cyl->OverlapCheck(overlapcheck);
     g4Reco->registerSubsystem(cyl);
 
     radius += tpc_layer_thick_outer;
@@ -413,8 +418,9 @@ double Svtx(PHG4Reco* g4Reco, double radius,
   cyl->set_int_param("lengthviarapidity", 0);
   cyl->set_double_param("length", cage_length);
   cyl->set_string_param("material", "G4_KAPTON");
-  cyl->set_double_param("thickness", cage_thickness);  // Kapton X_0 = 28.6 cm
+  cyl->set_double_param("thickness", cage_thickness- no_overlapp);  // Kapton X_0 = 28.6 cm
   cyl->SuperDetector("SVTXSUPPORT");
+  cyl->OverlapCheck(overlapcheck);
   g4Reco->registerSubsystem(cyl);
 
   radius += cage_thickness;

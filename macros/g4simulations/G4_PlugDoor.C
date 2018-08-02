@@ -1,6 +1,6 @@
 
 void PlugDoorInit() {}
-void PlugDoor(PHG4Reco *g4Reco,
+double PlugDoor(PHG4Reco *g4Reco,
               const int absorberactive = 0,
               int verbosity = 0)
 {
@@ -39,5 +39,5 @@ void PlugDoor(PHG4Reco *g4Reco,
   flux_return_minus->OverlapCheck(overlapcheck);
   g4Reco->registerSubsystem(flux_return_minus);
 
-  return;
+  return r_2;
 }
