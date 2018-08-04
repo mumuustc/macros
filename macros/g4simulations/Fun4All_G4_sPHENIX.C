@@ -343,8 +343,8 @@ int Fun4All_G4_sPHENIX(
       g4score->G4Command("/score/quantity/cellFlux flux_charged_EkMin1MeV");
       g4score->G4Command("/score/filter/particleWithKineticEnergy charged_EkMin1MeV 1 1000000 MeV pi+ pi- kaon+ kaon- proton anti_proton mu+  mu-  e+  e-  alpha");
 
-      g4score->G4Command("/score/quantity/cellFlux flux_charged_EkMin100MeV");
-      g4score->G4Command("/score/filter/particleWithKineticEnergy charged_EkMin100MeV 100 1000000 MeV pi+ pi- kaon+ kaon- proton anti_proton mu+  mu-  e+  e-  alpha");
+      g4score->G4Command("/score/quantity/cellFlux flux_charged_EkMin20MeV");
+      g4score->G4Command("/score/filter/particleWithKineticEnergy charged_EkMin20MeV 20 1000000 MeV pi+ pi- kaon+ kaon- proton anti_proton mu+  mu-  e+  e-  alpha");
 
       g4score->G4Command("/score/quantity/cellFlux flux_neutron");
       g4score->G4Command("/score/filter/particle filter_neutron neutron anti_neutron");
@@ -354,7 +354,7 @@ int Fun4All_G4_sPHENIX(
 
       g4score->G4Command("/score/close");
 
-//      // inner detector zoom-in
+      // inner detector zoom-in
 //      g4score->G4Command("/score/create/cylinderMesh VertexCylinder");
 //      g4score->G4Command("/score/mesh/cylinderSize 20. 10. cm");
 //      g4score->G4Command("/score/mesh/nBin 200 10 256");
@@ -369,6 +369,9 @@ int Fun4All_G4_sPHENIX(
 //      g4score->G4Command("/score/quantity/cellFlux flux_charged_EkMin1MeV");
 ////      g4score->G4Command("/score/filter/charged");
 //      g4score->G4Command("/score/filter/particleWithKineticEnergy charged_EkMin1MeV 1 1000000 MeV pi+ pi- kaon+ kaon- proton anti_proton mu+  mu-  e+  e-  alpha");
+//
+//      g4score->G4Command("/score/quantity/cellFlux flux_charged_EkMin20MeV");
+//      g4score->G4Command("/score/filter/particleWithKineticEnergy charged_EkMin20MeV 20 1000000 MeV pi+ pi- kaon+ kaon- proton anti_proton mu+  mu-  e+  e-  alpha");
 //
 //      g4score->G4Command("/score/quantity/cellFlux flux_neutron");
 //      g4score->G4Command("/score/filter/particle filter_neutron neutron anti_neutron");
