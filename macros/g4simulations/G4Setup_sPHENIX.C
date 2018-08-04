@@ -95,6 +95,8 @@ int G4Setup(const int absorberactive = 0,
 // uncomment to set QGSP_BERT_HP physics list for productions 
 // (default is QGSP_BERT for speed)
     g4Reco->SetPhysicsList("QGSP_BERT_HP");
+    g4Reco->setDisableSteppingActions();
+
   if (decayType != TPythia6Decayer::kAll) {
     g4Reco->set_force_decay(decayType);
   }
