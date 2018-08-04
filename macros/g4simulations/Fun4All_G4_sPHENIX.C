@@ -3,7 +3,7 @@ using namespace std;
 
 int Fun4All_G4_sPHENIX(
     const int nEvents = 1,
-    const char *inputFile = "/gpfs/mnt/gpfs02/sphenix/sim/sim01/phnxreco/users/jinhuang/simulation/data/sHijing_0-20fm.dat.bz2",
+    const char *inputFile = "data/pythia8_200pp_MB.dat",
     const char *outputFile = "G4sPHENIX.root",
     const char *embed_input_file = "/sphenix/data/data02/review_2017-08-02/sHijing/fm_0-4.list")
 {
@@ -318,7 +318,7 @@ int Fun4All_G4_sPHENIX(
 
       g4score->G4Command("/score/create/cylinderMesh FullCylinder");
       // given in dr dz
-      g4score->G4Command("/score/mesh/cylinderSize 270. 380. cm");
+      g4score->G4Command("/score/mesh/cylinderSize 280. 450. cm");
       //    00118   //   Division command
       //    00119   mBinCmd = new G4UIcommand("/score/mesh/nBin",this);
       //    00120   mBinCmd->SetGuidance("Define segments of the scoring mesh.");
@@ -331,7 +331,7 @@ int Fun4All_G4_sPHENIX(
       //    00127   mBinCmd->SetGuidance("   Nr  :(int) Number of bins in radial axis ");
       //    00128   mBinCmd->SetGuidance("   Nz  :(int) Number of bins in z axis ");
       //    00129   mBinCmd->SetGuidance("   Nphi:(int) Number of bins in phi axis ");
-      g4score->G4Command("/score/mesh/nBin 135 380 8");
+      g4score->G4Command("/score/mesh/nBin 140 450 8");
 
       g4score->G4Command("/score/quantity/energyDeposit edep");
 
@@ -351,6 +351,9 @@ int Fun4All_G4_sPHENIX(
 
       g4score->G4Command("/score/quantity/cellFlux flux_neutron_EkMin100keV");
       g4score->G4Command("/score/filter/particleWithKineticEnergy HEneutronFilter 0.1 7000000 MeV neutron");
+
+      g4score->G4Command("/score/quantity/cellFlux flux_neutron_EkMin1MeV");
+      g4score->G4Command("/score/filter/particleWithKineticEnergy HEneutronFilter1MeV 1 7000000 MeV neutron");
 
       g4score->G4Command("/score/close");
 
