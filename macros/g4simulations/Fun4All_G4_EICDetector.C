@@ -1,5 +1,5 @@
 int Fun4All_G4_EICDetector(
-                           const int nEvents = 1,
+                           const int nEvents = 10,
                            const char * inputFile = "/sphenix/data/data02/review_2017-08-02/single_particle/spacal2d/fieldmap/G4Hits_sPHENIX_e-_eta0_8GeV-0002.root",
                            const char * outputFile = "G4EICDetector.root"
                            )
@@ -50,25 +50,25 @@ int Fun4All_G4_EICDetector(
   //======================
 
   // sPHENIX barrel
-  bool do_bbc = false;
+  bool do_bbc = true;
 
   bool do_pipe = true;
 
   bool do_svtx = true;
-  bool do_svtx_cell = do_svtx && true;
+  bool do_svtx_cell = do_svtx && false;
   bool do_svtx_track = do_svtx_cell && true;
   bool do_svtx_eval = do_svtx_track && false; // in order to use this evaluation, please build this analysis module analysis/blob/master/Tracking/FastTrackingEval/
 
   bool do_pstof = false;
 
   bool do_cemc = true;
-  bool do_cemc_cell = do_cemc && true;
+  bool do_cemc_cell = do_cemc && false;
   bool do_cemc_twr = do_cemc_cell && true;
   bool do_cemc_cluster = do_cemc_twr && true;
   bool do_cemc_eval = do_cemc_cluster && true;
 
   bool do_hcalin = true;
-  bool do_hcalin_cell = do_hcalin && true;
+  bool do_hcalin_cell = do_hcalin && false;
   bool do_hcalin_twr = do_hcalin_cell && true;
   bool do_hcalin_cluster = do_hcalin_twr && true;
   bool do_hcalin_eval = do_hcalin_cluster && true;
@@ -76,7 +76,7 @@ int Fun4All_G4_EICDetector(
   bool do_magnet = true;
 
   bool do_hcalout = true;
-  bool do_hcalout_cell = do_hcalout && true;
+  bool do_hcalout_cell = do_hcalout && false;
   bool do_hcalout_twr = do_hcalout_cell && true;
   bool do_hcalout_cluster = do_hcalout_twr && true;
   bool do_hcalout_eval = do_hcalout_cluster && true;
@@ -89,20 +89,20 @@ int Fun4All_G4_EICDetector(
   bool do_Aerogel = true;
 
   bool do_FEMC = true;
-  bool do_FEMC_cell = do_FEMC && true;
+  bool do_FEMC_cell = do_FEMC && false;
   bool do_FEMC_twr = do_FEMC_cell && true;
   bool do_FEMC_cluster = do_FEMC_twr && true;
   bool do_FEMC_eval = do_FEMC_cluster && true;
 
   bool do_FHCAL = true;
-  bool do_FHCAL_cell = do_FHCAL && true;
+  bool do_FHCAL_cell = do_FHCAL && false;
   bool do_FHCAL_twr = do_FHCAL_cell && true;
   bool do_FHCAL_cluster = do_FHCAL_twr && true;
   bool do_FHCAL_eval = do_FHCAL_cluster && true;
 
   // EICDetector geometry - 'electron' direction
   bool do_EEMC = true;
-  bool do_EEMC_cell = do_EEMC && true;
+  bool do_EEMC_cell = do_EEMC && false;
   bool do_EEMC_twr = do_EEMC_cell && true;
   bool do_EEMC_cluster = do_EEMC_twr && true;
   bool do_EEMC_eval = do_EEMC_cluster && true;
@@ -120,7 +120,7 @@ int Fun4All_G4_EICDetector(
   bool do_jet_reco = false;
   bool do_jet_eval = do_jet_reco && true;
 
-  bool do_fwd_jet_reco = true;
+  bool do_fwd_jet_reco = false;
   bool do_fwd_jet_eval = do_fwd_jet_reco && true;
 
   // HI Jet Reco for jet simulations in Au+Au (default is false for
@@ -132,7 +132,7 @@ int Fun4All_G4_EICDetector(
   bool do_dst_compress = false;
 
   //Option to convert DST to human command readable TTree for quick poke around the outputs
-  bool do_DSTReader = true;
+  bool do_DSTReader = false;
 
   //---------------
   // Load libraries
@@ -159,8 +159,8 @@ int Fun4All_G4_EICDetector(
   //---------------
 
   Fun4AllServer *se = Fun4AllServer::instance();
-  se->Verbosity(0); // uncomment for batch production running with minimal output messages
-  // se->Verbosity(Fun4AllServer::VERBOSITY_SOME); // uncomment for some info for interactive running
+//  se->Verbosity(0); // uncomment for batch production running with minimal output messages
+   se->Verbosity(Fun4AllServer::VERBOSITY_SOME+2); // uncomment for some info for interactive running
 
   // just if we set some flags somewhere in this macro
   recoConsts *rc = recoConsts::instance();
@@ -349,6 +349,102 @@ int Fun4All_G4_EICDetector(
 
   if (!readhits)
     {
+
+
+
+    // read-in HepMC events to Geant4 if there is any
+    HepMCNodeReader *hr = new HepMCNodeReader();
+    se->registerSubsystem(hr);
+
+    if (1)
+    {
+      // charged particle energy-range cut off in 1mm POLYETHYLENE ~ 0.1 g/cm2
+      // electron:  ESTAR database,
+      //            Ek = 3.500E-01 MeV, CSDA Range 9.979E-02 g/cm2
+      //            Ek = 1 MeV, CSDA Range 4.155E-01 g/cm2
+      // proton:    PSTAR database,
+      //            Ek = 9.500E+00 MeV, CSDA Range 1.029E-01  g/cm2
+      //            Ek = 1 MeV, CSDA Range 2.112E-03 g/cm2
+
+      gSystem->Load("libg4testbench.so");
+      // G4 scoring based flux analysis
+
+      PHG4ScoringManager *g4score = new PHG4ScoringManager();
+      g4score->setOutputFileName(string(outputFile) + "_g4score.root");
+      g4score->Verbosity(1);
+
+      g4score->G4Command("/score/create/cylinderMesh FullCylinder");
+      // given in dr dz
+      g4score->G4Command("/score/mesh/cylinderSize 280. 450. cm");
+      //    00118   //   Division command
+      //    00119   mBinCmd = new G4UIcommand("/score/mesh/nBin",this);
+      //    00120   mBinCmd->SetGuidance("Define segments of the scoring mesh.");
+      //    00121   mBinCmd->SetGuidance("[usage] /score/mesh/nBin");
+      //    00122   mBinCmd->SetGuidance(" In case of boxMesh, parameters are given in");
+      //    00123   mBinCmd->SetGuidance("   Ni  :(int) Number of bins i (in x-axis) ");
+      //    00124   mBinCmd->SetGuidance("   Nj  :(int) Number of bins j (in y-axis) ");
+      //    00125   mBinCmd->SetGuidance("   Nk  :(int) Number of bins k (in z-axis) ");
+      //    00126   mBinCmd->SetGuidance(" In case of cylinderMesh, parameters are given in");
+      //    00127   mBinCmd->SetGuidance("   Nr  :(int) Number of bins in radial axis ");
+      //    00128   mBinCmd->SetGuidance("   Nz  :(int) Number of bins in z axis ");
+      //    00129   mBinCmd->SetGuidance("   Nphi:(int) Number of bins in phi axis ");
+      g4score->G4Command("/score/mesh/nBin 140 450 8");
+
+      g4score->G4Command("/score/quantity/energyDeposit edep");
+
+      g4score->G4Command("/score/quantity/doseDeposit dose");
+
+      g4score->G4Command("/score/quantity/cellFlux flux_charged");
+      g4score->G4Command("/score/filter/charged");
+
+      g4score->G4Command("/score/quantity/cellFlux flux_charged_EkMin1MeV");
+      g4score->G4Command("/score/filter/particleWithKineticEnergy charged_EkMin1MeV 1 1000000 MeV pi+ pi- kaon+ kaon- proton anti_proton mu+  mu-  e+  e-  alpha");
+
+      g4score->G4Command("/score/quantity/cellFlux flux_charged_EkMin20MeV");
+      g4score->G4Command("/score/filter/particleWithKineticEnergy charged_EkMin20MeV 20 1000000 MeV pi+ pi- kaon+ kaon- proton anti_proton mu+  mu-  e+  e-  alpha");
+
+      g4score->G4Command("/score/quantity/cellFlux flux_neutron");
+      g4score->G4Command("/score/filter/particle filter_neutron neutron anti_neutron");
+
+      g4score->G4Command("/score/quantity/cellFlux flux_neutron_EkMin100keV");
+      g4score->G4Command("/score/filter/particleWithKineticEnergy HEneutronFilter 0.1 7000000 MeV neutron");
+
+      g4score->G4Command("/score/quantity/cellFlux flux_neutron_EkMin1MeV");
+      g4score->G4Command("/score/filter/particleWithKineticEnergy HEneutronFilter1MeV 1 7000000 MeV neutron");
+
+      g4score->G4Command("/score/close");
+
+      // inner detector zoom-in
+//      g4score->G4Command("/score/create/cylinderMesh VertexCylinder");
+//      g4score->G4Command("/score/mesh/cylinderSize 20. 10. cm");
+//      g4score->G4Command("/score/mesh/nBin 200 10 256");
+//
+//      g4score->G4Command("/score/quantity/energyDeposit edep");
+//
+//      g4score->G4Command("/score/quantity/doseDeposit dose");
+//
+//      g4score->G4Command("/score/quantity/cellFlux flux_charged");
+//      g4score->G4Command("/score/filter/charged");
+//
+//      g4score->G4Command("/score/quantity/cellFlux flux_charged_EkMin1MeV");
+////      g4score->G4Command("/score/filter/charged");
+//      g4score->G4Command("/score/filter/particleWithKineticEnergy charged_EkMin1MeV 1 1000000 MeV pi+ pi- kaon+ kaon- proton anti_proton mu+  mu-  e+  e-  alpha");
+//
+//      g4score->G4Command("/score/quantity/cellFlux flux_charged_EkMin20MeV");
+//      g4score->G4Command("/score/filter/particleWithKineticEnergy charged_EkMin20MeV 20 1000000 MeV pi+ pi- kaon+ kaon- proton anti_proton mu+  mu-  e+  e-  alpha");
+//
+//      g4score->G4Command("/score/quantity/cellFlux flux_neutron");
+//      g4score->G4Command("/score/filter/particle filter_neutron neutron anti_neutron");
+//
+//      g4score->G4Command("/score/quantity/cellFlux flux_neutron_EkMin100keV");
+//      g4score->G4Command("/score/filter/particleWithKineticEnergy HEneutronFilter 0.1 7000000 MeV neutron");
+//
+//      g4score->G4Command("/score/close");
+
+      se->registerSubsystem(g4score);
+    }
+
+
       //---------------------
       // Detector description
       //---------------------
