@@ -7,7 +7,6 @@ int Fun4All_G4_sPHENIX(
     const char *outputFile = "G4sPHENIX.root",
     const char *embed_input_file = "/sphenix/data/data02/review_2017-08-02/sHijing/fm_0-4.list")
 {
-
   //===============
   // Input options
   //===============
@@ -49,52 +48,12 @@ int Fun4All_G4_sPHENIX(
   // What to run
   //======================
 
+  bool do_score = false;
+
   bool do_bbc = true;
-
-  bool do_pipe = true;
-
-  bool do_svtx = true;
-  bool do_svtx_cell = do_svtx && true;
-  bool do_svtx_track = do_svtx_cell && true;
-  bool do_svtx_eval = do_svtx_track && true;
-
-  bool do_pstof = false;
-
-  bool do_cemc = true;
-  bool do_cemc_cell = do_cemc && true;
-  bool do_cemc_twr = do_cemc_cell && true;
-  bool do_cemc_cluster = do_cemc_twr && true;
-  bool do_cemc_eval = do_cemc_cluster && true;
-
-  bool do_hcalin = true;
-  bool do_hcalin_cell = do_hcalin && true;
-  bool do_hcalin_twr = do_hcalin_cell && true;
-  bool do_hcalin_cluster = do_hcalin_twr && true;
-  bool do_hcalin_eval = do_hcalin_cluster && true;
-
-  bool do_magnet = true;
-
-  bool do_hcalout = true;
-  bool do_hcalout_cell = do_hcalout && true;
-  bool do_hcalout_twr = do_hcalout_cell && true;
-  bool do_hcalout_cluster = do_hcalout_twr && true;
-  bool do_hcalout_eval = do_hcalout_cluster && true;
-
-  //! forward flux return plug door. Out of acceptance and off by default.
-  bool do_plugdoor = false;
 
   bool do_global = true;
   bool do_global_fastsim = true;
-
-  bool do_calotrigger = true && do_cemc_twr && do_hcalin_twr && do_hcalout_twr;
-
-  bool do_jet_reco = true;
-  bool do_jet_eval = do_jet_reco && true;
-
-  // HI Jet Reco for p+Au / Au+Au collisions (default is false for
-  // single particle / p+p-only simulations, or for p+Au / Au+Au
-  // simulations which don't particularly care about jets)
-  bool do_HIjetreco = false && do_cemc_twr && do_hcalin_twr && do_hcalout_twr;
 
   bool do_dst_compress = false;
 
@@ -111,21 +70,12 @@ int Fun4All_G4_sPHENIX(
   gSystem->Load("libg4hough.so");
   gSystem->Load("libg4eval.so");
 
-  // establish the geometry and reconstruction setup
-  gROOT->LoadMacro("G4Setup_sPHENIX.C");
-  G4Init(do_svtx, do_pstof, do_cemc, do_hcalin, do_magnet, do_hcalout, do_pipe, do_plugdoor);
-
-  int absorberactive = 1;  // set to 1 to make all absorbers active volumes
-  //  const string magfield = "1.5"; // alternatively to specify a constant magnetic field, give a float number, which will be translated to solenoidal field in T, if string use as fieldmap name (including path)
-  const string magfield = string(getenv("CALIBRATIONROOT")) + string("/Field/Map/sPHENIX.2d.root"); // default map from the calibration database
-  const float magfield_rescale = -1.4 / 1.5;                                     // scale the map to a 1.4 T field
-
   //---------------
   // Fun4All server
   //---------------
 
   Fun4AllServer *se = Fun4AllServer::instance();
-  se->Verbosity(0);
+  se->Verbosity(1);
   // just if we set some flags somewhere in this macro
   recoConsts *rc = recoConsts::instance();
   // By default every random number generator uses
@@ -192,7 +142,7 @@ int Fun4All_G4_sPHENIX(
     {
       // toss low multiplicity dummy events
       PHG4SimpleEventGenerator *gen = new PHG4SimpleEventGenerator();
-      gen->add_particles("pi-", 2);  // mu+,e+,proton,pi+,Upsilon
+      gen->add_particles("mu-", 2);  // mu+,e+,proton,pi+,Upsilon
       //gen->add_particles("pi+",100); // 100 pion option
       if (readhepmc || do_embedding || runpythia8 || runpythia6)
       {
@@ -212,7 +162,7 @@ int Fun4All_G4_sPHENIX(
       gen->set_eta_range(-1.0, 1.0);
       gen->set_phi_range(-1.0 * TMath::Pi(), 1.0 * TMath::Pi());
       //gen->set_pt_range(0.1, 50.0);
-      gen->set_pt_range(0.1, 20.0);
+      gen->set_pt_range(20, 20.0);
       gen->Embed(2);
       gen->Verbosity(0);
 
@@ -296,8 +246,135 @@ int Fun4All_G4_sPHENIX(
     // Detector description
     //---------------------
 
-    G4Setup(absorberactive, magfield, TPythia6Decayer::kAll,
-            do_svtx, do_pstof, do_cemc, do_hcalin, do_magnet, do_hcalout, do_pipe,do_plugdoor, magfield_rescale);
+    gSystem->Load("libg4detectors.so");
+    gSystem->Load("libg4testbench.so");
+
+    // read-in HepMC events to Geant4 if there is any
+    HepMCNodeReader *hr = new HepMCNodeReader();
+    se->registerSubsystem(hr);
+
+    if (do_score)
+    {
+      // charged particle energy-range cut off in 1mm POLYETHYLENE ~ 0.1 g/cm2
+      // electron:  ESTAR database,
+      //            Ek = 3.500E-01 MeV, CSDA Range 9.979E-02 g/cm2
+      //            Ek = 1 MeV, CSDA Range 4.155E-01 g/cm2
+      // proton:    PSTAR database,
+      //            Ek = 9.500E+00 MeV, CSDA Range 1.029E-01  g/cm2
+      //            Ek = 1 MeV, CSDA Range 2.112E-03 g/cm2
+
+      gSystem->Load("libg4testbench.so");
+      // G4 scoring based flux analysis
+
+      PHG4ScoringManager *g4score = new PHG4ScoringManager();
+      g4score->setOutputFileName(string(outputFile) + "_g4score.root");
+      g4score->Verbosity(1);
+
+      g4score->G4Command("/score/create/cylinderMesh FullCylinder");
+      // given in dr dz
+      g4score->G4Command("/score/mesh/cylinderSize 280. 450. cm");
+      //    00118   //   Division command
+      //    00119   mBinCmd = new G4UIcommand("/score/mesh/nBin",this);
+      //    00120   mBinCmd->SetGuidance("Define segments of the scoring mesh.");
+      //    00121   mBinCmd->SetGuidance("[usage] /score/mesh/nBin");
+      //    00122   mBinCmd->SetGuidance(" In case of boxMesh, parameters are given in");
+      //    00123   mBinCmd->SetGuidance("   Ni  :(int) Number of bins i (in x-axis) ");
+      //    00124   mBinCmd->SetGuidance("   Nj  :(int) Number of bins j (in y-axis) ");
+      //    00125   mBinCmd->SetGuidance("   Nk  :(int) Number of bins k (in z-axis) ");
+      //    00126   mBinCmd->SetGuidance(" In case of cylinderMesh, parameters are given in");
+      //    00127   mBinCmd->SetGuidance("   Nr  :(int) Number of bins in radial axis ");
+      //    00128   mBinCmd->SetGuidance("   Nz  :(int) Number of bins in z axis ");
+      //    00129   mBinCmd->SetGuidance("   Nphi:(int) Number of bins in phi axis ");
+      g4score->G4Command("/score/mesh/nBin 140 450 8");
+
+      g4score->G4Command("/score/quantity/energyDeposit edep");
+
+      g4score->G4Command("/score/quantity/doseDeposit dose");
+
+      g4score->G4Command("/score/quantity/cellFlux flux_charged");
+      g4score->G4Command("/score/filter/charged");
+
+      g4score->G4Command("/score/quantity/cellFlux flux_charged_EkMin1MeV");
+      g4score->G4Command("/score/filter/particleWithKineticEnergy charged_EkMin1MeV 1 1000000 MeV pi+ pi- kaon+ kaon- proton anti_proton mu+  mu-  e+  e-  alpha");
+
+      g4score->G4Command("/score/quantity/cellFlux flux_charged_EkMin20MeV");
+      g4score->G4Command("/score/filter/particleWithKineticEnergy charged_EkMin20MeV 20 1000000 MeV pi+ pi- kaon+ kaon- proton anti_proton mu+  mu-  e+  e-  alpha");
+
+      g4score->G4Command("/score/quantity/cellFlux flux_neutron");
+      g4score->G4Command("/score/filter/particle filter_neutron neutron anti_neutron");
+
+      g4score->G4Command("/score/quantity/cellFlux flux_neutron_EkMin100keV");
+      g4score->G4Command("/score/filter/particleWithKineticEnergy HEneutronFilter 0.1 7000000 MeV neutron");
+
+      g4score->G4Command("/score/quantity/cellFlux flux_neutron_EkMin1MeV");
+      g4score->G4Command("/score/filter/particleWithKineticEnergy HEneutronFilter1MeV 1 7000000 MeV neutron");
+
+      g4score->G4Command("/score/close");
+
+      // inner detector zoom-in
+      //      g4score->G4Command("/score/create/cylinderMesh VertexCylinder");
+      //      g4score->G4Command("/score/mesh/cylinderSize 20. 10. cm");
+      //      g4score->G4Command("/score/mesh/nBin 200 10 256");
+      //
+      //      g4score->G4Command("/score/quantity/energyDeposit edep");
+      //
+      //      g4score->G4Command("/score/quantity/doseDeposit dose");
+      //
+      //      g4score->G4Command("/score/quantity/cellFlux flux_charged");
+      //      g4score->G4Command("/score/filter/charged");
+      //
+      //      g4score->G4Command("/score/quantity/cellFlux flux_charged_EkMin1MeV");
+      ////      g4score->G4Command("/score/filter/charged");
+      //      g4score->G4Command("/score/filter/particleWithKineticEnergy charged_EkMin1MeV 1 1000000 MeV pi+ pi- kaon+ kaon- proton anti_proton mu+  mu-  e+  e-  alpha");
+      //
+      //      g4score->G4Command("/score/quantity/cellFlux flux_charged_EkMin20MeV");
+      //      g4score->G4Command("/score/filter/particleWithKineticEnergy charged_EkMin20MeV 20 1000000 MeV pi+ pi- kaon+ kaon- proton anti_proton mu+  mu-  e+  e-  alpha");
+      //
+      //      g4score->G4Command("/score/quantity/cellFlux flux_neutron");
+      //      g4score->G4Command("/score/filter/particle filter_neutron neutron anti_neutron");
+      //
+      //      g4score->G4Command("/score/quantity/cellFlux flux_neutron_EkMin100keV");
+      //      g4score->G4Command("/score/filter/particleWithKineticEnergy HEneutronFilter 0.1 7000000 MeV neutron");
+      //
+      //      g4score->G4Command("/score/close");
+
+      se->registerSubsystem(g4score);
+    }
+
+    PHG4Reco *g4Reco = new PHG4Reco();
+    g4Reco->set_rapidity_coverage(1.1);  // according to drawings
+                                         // uncomment to set QGSP_BERT_HP physics list for productions
+                                         // (default is QGSP_BERT for speed)
+
+    //  g4Reco->SetPhysicsList("QGSP_BERT_HP");
+    g4Reco->setDisableSteppingActions();
+
+    //    if (decayType != TPythia6Decayer::kAll)
+    //    {
+    //      g4Reco->set_force_decay(decayType);
+    //    }
+
+    //  const string magfield = "1.5"; // alternatively to specify a constant magnetic field, give a float number, which will be translated to solenoidal field in T, if string use as fieldmap name (including path)
+    const string magfield = string(getenv("CALIBRATIONROOT")) + string("/Field/Map/sPHENIX.2d.root");  // default map from the calibration database
+    const float magfield_rescale = -1.4 / 1.5;                                                         // scale the map to a 1.4 T field
+
+    //        g4Reco->set_field_map(magfield, 1);
+    g4Reco->set_field(1);  // use const soleniodal field
+                           //    g4Reco->set_field_rescale(magfield_rescale);
+    g4Reco->SetWorldShape("G4BOX");
+    g4Reco->SetWorldSizeX(2400);
+    g4Reco->SetWorldSizeY(2400);
+    g4Reco->SetWorldSizeZ(2400);
+
+    PHG4GDMLSubsystem *phenix = new PHG4GDMLSubsystem("PHENIX");
+    phenix->OverlapCheck(true);
+    phenix->set_string_param("GDMPath", "/phenix/u/jinhuang/links/simulation/data/geom_Run15_PHENIX.gdml");
+    phenix->set_string_param("TopVolName", "HALL");
+    g4Reco->registerSubsystem(phenix);
+
+    PHG4TruthSubsystem *truth = new PHG4TruthSubsystem();
+    g4Reco->registerSubsystem(truth);
+    se->registerSubsystem(g4Reco);
   }
 
   //---------
@@ -314,39 +391,6 @@ int Fun4All_G4_sPHENIX(
   // Detector Division
   //------------------
 
-  if (do_svtx_cell) Svtx_Cells();
-
-  if (do_cemc_cell) CEMC_Cells();
-
-  if (do_hcalin_cell) HCALInner_Cells();
-
-  if (do_hcalout_cell) HCALOuter_Cells();
-
-  //-----------------------------
-  // CEMC towering and clustering
-  //-----------------------------
-
-  if (do_cemc_twr) CEMC_Towers();
-  if (do_cemc_cluster) CEMC_Clusters();
-
-  //-----------------------------
-  // HCAL towering and clustering
-  //-----------------------------
-
-  if (do_hcalin_twr) HCALInner_Towers();
-  if (do_hcalin_cluster) HCALInner_Clusters();
-
-  if (do_hcalout_twr) HCALOuter_Towers();
-  if (do_hcalout_cluster) HCALOuter_Clusters();
-
-  if (do_dst_compress) ShowerCompress();
-
-  //--------------
-  // SVTX tracking
-  //--------------
-
-  if (do_svtx_track) Svtx_Reco();
-
   //-----------------
   // Global Vertexing
   //-----------------
@@ -362,46 +406,6 @@ int Fun4All_G4_sPHENIX(
     gROOT->LoadMacro("G4_Global.C");
     Global_FastSim();
   }
-
-  //-----------------
-  // Calo Trigger Simulation
-  //-----------------
-
-  if (do_calotrigger)
-  {
-    gROOT->LoadMacro("G4_CaloTrigger.C");
-    CaloTrigger_Sim();
-  }
-
-  //---------
-  // Jet reco
-  //---------
-
-  if (do_jet_reco)
-  {
-    gROOT->LoadMacro("G4_Jets.C");
-    Jet_Reco();
-  }
-
-  if (do_HIjetreco)
-  {
-    gROOT->LoadMacro("G4_HIJetReco.C");
-    HIJetReco();
-  }
-
-  //----------------------
-  // Simulation evaluation
-  //----------------------
-
-  if (do_svtx_eval) Svtx_Eval(string(outputFile) + "_g4svtx_eval.root");
-
-  if (do_cemc_eval) CEMC_Eval(string(outputFile) + "_g4cemc_eval.root");
-
-  if (do_hcalin_eval) HCALInner_Eval(string(outputFile) + "_g4hcalin_eval.root");
-
-  if (do_hcalout_eval) HCALOuter_Eval(string(outputFile) + "_g4hcalout_eval.root");
-
-  if (do_jet_eval) Jet_Eval(string(outputFile) + "_g4jet_eval.root");
 
   //--------------
   // IO management
