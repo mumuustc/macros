@@ -3,7 +3,7 @@ using namespace std;
 
 int Fun4All_G4_sPHENIX(
     const int nEvents = 1,
-    const char *inputFile = "/sphenix/data/data02/review_2017-08-02/single_particle/spacal2d/fieldmap/G4Hits_sPHENIX_e-_eta0_8GeV-0002.root",
+    const char *inputFile = "data/pythia8_200pp_MB.dat",
     const char *outputFile = "G4sPHENIX.root",
     const char *embed_input_file = "/sphenix/data/data02/review_2017-08-02/sHijing/fm_0-4.list")
 {
@@ -21,7 +21,7 @@ int Fun4All_G4_sPHENIX(
   const bool readhits = false;
   // Or:
   // read files in HepMC format (typically output from event generators like hijing or pythia)
-  const bool readhepmc = false;  // read HepMC files
+  const bool readhepmc = true;  // read HepMC files
   // Or:
   // Use pythia
   const bool runpythia8 = false;
@@ -35,7 +35,7 @@ int Fun4All_G4_sPHENIX(
 
   // Besides the above flags. One can further choose to further put in following particles in Geant4 simulation
   // Use multi-particle generator (PHG4SimpleEventGenerator), see the code block below to choose particle species and kinematics
-  const bool particles = true && !readhits;
+  const bool particles = false && !readhits;
   // or gun/ very simple single particle gun generator
   const bool usegun = false && !readhits;
   // Throw single Upsilons, may be embedded in Hijing by setting readhepmc flag also  (note, careful to set Z vertex equal to Hijing events)
@@ -48,7 +48,7 @@ int Fun4All_G4_sPHENIX(
   // What to run
   //======================
 
-  bool do_score = false;
+  bool do_score = true;
 
   bool do_bbc = true;
 
@@ -143,7 +143,7 @@ int Fun4All_G4_sPHENIX(
       // toss low multiplicity dummy events
       PHG4SimpleEventGenerator *gen = new PHG4SimpleEventGenerator();
       gen->add_particles("pi-", 2);  // mu+,e+,proton,pi+,Upsilon
-      gen->add_particles("pi+",2); // 100 pion option
+      gen->add_particles("pi+", 2);  // 100 pion option
       if (readhepmc || do_embedding || runpythia8 || runpythia6)
       {
         gen->set_reuse_existing_vertex(true);
@@ -346,7 +346,7 @@ int Fun4All_G4_sPHENIX(
                                          // uncomment to set QGSP_BERT_HP physics list for productions
                                          // (default is QGSP_BERT for speed)
 
-    //  g4Reco->SetPhysicsList("QGSP_BERT_HP");
+    g4Reco->SetPhysicsList("QGSP_BERT_HP");
     g4Reco->setDisableSteppingActions();
 
     //    if (decayType != TPythia6Decayer::kAll)
@@ -360,18 +360,18 @@ int Fun4All_G4_sPHENIX(
 
     //        g4Reco->set_field_map(magfield, 1);
     g4Reco->set_field_map("/afs/rhic.bnl.gov/phenix/PHENIX_LIB/simulation/Sim3D++.root", PHFieldConfig::kField3DCylindrical);  // use const soleniodal field
-                           //    g4Reco->set_field_rescale(magfield_rescale);
+                                                                                                                               //    g4Reco->set_field_rescale(magfield_rescale);
     g4Reco->SetWorldShape("G4BOX");
-    g4Reco->SetWorldSizeX(2400);
-    g4Reco->SetWorldSizeY(2400);
-    g4Reco->SetWorldSizeZ(2400);
+    g4Reco->SetWorldSizeX(2001);
+    g4Reco->SetWorldSizeY(2201);
+    g4Reco->SetWorldSizeZ(2201);
 
     PHG4GDMLSubsystem *phenix = new PHG4GDMLSubsystem("PHENIX");
-//    phenix->OverlapCheck(true);
+    //    phenix->OverlapCheck(true);
     phenix->set_string_param("GDMPath", "/phenix/u/jinhuang/links/simulation/data/geom_Run15_PHENIX.gdml");
     phenix->set_string_param("TopVolName", "HALL");
-//    phenix->set_string_param("GDMPath", "/afs/rhic.bnl.gov/x8664_sl7/opt/sphenix/core/geant4.10.02.p02/share/Geant4-10.2.2/examples/extended/persistency/gdml/G02/test.gdml");
-//    phenix->set_string_param("TopVolName", "ExpHallLV");
+    //    phenix->set_string_param("GDMPath", "/afs/rhic.bnl.gov/x8664_sl7/opt/sphenix/core/geant4.10.02.p02/share/Geant4-10.2.2/examples/extended/persistency/gdml/G02/test.gdml");
+    //    phenix->set_string_param("TopVolName", "ExpHallLV");
     g4Reco->registerSubsystem(phenix);
 
     PHG4TruthSubsystem *truth = new PHG4TruthSubsystem();
@@ -449,10 +449,10 @@ int Fun4All_G4_sPHENIX(
     Fun4AllHepMCInputManager *in = new Fun4AllHepMCInputManager("HepMCInput_1");
     se->registerInputManager(in);
     se->fileopen(in->Name().c_str(), inputFile);
-    //in->set_vertex_distribution_width(100e-4,100e-4,30,0);//optional collision smear in space, time
+    in->set_vertex_distribution_width(100e-4, 100e-4, 30, 0);  //optional collision smear in space, time
     //in->set_vertex_distribution_mean(0,0,1,0);//optional collision central position shift in space, time
     // //optional choice of vertex distribution function in space, time
-    //in->set_vertex_distribution_function(PHHepMCGenHelper::Gaus,PHHepMCGenHelper::Gaus,PHHepMCGenHelper::Uniform,PHHepMCGenHelper::Gaus);
+    in->set_vertex_distribution_function(PHHepMCGenHelper::Gaus, PHHepMCGenHelper::Gaus, PHHepMCGenHelper::Gaus, PHHepMCGenHelper::Gaus);
     //! embedding ID for the event
     //! positive ID is the embedded event of interest, e.g. jetty event from pythia
     //! negative IDs are backgrounds, .e.g out of time pile up collisions
