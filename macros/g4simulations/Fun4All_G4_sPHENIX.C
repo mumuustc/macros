@@ -367,7 +367,7 @@ int Fun4All_G4_sPHENIX(
     g4Reco->SetWorldSizeZ(2201);
 
     PHG4GDMLSubsystem *phenix = new PHG4GDMLSubsystem("PHENIX");
-    //    phenix->OverlapCheck(true);
+    phenix->OverlapCheck(true);
     phenix->set_string_param("GDMPath", "/phenix/u/jinhuang/links/simulation/data/geom_Run15_PHENIX.gdml");
     phenix->set_string_param("TopVolName", "HALL");
     //    phenix->set_string_param("GDMPath", "/afs/rhic.bnl.gov/x8664_sl7/opt/sphenix/core/geant4.10.02.p02/share/Geant4-10.2.2/examples/extended/persistency/gdml/G02/test.gdml");
