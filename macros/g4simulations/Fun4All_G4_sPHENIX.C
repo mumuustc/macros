@@ -349,15 +349,6 @@ int Fun4All_G4_sPHENIX(
     g4Reco->SetPhysicsList("QGSP_BERT_HP");
     g4Reco->setDisableSteppingActions();
 
-    //    if (decayType != TPythia6Decayer::kAll)
-    //    {
-    //      g4Reco->set_force_decay(decayType);
-    //    }
-
-    //  const string magfield = "1.5"; // alternatively to specify a constant magnetic field, give a float number, which will be translated to solenoidal field in T, if string use as fieldmap name (including path)
-    const string magfield = string(getenv("CALIBRATIONROOT")) + string("/Field/Map/sPHENIX.2d.root");  // default map from the calibration database
-    const float magfield_rescale = -1.4 / 1.5;                                                         // scale the map to a 1.4 T field
-
     //        g4Reco->set_field_map(magfield, 1);
     g4Reco->set_field_map("/afs/rhic.bnl.gov/phenix/PHENIX_LIB/simulation/Sim3D++.root", PHFieldConfig::kField3DCylindrical);  // use const soleniodal field
                                                                                                                                //    g4Reco->set_field_rescale(magfield_rescale);
