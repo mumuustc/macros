@@ -142,8 +142,8 @@ int Fun4All_G4_sPHENIX(
     {
       // toss low multiplicity dummy events
       PHG4SimpleEventGenerator *gen = new PHG4SimpleEventGenerator();
-      gen->add_particles("mu-", 2);  // mu+,e+,proton,pi+,Upsilon
-      //gen->add_particles("pi+",100); // 100 pion option
+      gen->add_particles("pi-", 2);  // mu+,e+,proton,pi+,Upsilon
+      gen->add_particles("pi+",2); // 100 pion option
       if (readhepmc || do_embedding || runpythia8 || runpythia6)
       {
         gen->set_reuse_existing_vertex(true);
@@ -159,7 +159,7 @@ int Fun4All_G4_sPHENIX(
       }
       gen->set_vertex_size_function(PHG4SimpleEventGenerator::Uniform);
       gen->set_vertex_size_parameters(0.0, 0.0);
-      gen->set_eta_range(-1.0, 1.0);
+      gen->set_eta_range(-2.0, 2.0);
       gen->set_phi_range(-1.0 * TMath::Pi(), 1.0 * TMath::Pi());
       //gen->set_pt_range(0.1, 50.0);
       gen->set_pt_range(20, 20.0);
@@ -359,7 +359,7 @@ int Fun4All_G4_sPHENIX(
     const float magfield_rescale = -1.4 / 1.5;                                                         // scale the map to a 1.4 T field
 
     //        g4Reco->set_field_map(magfield, 1);
-    g4Reco->set_field(1);  // use const soleniodal field
+    g4Reco->set_field_map("/afs/rhic.bnl.gov/phenix/PHENIX_LIB/simulation/Sim3D++.root", PHFieldConfig::kField3DCylindrical);  // use const soleniodal field
                            //    g4Reco->set_field_rescale(magfield_rescale);
     g4Reco->SetWorldShape("G4BOX");
     g4Reco->SetWorldSizeX(2400);
@@ -367,9 +367,11 @@ int Fun4All_G4_sPHENIX(
     g4Reco->SetWorldSizeZ(2400);
 
     PHG4GDMLSubsystem *phenix = new PHG4GDMLSubsystem("PHENIX");
-    phenix->OverlapCheck(true);
+//    phenix->OverlapCheck(true);
     phenix->set_string_param("GDMPath", "/phenix/u/jinhuang/links/simulation/data/geom_Run15_PHENIX.gdml");
     phenix->set_string_param("TopVolName", "HALL");
+//    phenix->set_string_param("GDMPath", "/afs/rhic.bnl.gov/x8664_sl7/opt/sphenix/core/geant4.10.02.p02/share/Geant4-10.2.2/examples/extended/persistency/gdml/G02/test.gdml");
+//    phenix->set_string_param("TopVolName", "ExpHallLV");
     g4Reco->registerSubsystem(phenix);
 
     PHG4TruthSubsystem *truth = new PHG4TruthSubsystem();
