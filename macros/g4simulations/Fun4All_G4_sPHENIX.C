@@ -3,7 +3,7 @@ using namespace std;
 
 int Fun4All_G4_sPHENIX(
     const int nEvents = 1,
-    const char *inputFile = "data/pythia8_200pp_MB.dat",
+    const char *inputFile = "data/sHijing_0-20fm.dat.bz2",
     const char *outputFile = "G4sPHENIX.root",
     const char *embed_input_file = "/sphenix/data/data02/review_2017-08-02/sHijing/fm_0-4.list")
 {
@@ -347,7 +347,8 @@ int Fun4All_G4_sPHENIX(
                                          // (default is QGSP_BERT for speed)
 
     g4Reco->SetPhysicsList("QGSP_BERT_HP");
-    g4Reco->setDisableSteppingActions();
+    g4Reco->setDisableUserActions(true);
+    g4Reco->save_DST_geometry(false);
 
     //        g4Reco->set_field_map(magfield, 1);
     g4Reco->set_field_map("/afs/rhic.bnl.gov/phenix/PHENIX_LIB/simulation/Sim3D++.root", PHFieldConfig::kField3DCylindrical);  // use const soleniodal field
@@ -358,7 +359,7 @@ int Fun4All_G4_sPHENIX(
     g4Reco->SetWorldSizeZ(2201);
 
     PHG4GDMLSubsystem *phenix = new PHG4GDMLSubsystem("PHENIX");
-    phenix->OverlapCheck(true);
+//    phenix->OverlapCheck(true);
     phenix->set_string_param("GDMPath", "/phenix/u/jinhuang/links/simulation/data/geom_Run15_PHENIX.gdml");
     phenix->set_string_param("TopVolName", "HALL");
     //    phenix->set_string_param("GDMPath", "/afs/rhic.bnl.gov/x8664_sl7/opt/sphenix/core/geant4.10.02.p02/share/Geant4-10.2.2/examples/extended/persistency/gdml/G02/test.gdml");
