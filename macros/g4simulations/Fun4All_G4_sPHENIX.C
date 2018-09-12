@@ -346,7 +346,7 @@ int Fun4All_G4_sPHENIX(
                                          // uncomment to set QGSP_BERT_HP physics list for productions
                                          // (default is QGSP_BERT for speed)
 
-    g4Reco->SetPhysicsList("QGSP_BERT_HP");
+    g4Reco->SetPhysicsList("FTFP_BERT_HP");
     g4Reco->setDisableUserActions(true);
     g4Reco->save_DST_geometry(false);
 
@@ -366,8 +366,8 @@ int Fun4All_G4_sPHENIX(
     //    phenix->set_string_param("TopVolName", "ExpHallLV");
     g4Reco->registerSubsystem(phenix);
 
-    PHG4TruthSubsystem *truth = new PHG4TruthSubsystem();
-    g4Reco->registerSubsystem(truth);
+//    PHG4TruthSubsystem *truth = new PHG4TruthSubsystem();
+//    g4Reco->registerSubsystem(truth);
     se->registerSubsystem(g4Reco);
   }
 
