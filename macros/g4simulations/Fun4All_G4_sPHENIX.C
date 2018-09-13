@@ -366,8 +366,8 @@ int Fun4All_G4_sPHENIX(
     //    phenix->set_string_param("TopVolName", "ExpHallLV");
     g4Reco->registerSubsystem(phenix);
 
-//    PHG4TruthSubsystem *truth = new PHG4TruthSubsystem();
-//    g4Reco->registerSubsystem(truth);
+    PHG4TruthSubsystem *truth = new PHG4TruthSubsystem();
+    g4Reco->registerSubsystem(truth);
     se->registerSubsystem(g4Reco);
   }
 
