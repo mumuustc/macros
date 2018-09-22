@@ -2,7 +2,7 @@
 
 using namespace std;
 
-void Fun4All_TPCFEE(int nEvents = 1000000, const char *input_file = "data/tpcfee_00002658-0000.evt",
+void Fun4All_TPCFEE(int nEvents = 10000000, const char *input_file = "data/tpcfee_00002658-0000.evt",
                     const char *output_file = "data/beam_00000406.root")
 {
   gSystem->Load("libfun4all");
@@ -18,6 +18,10 @@ void Fun4All_TPCFEE(int nEvents = 1000000, const char *input_file = "data/tpcfee
   TPCFEETestRecov1 *tpcfee = new TPCFEETestRecov1();
 //  tpcfee->Verbosity(TPCFEETestRecov1::VERBOSITY_SOME);
 //  tpcfee->Verbosity(TPCFEETestRecov1::VERBOSITY_MORE);
+
+  tpcfee->setNPreSample(5);
+  tpcfee->setNPostSample(7);
+
   se->registerSubsystem(tpcfee);
   //
 
