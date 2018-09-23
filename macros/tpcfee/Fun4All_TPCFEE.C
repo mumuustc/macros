@@ -15,7 +15,7 @@ void Fun4All_TPCFEE(int nEvents = 10000000, const char *input_file = "data/tpcfe
   // rc->set_IntFlag("RUNNUMBER",0);
 
   // ------------------- Run info -> RUN node -------------------
-  TPCFEETestRecov1 *tpcfee = new TPCFEETestRecov1();
+  TPCFEETestRecov1 *tpcfee = new TPCFEETestRecov1(string(input_file) + string("_TPCFEETestRecov1.root"));
 //  tpcfee->Verbosity(TPCFEETestRecov1::VERBOSITY_SOME);
 //  tpcfee->Verbosity(TPCFEETestRecov1::VERBOSITY_MORE);
 
