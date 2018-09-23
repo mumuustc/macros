@@ -24,8 +24,8 @@ TFile *_file0 = NULL;
 TString description;
 
 void DrawTPCFEE(
-    //    const TString infile = "data/tpcfee_00002658-0000.evt_TPCFEETestRecov1.root"//
-    const TString infile = "data/tpcfee_00002658-0000.evt_TPCFEETestRecov1_DefaultMap.root"  //
+    const TString infile = "data/tpcfee_00002658-0000.evt_TPCFEETestRecov1.root"  //
+                                                                                  //    const TString infile = "data/tpcfee_00002658-0000.evt_TPCFEETestRecov1_DefaultMap.root"  //
 )
 {
   gSystem->Load("libtpcdaq.so");
@@ -90,7 +90,7 @@ void EventCheck()
 
   //  p->DrawFrame(-200,-200,200,200);
 
-  eventT->Draw("Clusters.avg_pady:Clusters.avg_padx>>hAllClusterPad(50,-.5,49.5,12,-.5,11.5)", "nClusters>=1", "colz");
+  eventT->Draw("Clusters.avg_pady:Clusters.avg_padx>>hAllClusterPad(150,-.5,49.5,36,-.5,11.5)", "nClusters>=1", "colz");
   hAllClusterPad->SetTitle(";All Cluster <Pad X>;All Cluster <Pad Y>");
 
   p = (TPad *) c1->cd(idx++);
@@ -115,7 +115,7 @@ void EventCheck()
 
   //  p->DrawFrame(-200,-200,200,200);
 
-  eventT->Draw("Clusters[0].avg_pady:Clusters[0].avg_padx>>hSingleClusterPad(50,-.5,49.5,12,-.5,11.5)", "nClusters==1", "colz");
+  eventT->Draw("Clusters[0].avg_pady:Clusters[0].avg_padx>>hSingleClusterPad(150,-.5,49.5,36,-.5,11.5)", "nClusters==1", "colz");
   hSingleClusterPad->SetTitle(";Single Cluster <Pad X>;Single Cluster <Pad Y>");
 
   p = (TPad *) c1->cd(idx++);
@@ -140,7 +140,7 @@ void EventCheck()
 
   //  p->DrawFrame(-200,-200,200,200);
 
-  eventT->Draw("Clusters[0].avg_pady:Clusters[0].avg_padx>>hSingleClusterPad11(50,-.5,49.5,12,-.5,11.5)", "nClusters==1 && Clusters[0].avg_padx<=11", "colz");
+  eventT->Draw("Clusters[0].avg_pady:Clusters[0].avg_padx>>hSingleClusterPad11(150,-.5,49.5,36,-.5,11.5)", "nClusters==1 && Clusters[0].avg_padx<=11", "colz");
   hSingleClusterPad11->SetTitle(";Single Cluster <Pad X> | Padx<=11;Single Cluster <Pad Y>");
 
   p = (TPad *) c1->cd(idx++);
@@ -174,7 +174,7 @@ void EventCheck()
 
   //  p->DrawFrame(-200,-200,200,200);
 
-  eventT->Draw("Sum$(Clusters[].avg_pady * Clusters[].peak)/Sum$(Clusters[].peak):Sum$(Clusters[].avg_padx * Clusters[].peak)/Sum$(Clusters[].peak)>>hSumClusterPad(50,-.5,49.5,12,-.5,11.5)", "nClusters>=2", "colz");
+  eventT->Draw("Sum$(Clusters[].avg_pady * Clusters[].peak)/Sum$(Clusters[].peak):Sum$(Clusters[].avg_padx * Clusters[].peak)/Sum$(Clusters[].peak)>>hSumClusterPad(150,-.5,49.5,36,-.5,11.5)", "nClusters>=2", "colz");
   hSumClusterPad->SetTitle(";Energy Weighted Multi-Cluster <Pad X>;Energy Weighted Multi-Cluster <Pad Y>");
 
   p = (TPad *) c1->cd(idx++);
@@ -199,7 +199,7 @@ void EventCheck()
 
   //  p->DrawFrame(-200,-200,200,200);
 
-  eventT->Draw("Clusters[0].avg_pady:Clusters[0].avg_padx>>hLeadClusterPad(50,-.5,49.5,12,-.5,11.5)", "nClusters>=2", "colz");
+  eventT->Draw("Clusters[0].avg_pady:Clusters[0].avg_padx>>hLeadClusterPad(150,-.5,49.5,36,-.5,11.5)", "nClusters>=2", "colz");
   hLeadClusterPad->SetTitle(";Lead Cluster <Pad X>;Lead Cluster <Pad Y>");
 
   p = (TPad *) c1->cd(idx++);
@@ -224,7 +224,7 @@ void EventCheck()
 
   //  p->DrawFrame(-200,-200,200,200);
 
-  eventT->Draw("Clusters.avg_pady:Clusters.avg_padx>>hNonLeadClusterPad(50,-.5,49.5,12,-.5,11.5)", "nClusters>=2 && Iteration$>=2", "colz");
+  eventT->Draw("Clusters.avg_pady:Clusters.avg_padx>>hNonLeadClusterPad(150,-.5,49.5,36,-.5,11.5)", "nClusters>=2 && Iteration$>=2", "colz");
   hNonLeadClusterPad->SetTitle(";Secondary+ Cluster <Pad X>;Secondary+ Cluster <Pad Y>");
 
   p = (TPad *) c1->cd(idx++);
@@ -355,6 +355,27 @@ void ChannelCheck()
 
   chanT->Draw("max - pedestal:fee_channel>>h_maxfee_channel(256,-.5,255.5,1100,.5,1100.5)", "", "colz");
   h_maxfee_channel->SetTitle(";fee_channel;max sample - pedestal [adc]");
+
+  SaveCanvas(c1, TString(_file0->GetName()) + TString(c1->GetName()), kTRUE);
+
+  //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  TCanvas *c1 = new TCanvas("ChannelCheck_ChannelMap", "ChannelCheck_ChannelMap", 1000, 560);
+  //  c1->Divide(4, 2);
+  int idx = 1;
+  TPad *p;
+  p = (TPad *) c1->cd(idx++);
+  c1->Update();
+  p->SetLogz();
+  //  p->SetLeftMargin(.2);
+  p->SetRightMargin(.15);
+  //  p->SetTopMargin(.15);
+
+  chanT->Draw("pad_y:pad_x>>hpadMap(60,-10.5,49.5,15,.5,15.5)", "max - pedestal", "colz");
+  TH2 *hpadMap = (TH2 *) gDirectory->FindObject("hpadMap");
+  hpadMap->Scale(1. / nEvent);
+  hpadMap->SetTitle(";pad X;pad Y");
+  TPaletteAxis *pal = (TPaletteAxis *) (hpadMap->GetListOfFunctions()->FindObject(“palette”));
+  pal->GetAxis()->SetTitle("(max - pedestal)/event [adc]");
 
   SaveCanvas(c1, TString(_file0->GetName()) + TString(c1->GetName()), kTRUE);
 }
