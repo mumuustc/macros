@@ -144,7 +144,7 @@ void EventCheck()
   //  p->DrawFrame(-200,-200,200,200);
 
   eventT->Draw("Clusters[0].avg_pady:Clusters[0].avg_padx>>hSingleClusterPad1(100,-.5,49.5,24,-.5,11.5)", "nClusters==1 && Clusters[0].size_pad_x == 1 && Clusters[0].size_pad_y == 1", "colz");
-  hSingleClusterPad1->SetTitle(";Single 1-pad Cluster <Pad X> | Padx<=11;Single Cluster <Pad Y>");
+  hSingleClusterPad1->SetTitle(";Single 1-pad Cluster <Pad X>;Single 1-pad Cluster <Pad Y>");
 
   p = (TPad *) c1->cd(idx++);
   c1->Update();
