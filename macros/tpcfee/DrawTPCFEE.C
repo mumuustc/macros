@@ -26,8 +26,8 @@ TString description;
 void DrawTPCFEE(
     //	                    const char *infile = "data/tpcfee_00002658-0000.evt_TPCFEETestRecov1.root"  // button source
     //	                        const char *infile = "data/tpcfee_00002681-0000.evt_TPCFEETestRecov1.root"  // check pad 13,9
-        const char *infile = "data/tpcfee_00002697-0000.evt_TPCFEETestRecov1.root"  // check pad 13,9
-//    const char *infile = "data/tpcfee_00002702-0000.evt_TPCFEETestRecov1.root"  // check pad 13,9
+//        const char *infile = "data/tpcfee_00002697-0000.evt_TPCFEETestRecov1.root"  // check pad 13,9
+    const char *infile = "data/xraygen/tpc_fee_xraygen-00003101-0000.evt_TPCFEETestRecov1.root"  // check pad 13,9
                                                                                 //    const TString infile = "data/tpcfee_00002658-0000.evt_TPCFEETestRecov1_DefaultMap.root"  //
 )
 {
@@ -93,7 +93,7 @@ void EventCheck()
 
   //  p->DrawFrame(-200,-200,200,200);
 
-  eventT->Draw("Clusters.avg_pady:Clusters.avg_padx>>hAllClusterPad(100,-.5,49.5,24,-.5,11.5)", "nClusters>=1", "colz");
+  eventT->Draw("Clusters.avg_pady:Clusters.avg_padx>>hAllClusterPad(50,-.5,49.5,12,-.5,11.5)", "nClusters>=1", "colz");
   hAllClusterPad->SetTitle(";All Cluster <Pad X>;All Cluster <Pad Y>");
 
   p = (TPad *) c1->cd(idx++);
@@ -118,7 +118,7 @@ void EventCheck()
 
   //  p->DrawFrame(-200,-200,200,200);
 
-  eventT->Draw("Clusters[0].avg_pady:Clusters[0].avg_padx>>hSingleClusterPad(100,-.5,49.5,24,-.5,11.5)", "nClusters==1", "colz");
+  eventT->Draw("Clusters[0].avg_pady:Clusters[0].avg_padx>>hSingleClusterPad(50,-.5,49.5,12,-.5,11.5)", "nClusters==1", "colz");
   hSingleClusterPad->SetTitle(";Single Cluster <Pad X>;Single Cluster <Pad Y>");
 
   p = (TPad *) c1->cd(idx++);
@@ -143,7 +143,7 @@ void EventCheck()
 
   //  p->DrawFrame(-200,-200,200,200);
 
-  eventT->Draw("Clusters[0].avg_pady:Clusters[0].avg_padx>>hSingleClusterPad1(100,-.5,49.5,24,-.5,11.5)", "nClusters==1 && Clusters[0].size_pad_x == 1 && Clusters[0].size_pad_y == 1", "colz");
+  eventT->Draw("Clusters[0].avg_pady:Clusters[0].avg_padx>>hSingleClusterPad1(50,-.5,49.5,12,-.5,11.5)", "nClusters==1 && Clusters[0].size_pad_x == 1 && Clusters[0].size_pad_y == 1", "colz");
   hSingleClusterPad1->SetTitle(";Single 1-pad Cluster <Pad X>;Single 1-pad Cluster <Pad Y>");
 
   p = (TPad *) c1->cd(idx++);
@@ -167,7 +167,7 @@ void EventCheck()
   //
   //  //  p->DrawFrame(-200,-200,200,200);
   //
-  //  eventT->Draw("Clusters[0].avg_pady:Clusters[0].avg_padx>>hSingleClusterPad11(100,-.5,49.5,24,-.5,11.5)", "nClusters==1 && Clusters[0].avg_padx<=11", "colz");
+  //  eventT->Draw("Clusters[0].avg_pady:Clusters[0].avg_padx>>hSingleClusterPad11(50,-.5,49.5,12,-.5,11.5)", "nClusters==1 && Clusters[0].avg_padx<=11", "colz");
   //  hSingleClusterPad11->SetTitle(";Single Cluster <Pad X> | Padx<=11;Single Cluster <Pad Y>");
   //
   //  p = (TPad *) c1->cd(idx++);
@@ -201,7 +201,7 @@ void EventCheck()
 
   //  p->DrawFrame(-200,-200,200,200);
 
-  eventT->Draw("Sum$(Clusters[].avg_pady * Clusters[].peak)/Sum$(Clusters[].peak):Sum$(Clusters[].avg_padx * Clusters[].peak)/Sum$(Clusters[].peak)>>hSumClusterPad(100,-.5,49.5,24,-.5,11.5)", "nClusters>=2", "colz");
+  eventT->Draw("Sum$(Clusters[].avg_pady * Clusters[].peak)/Sum$(Clusters[].peak):Sum$(Clusters[].avg_padx * Clusters[].peak)/Sum$(Clusters[].peak)>>hSumClusterPad(50,-.5,49.5,12,-.5,11.5)", "nClusters>=2", "colz");
   hSumClusterPad->SetTitle(";Energy Weighted Multi-Cluster <Pad X>;Energy Weighted Multi-Cluster <Pad Y>");
 
   p = (TPad *) c1->cd(idx++);
@@ -226,7 +226,7 @@ void EventCheck()
 
   //  p->DrawFrame(-200,-200,200,200);
 
-  eventT->Draw("Clusters[0].avg_pady:Clusters[0].avg_padx>>hLeadClusterPad(100,-.5,49.5,24,-.5,11.5)", "nClusters>=2", "colz");
+  eventT->Draw("Clusters[0].avg_pady:Clusters[0].avg_padx>>hLeadClusterPad(50,-.5,49.5,12,-.5,11.5)", "nClusters>=2", "colz");
   hLeadClusterPad->SetTitle(";Lead Cluster <Pad X>;Lead Cluster <Pad Y>");
 
   p = (TPad *) c1->cd(idx++);
@@ -251,7 +251,7 @@ void EventCheck()
 
   //  p->DrawFrame(-200,-200,200,200);
 
-  eventT->Draw("Clusters.avg_pady:Clusters.avg_padx>>hNonLeadClusterPad(100,-.5,49.5,24,-.5,11.5)", "nClusters>=2 && Iteration$>=2", "colz");
+  eventT->Draw("Clusters.avg_pady:Clusters.avg_padx>>hNonLeadClusterPad(50,-.5,49.5,12,-.5,11.5)", "nClusters>=2 && Iteration$>=2", "colz");
   hNonLeadClusterPad->SetTitle(";Secondary+ Cluster <Pad X>;Secondary+ Cluster <Pad Y>");
 
   p = (TPad *) c1->cd(idx++);

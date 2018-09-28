@@ -5,8 +5,9 @@ using namespace std;
 void Fun4All_TPCFEE(int nEvents = 30000000,                                   //
 //                    const char *input_file = "data/tpcfee_00002658-0000.evt"  // button source
 //                        const char *input_file = "data/tpcfee_00002681-0000.evt"  // check pad 13,9
-                    const char *input_file = "data/tpcfee_00002697-0000.evt"  // fixed pad 13,9, x-ray generator
-//                        const char *input_file = "data/tpcfee_00002702-0000.evt"  // fixed pad 13,9, button source
+//                    const char *input_file = "data/tpcfee_00002697-0000.evt"  // fixed pad 13,9, x-ray generator
+		    //                        const char *input_file = "data/tpcfee_00002702-0000.evt"  // fixed pad 13,9, button source
+		                            const char *input_file = "data/xraygen/tpc_fee_xraygen-00003101-0000.evt"  // fixed pad 13,9, button source
 )
 {
   gSystem->Load("libfun4all");
