@@ -30,7 +30,11 @@ for root, dirs, files in os.walk(args.Dir):
             print("processing ", file, " and output to " , file + ".out")
             
             subprocess.run(["nice" , "root" , "-q" , "-b" , "Fun4All_TPCFEE.C(30000000, \"" + file + "\")'"],
-                            check=True , stdout=fout, stderr=ferr)  #
+                            check=True , stdout=fout)  #
+            
+            
+            subprocess.run(["nice" , "root" , "-q" , "-b" , "DrawTPCFEE.C( \"" + file + "_TPCFEETestRecov1.root\")'"],
+                            check=False , stdout=fout, stderr = fout)  #
              
             fout.close()
             ferr.close()

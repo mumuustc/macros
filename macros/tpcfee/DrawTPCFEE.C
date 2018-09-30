@@ -5,6 +5,7 @@
  *      Author: jinhuang
  */
 
+#include <TChain.h>
 #include <TFile.h>
 #include <TGraphAsymmErrors.h>
 #include <TGraphErrors.h>
@@ -14,7 +15,6 @@
 #include <TLatex.h>
 #include <TLegend.h>
 #include <TString.h>
-#include <TTree.h>
 #include <cassert>
 #include <cmath>
 #include "SaveCanvas.C"
@@ -23,12 +23,22 @@
 TFile *_file0 = NULL;
 TString description;
 
+TFile *_file0 = NULL;
+TChain *eventT = NULL;
+TChain *chanT = NULL;
+
+TH1 *hNormalization = NULL;
+
+int total_event = 0;
+
 void DrawTPCFEE(
     //	                    const char *infile = "data/tpcfee_00002658-0000.evt_TPCFEETestRecov1.root"  // button source
     //	                        const char *infile = "data/tpcfee_00002681-0000.evt_TPCFEETestRecov1.root"  // check pad 13,9
-//        const char *infile = "data/tpcfee_00002697-0000.evt_TPCFEETestRecov1.root"  // check pad 13,9
-    const char *infile = "data/xraygen/tpc_fee_xraygen-00003101-0000.evt_TPCFEETestRecov1.root"  // check pad 13,9
-                                                                                //    const TString infile = "data/tpcfee_00002658-0000.evt_TPCFEETestRecov1_DefaultMap.root"  //
+    //        const char *infile = "data/tpcfee_00002697-0000.evt_TPCFEETestRecov1.root"  // check pad 13,9
+    //    const char *infile = "data/xraygen/tpc_fee_xraygen-ALL-0000.evt_TPCFEETestRecov1.root"  // check pad 13,9
+    //    const char *infile = "data/xraygen/run2/tpc_fee_xraygen-0000287ALL-0000.evt_TPCFEETestRecov1.root"  // check pad 13,9
+    const char *infile = "data/xraygen/run2/tpc_fee_xraygen-ALL-0000.evt_TPCFEETestRecov1.root"  // check pad 13,9
+                                                                                                 //    const TString infile = "data/tpcfee_00002658-0000.evt_TPCFEETestRecov1_DefaultMap.root"  //
 )
 {
   gSystem->Load("libtpcdaq.so");
@@ -38,14 +48,123 @@ void DrawTPCFEE(
   gStyle->SetOptFit(1111);
   TVirtualFitter::SetDefaultFitter("Minuit2");
 
-  _file0 = new TFile(infile);
-  assert(_file0->IsOpen());
-  //
+  gSystem->Load("libg4eval.so");
+
+  if (!_file0)
+  {
+    TString chian_str = infile;
+    chian_str.ReplaceAll("ALL", "*");
+
+    eventT = new TChain("eventT");
+    const int n = eventT->Add(chian_str);
+    cout << "Loaded eventT from " << n << " root files with " << chian_str << " and " << eventT->GetEntries() << " events." << endl;
+    assert(n > 0);
+
+    chanT = new TChain("chanT");
+    const int n = chanT->Add(chian_str);
+    cout << "Loaded chanT from " << n << " root files with " << chian_str << endl;
+    assert(n > 0);
+
+    _file0 = new TFile;
+    _file0->SetName(infile);
+
+    TObjArray *fileElements = eventT->GetListOfFiles();
+    TIter next(fileElements);
+    TChainElement *chEl = 0;
+    while ((chEl = (TChainElement *) next()))
+    {
+      TFile f(chEl->GetTitle());
+
+      TH1 *h = (TH1 *) f.GetObjectChecked("hNormalization", "TH1");
+      assert(h);
+      if (hNormalization == NULL)
+      {
+        hNormalization = (TH1 *) h->Clone("hNormalization");
+        hNormalization->SetDirectory(NULL);
+      }
+      else
+      {
+        hNormalization->Add(h);
+      }
+    }
+  }
+
+  TFile *ftmp = TFile::Open(infile + TString("_tmp.root"), "recreate");
+  assert(ftmp);
+  assert(hNormalization);
+  hNormalization->SetDirectory(ftmp);
 
   const double nEvent = hNormalization->GetBinContent(1);
 
+  AmplitudeCheck();
+
+  HitPositionCheck();
   EventCheck();
   ChannelCheck();
+}
+
+void HitPositionCheck()
+{
+  assert(_file0);
+
+  const double nEvent = hNormalization->GetBinContent(1);
+
+  TCanvas *c1 = new TCanvas("HitPositionCheck", "HitPositionCheck", 1900, 900);
+  c1->Divide(2, 1);
+  int idx = 1;
+  TPad *p;
+
+  p = (TPad *) c1->cd(idx++);
+  c1->Update();
+  //  p->SetLogy();
+
+  eventT->Draw("Clusters.avg_padx:xray_x >>hSingleClusterXMap(10,-.5,9.5,10,-.5,9.5)",
+               "Clusters[0].peak * (nClusters==1)", "colz");
+  //  hSingleClusterPeak1->Scale(1. / nEvent);
+  hSingleClusterXMap->SetTitle(";X-ray Gun x-position;Single cluster <x>");
+
+  p = (TPad *) c1->cd(idx++);
+  c1->Update();
+  //  p->SetLogy();
+
+  eventT->Draw("Clusters.avg_pady:xray_y >>hSingleClusterYMap(10,-.5,9.5,10,-.5,9.5)",
+               "Clusters[0].peak * (nClusters==1)", "colz");
+  //  hSingleClusterPeak1->Scale(1. / nEvent);
+  hSingleClusterYMap->SetTitle(";X-ray Gun y-position;Single cluster <y>");
+
+  SaveCanvas(c1, TString(_file0->GetName()) + TString(c1->GetName()), kTRUE);
+}
+
+void AmplitudeCheck()
+{
+  assert(_file0);
+
+  const double nEvent = hNormalization->GetBinContent(1);
+
+  TCanvas *c1 = new TCanvas("AmplitudeCheck", "AmplitudeCheck", 1900, 960);
+  c1->Divide(1, 2);
+  int idx = 1;
+  TPad *p;
+
+  p = (TPad *) c1->cd(idx++);
+  c1->Update();
+  //  p->SetLogy();
+
+  eventT->Draw("Clusters[0].peak:(Clusters.avg_pady - 6)*50 + Clusters.avg_padx>>hSingleClusterAmplitudeStrip(250,-.5,249.5,200,0,1000)",
+               "nClusters==1", "colz");
+  //  hSingleClusterPeak1->Scale(1. / nEvent);
+  hSingleClusterAmplitudeStrip->SetTitle(";Strip index: (Pad_Y-6)*50 + Pad_X;Single Cluster Energy [adc]");
+
+  p = (TPad *) c1->cd(idx++);
+  c1->Update();
+  //  p->SetLogy();
+
+  eventT->Draw("Clusters[0].peak:(Clusters.avg_pady - 6)*50 + Clusters.avg_padx>>hSingle1PadClusterAmplitudeStrip(250,-.5,249.5,200,0,1000)",
+               "nClusters==1 && Clusters[0].size_pad_x == 1 && Clusters[0].size_pad_y == 1", "colz");
+  //  hSingleClusterPeak1->Scale(1. / nEvent);
+  hSingle1PadClusterAmplitudeStrip->SetTitle(";Strip index: (Pad_Y-6)*50 + Pad_X;Single 1-pad Cluster Energy [adc]");
+
+  SaveCanvas(c1, TString(_file0->GetName()) + TString(c1->GetName()), kTRUE);
 }
 
 void EventCheck()
