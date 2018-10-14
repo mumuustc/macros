@@ -49,7 +49,9 @@ G4DSTreader( const char * outputFile = "G4sPHENIXCells.root",//
     {
       if (do_svtx)
         {
-          ana->AddNode("SVTX");
+        ana->AddNode("SVTX");
+        ana->AddNode("SILICON_TRACKER");
+        ana->AddNode("MAPS");
         }
 
       if (do_pstof)
