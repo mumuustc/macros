@@ -118,7 +118,7 @@ void HitPositionCheck()
   c1->Update();
   //  p->SetLogy();
 
-  eventT->Draw("Clusters.avg_padx:xray_x >>hSingleClusterXMap(10,-.5,9.5,10,-.5,9.5)",
+  eventT->Draw("Clusters.avg_padx:xray_x >>hSingleClusterXMap(50,-.5,49.5,50,-.5,49.5)",
                "Clusters[0].peak * (nClusters==1)", "colz");
   //  hSingleClusterPeak1->Scale(1. / nEvent);
   hSingleClusterXMap->SetTitle(";X-ray Gun x-position;Single cluster <x>");
@@ -153,7 +153,7 @@ void AmplitudeCheck()
   eventT->Draw("Clusters[0].peak:(Clusters.avg_pady - 6)*50 + Clusters.avg_padx>>hSingleClusterAmplitudeStrip(250,-.5,249.5,200,0,1000)",
                "nClusters==1", "colz");
   //  hSingleClusterPeak1->Scale(1. / nEvent);
-  hSingleClusterAmplitudeStrip->SetTitle(";Strip index: (Pad_Y-6)*50 + Pad_X;Single Cluster Energy [adc]");
+  hSingleClusterAmplitudeStrip->SetTitle(";Single 1-pad Cluster Central Strip index: (Pad_Y-6)*50 + Pad_X;Single Cluster Energy [adc]");
 
   p = (TPad *) c1->cd(idx++);
   c1->Update();
@@ -162,7 +162,7 @@ void AmplitudeCheck()
   eventT->Draw("Clusters[0].peak:(Clusters.avg_pady - 6)*50 + Clusters.avg_padx>>hSingle1PadClusterAmplitudeStrip(250,-.5,249.5,200,0,1000)",
                "nClusters==1 && Clusters[0].size_pad_x == 1 && Clusters[0].size_pad_y == 1", "colz");
   //  hSingleClusterPeak1->Scale(1. / nEvent);
-  hSingle1PadClusterAmplitudeStrip->SetTitle(";Strip index: (Pad_Y-6)*50 + Pad_X;Single 1-pad Cluster Energy [adc]");
+  hSingle1PadClusterAmplitudeStrip->SetTitle(";Single 1-pad Cluster Central Strip index: (Pad_Y-6)*50 + Pad_X;Single 1-pad Cluster Energy [adc]");
 
   SaveCanvas(c1, TString(_file0->GetName()) + TString(c1->GetName()), kTRUE);
 }
