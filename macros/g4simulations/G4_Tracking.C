@@ -168,7 +168,8 @@ double Tracking(PHG4Reco* g4Reco, double radius,
       for(int i=0;i<n_intt_layer;i++)
 	{
 	  sitrack->set_int_param(i, "laddertype", laddertype[i]);
-	  sitrack->set_int_param(i, "nladder", nladder[i]);
+    sitrack->set_int_param(i, "nladder", nladder[i]);
+    sitrack->set_double_param(i, "strip_x", 0.02); // 200um silicon as used in test beam as from Yorito
 	  sitrack->set_double_param(i,"sensor_radius", sensor_radius[i]);  // expecting cm
 	  sitrack->set_double_param(i,"offsetphi",offsetphi[i]);  // expecting degrees
 	}
@@ -329,29 +330,28 @@ Four part information goes to the threshold calculation:
 3. From [FPHX Final Design Document](https://www.phenix.bnl.gov/WWW/fvtx/DetectorHardware/FPHX/FPHX2_June2009Revision.doc), the DAC0-7 setting for 8-ADC thresholds above the V_ref, as in Table 2 - Register Addresses and Defaults
 4, From [FPHX Final Design Document](https://www.phenix.bnl.gov/WWW/fvtx/DetectorHardware/FPHX/FPHX2_June2009Revision.doc) section Front-end Program Bits, the formula to translate DAC setting to comparitor voltages.
 The result threshold table based on FPHX default value is as following
-| FPHX Register Address | Name            | Default value | Voltage - Vref (mV) | To electrons based on calibration | Electrons | Fraction to MIP |
-|-----------------------|-----------------|---------------|---------------------|-----------------------------------|-----------|-----------------|
-| 3                     | Vref            | 1             | 210                 | 16406                             |           | 3.84E-01        |
-| 4                     | Threshold DAC 0 | 8             | 32                  | 2500                              | 2000      | 5.85E-02        |
-| 5                     | Threshold DAC 1 | 16            | 64                  | 5000                              | 4000      | 1.17E-01        |
-| 6                     | Threshold DAC 2 | 32            | 128                 | 10000                             | 8000      | 2.34E-01        |
-| 7                     | Threshold DAC 3 | 48            | 192                 | 15000                             | 12000     | 3.51E-01        |
-| 8                     | Threshold DAC 4 | 80            | 320                 | 25000                             | 20000     | 5.85E-01        |
-| 9                     | Threshold DAC 5 | 112           | 448                 | 35000                             | 28000     | 8.18E-01        |
-| 10                    | Threshold DAC 6 | 144           | 576                 | 45000                             | 36000     | 1.05E+00        |
-| 11                    | Threshold DAC 7 | 176           | 704                 | 55000                             | 44000     | 1.29E+00        |
+FPHX Register Address Name  Default value Voltage - Vref (mV) To electrons based on calibration Electrons Fraction to MIP
+3 Vref  1 210 9375    6.14E-01
+4 Threshold DAC 0 14  56  2500  3500  1.64E-01
+5 Threshold DAC 1 16  64  2857  4000  1.87E-01
+6 Threshold DAC 2 32  128 5714  8000  3.74E-01
+7 Threshold DAC 3 48  192 8571  12000 5.61E-01
+8 Threshold DAC 4 80  320 14286 20000 9.35E-01
+9 Threshold DAC 5 112 448 20000 28000 1.31E+00
+10  Threshold DAC 6 144 576 25714 36000 1.68E+00
+11  Threshold DAC 7 176 704 31429 44000 2.06E+00
 You can now import Markdown table code directly using File/Paste table data... dialog.
 DAC0-7 threshold as fraction to MIP voltage are set to PHG4SiliconTrackerDigitizer::set_adc_scale as 3-bit ADC threshold as fractions to MIP energy deposition.
      */
     std::vector<double> userrange;  // 3-bit ADC threshold relative to the mip_e at each layer.
-    userrange.push_back(0.0584625322997416);
-    userrange.push_back(0.116925064599483);
-    userrange.push_back(0.233850129198966);
-    userrange.push_back(0.35077519379845);
-    userrange.push_back(0.584625322997416);
-    userrange.push_back(0.818475452196383);
-    userrange.push_back(1.05232558139535);
-    userrange.push_back(1.28617571059432);
+    userrange.push_back(0.163695090439277);
+    userrange.push_back(0.187080103359173);
+    userrange.push_back(0.374160206718346);
+    userrange.push_back(0.561240310077519);
+    userrange.push_back(0.935400516795866);
+    userrange.push_back(1.30956072351421);
+    userrange.push_back(1.68372093023256);
+    userrange.push_back(2.0578811369509);
 
     PHG4SiliconTrackerDigitizer* digiintt = new PHG4SiliconTrackerDigitizer();
     digiintt->Verbosity(verbosity);
