@@ -540,6 +540,7 @@ int Fun4All_G4_sPHENIX(
       cin >> i;
     }
 
+  gSystem->ListLibraries();
   se->run(nEvents);
 
   //-----
