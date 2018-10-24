@@ -1,6 +1,6 @@
 
 double no_overlapp = 0.0001; // added to radii to avoid overlapping volumes
-bool overlapcheck = false; // set to true if you want to check for overlaps
+bool overlapcheck = true; // set to true if you want to check for overlaps
 
 void G4Init(const bool do_tracking = true,
       const bool do_pstof = true,
