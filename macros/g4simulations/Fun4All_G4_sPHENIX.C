@@ -2,7 +2,7 @@
 using namespace std;
 
 int Fun4All_G4_sPHENIX(
-    const int nEvents = 1,
+    const int nEvents = 10,
     const char *inputFile = "data/sHijing_0-20fm.dat.bz2",
     const char *outputFile = "G4sPHENIX.root",
     const char *embed_input_file = "/sphenix/data/data02/review_2017-08-02/sHijing/fm_0-4.list")
@@ -441,7 +441,8 @@ int Fun4All_G4_sPHENIX(
     //meta-lib for DST objects used in simulation outputs
     gSystem->Load("libg4dst.so");
 
-    Fun4AllHepMCInputManager *in = new Fun4AllHepMCInputManager("HepMCInput_1");
+    Fun4AllHepMCSingleTrackInputManager *in = new Fun4AllHepMCSingleTrackInputManager("HepMCInput_1");
+    in->Verbosity(1);
     se->registerInputManager(in);
     se->fileopen(in->Name().c_str(), inputFile);
     in->set_vertex_distribution_width(100e-4, 100e-4, 30, 0);  //optional collision smear in space, time
