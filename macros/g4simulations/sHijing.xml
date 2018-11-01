@@ -12,7 +12,7 @@
   <BMIN>6.6</BMIN>
   <BMAX>9.3</BMAX>
   <KEEP_SPECTATORS>1</KEEP_SPECTATORS>
-  <OUTPUT>sHijing_0-20fm.dat</OUTPUT>
+  <OUTPUT>sHijing.dat</OUTPUT>
   <HIPR1>
     <5>5.0</5>
   </HIPR1>
