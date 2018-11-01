@@ -131,7 +131,7 @@ int Fun4All_G4_sPHENIX(
     }
 
   Fun4AllServer *se = Fun4AllServer::instance();
-  se->Verbosity(0);
+  se->Verbosity(01);
   // just if we set some flags somewhere in this macro
   recoConsts *rc = recoConsts::instance();
   // By default every random number generator uses
@@ -167,7 +167,8 @@ int Fun4All_G4_sPHENIX(
     {
       // place holder. Additional action is performed in later stage at the input manager level
 
-
+      HepMCFlowAfterBurner * fl = new HepMCFlowAfterBurner();
+      se->registerSubsystem(fl);
 
     }
 
