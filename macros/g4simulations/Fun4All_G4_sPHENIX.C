@@ -54,7 +54,7 @@ int Fun4All_G4_sPHENIX(
   bool do_pipe = true;
 
   bool do_tracking = true;
-  bool do_tracking_cell = do_tracking && true;
+  bool do_tracking_cell = do_tracking && false;
   bool do_tracking_track = do_tracking_cell && true;
   bool do_tracking_eval = do_tracking_track && true;
 
@@ -63,22 +63,22 @@ int Fun4All_G4_sPHENIX(
   bool do_cemc = true;
   bool do_cemc_cell = do_cemc && true;
   bool do_cemc_twr = do_cemc_cell && true;
-  bool do_cemc_cluster = do_cemc_twr && true;
-  bool do_cemc_eval = do_cemc_cluster && true;
+  bool do_cemc_cluster = do_cemc_twr && false;
+  bool do_cemc_eval = do_cemc_cluster && false;
 
   bool do_hcalin = true;
   bool do_hcalin_cell = do_hcalin && true;
   bool do_hcalin_twr = do_hcalin_cell && true;
-  bool do_hcalin_cluster = do_hcalin_twr && true;
-  bool do_hcalin_eval = do_hcalin_cluster && true;
+  bool do_hcalin_cluster = do_hcalin_twr && false;
+  bool do_hcalin_eval = do_hcalin_cluster && false;
 
   bool do_magnet = true;
 
   bool do_hcalout = true;
   bool do_hcalout_cell = do_hcalout && true;
   bool do_hcalout_twr = do_hcalout_cell && true;
-  bool do_hcalout_cluster = do_hcalout_twr && true;
-  bool do_hcalout_eval = do_hcalout_cluster && true;
+  bool do_hcalout_cluster = do_hcalout_twr && false;
+  bool do_hcalout_eval = do_hcalout_cluster && false;
 
   //! forward flux return plug door. Out of acceptance and off by default.
   bool do_plugdoor = false;
@@ -86,15 +86,15 @@ int Fun4All_G4_sPHENIX(
   bool do_global = true;
   bool do_global_fastsim = true;
 
-  bool do_calotrigger = true && do_cemc_twr && do_hcalin_twr && do_hcalout_twr;
+  bool do_calotrigger = false && do_cemc_twr && do_hcalin_twr && do_hcalout_twr;
 
-  bool do_jet_reco = true;
+  bool do_jet_reco = false;
   bool do_jet_eval = do_jet_reco && true;
 
   // HI Jet Reco for p+Au / Au+Au collisions (default is false for
   // single particle / p+p-only simulations, or for p+Au / Au+Au
   // simulations which don't particularly care about jets)
-  bool do_HIjetreco = true && do_cemc_twr && do_hcalin_twr && do_hcalout_twr;
+  bool do_HIjetreco = false && do_cemc_twr && do_hcalin_twr && do_hcalout_twr;
 
   bool do_dst_compress = true;
 
