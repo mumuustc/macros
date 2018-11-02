@@ -12,6 +12,14 @@ void HIJetReco(int verbosity = 0, bool do_flow = false ) {
 
   Fun4AllServer *se = Fun4AllServer::instance();
 
+  JetHepMCLoader * hepmcjet = new JetHepMCLoader("sHijing_HIJFRG");
+  hepmcjet->saveQAPlots(); // whether to save QA plots in a root file
+  hepmcjet->addJet("AntiKt_sHijing_HIJFRG_r02",0,Jet::ANTIKT,0.2,2000000,103);
+  hepmcjet->addJet("AntiKt_sHijing_HIJFRG_r04",0,Jet::ANTIKT,0.4,4000000,103);
+  hepmcjet->addJet("AntiKt_sHijing_HIJFRG_r06",0,Jet::ANTIKT,0.6,6000000,103);
+  se->registerSubsystem(hepmcjet);
+
+
   JetReco *truthjetreco = new JetReco();
   TruthJetInput *tji = new TruthJetInput(Jet::PARTICLE);
   tji->add_embedding_flag( 0 ); // changes depending on signal vs. embedded
