@@ -94,9 +94,9 @@ int Fun4All_G4_sPHENIX(
   // HI Jet Reco for p+Au / Au+Au collisions (default is false for
   // single particle / p+p-only simulations, or for p+Au / Au+Au
   // simulations which don't particularly care about jets)
-  bool do_HIjetreco = false && do_cemc_twr && do_hcalin_twr && do_hcalout_twr;
+  bool do_HIjetreco = true && do_cemc_twr && do_hcalin_twr && do_hcalout_twr;
 
-  bool do_dst_compress = false;
+  bool do_dst_compress = true;
 
   //Option to convert DST to human command readable TTree for quick poke around the outputs
   bool do_DSTReader = false;
@@ -452,10 +452,10 @@ int Fun4All_G4_sPHENIX(
     Fun4AllHepMCInputManager *in = new Fun4AllHepMCInputManager("HepMCInput_1");
     se->registerInputManager(in);
     se->fileopen(in->Name().c_str(), inputFile);
-    //in->set_vertex_distribution_width(100e-4,100e-4,30,0);//optional collision smear in space, time
+    in->set_vertex_distribution_width(100e-4,100e-4,10,0);//optional collision smear in space, time
     //in->set_vertex_distribution_mean(0,0,1,0);//optional collision central position shift in space, time
     // //optional choice of vertex distribution function in space, time
-    //in->set_vertex_distribution_function(PHHepMCGenHelper::Gaus,PHHepMCGenHelper::Gaus,PHHepMCGenHelper::Uniform,PHHepMCGenHelper::Gaus);
+    in->set_vertex_distribution_function(PHHepMCGenHelper::Gaus,PHHepMCGenHelper::Gaus,PHHepMCGenHelper::Uniform,PHHepMCGenHelper::Gaus);
     //! embedding ID for the event
     //! positive ID is the embedded event of interest, e.g. jetty event from pythia
     //! negative IDs are backgrounds, .e.g out of time pile up collisions
