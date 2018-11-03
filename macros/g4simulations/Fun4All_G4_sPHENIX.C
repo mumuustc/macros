@@ -50,7 +50,7 @@ int Fun4All_G4_sPHENIX(
   // What to run
   //======================
 
-  bool do_bbc = true;
+  bool do_bbc = false;
 
   bool do_pipe = true;
 
@@ -84,8 +84,8 @@ int Fun4All_G4_sPHENIX(
   //! forward flux return plug door. Out of acceptance and off by default.
   bool do_plugdoor = false;
 
-  bool do_global = true;
-  bool do_global_fastsim = true;
+  bool do_global = false;
+  bool do_global_fastsim = false;
 
   bool do_calotrigger = false && do_cemc_twr && do_hcalin_twr && do_hcalout_twr;
 
