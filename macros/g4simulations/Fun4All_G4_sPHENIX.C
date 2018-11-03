@@ -3,8 +3,8 @@ using namespace std;
 
 int Fun4All_G4_sPHENIX(
     const int nEvents = 10,
-    const char *inputFile = "/sphenix/user/jinhuang/JetBackground/Iteration1/Iteration1_3100.xml.root",
-    const char *outputFile = "G4sPHENIX.root",
+    const char *inputFile = "G4sPHENIX.root",
+    const char *outputFile = "RecosPHENIX.root",
     const char *embed_input_file = "/sphenix/data/data02/review_2017-08-02/sHijing/fm_0-4.list")
 {
 
@@ -528,9 +528,9 @@ int Fun4All_G4_sPHENIX(
                 /*bool*/ do_hcalout_twr);
   }
 
-    Fun4AllDstOutputManager *out = new Fun4AllDstOutputManager("DSTOUT", outputFile);
-   if (do_dst_compress) DstCompress(out);
-    se->registerOutputManager(out);
+//    Fun4AllDstOutputManager *out = new Fun4AllDstOutputManager("DSTOUT", outputFile);
+//   if (do_dst_compress) DstCompress(out);
+//    se->registerOutputManager(out);
 
   //-----------------
   // Event processing
