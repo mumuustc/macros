@@ -3,7 +3,7 @@ using namespace std;
 
 int Fun4All_G4_sPHENIX(
     const int nEvents = 10,
-    const char *inputFile = "sHijing.dat",
+    const char *inputFile = "/sphenix/user/jinhuang/JetBackground/Iteration1/Iteration1_3100.xml.root",
     const char *outputFile = "G4sPHENIX.root",
     const char *embed_input_file = "/sphenix/data/data02/review_2017-08-02/sHijing/fm_0-4.list")
 {
@@ -19,10 +19,10 @@ int Fun4All_G4_sPHENIX(
   //
   // In case reading production output, please double check your G4Setup_sPHENIX.C and G4_*.C consistent with those in the production macro folder
   // E.g. /sphenix/sim//sim01/production/2016-07-21/single_particle/spacal2d/
-  const bool readhits = false;
+  const bool readhits = true;
   // Or:
   // read files in HepMC format (typically output from event generators like hijing or pythia)
-  const bool readhepmc = true;  // read HepMC files
+  const bool readhepmc = false;  // read HepMC files
   // Or:
   // Use pythia
   const bool runpythia8 = false;
@@ -62,24 +62,24 @@ int Fun4All_G4_sPHENIX(
   bool do_pstof = false;
 
   bool do_cemc = true;
-  bool do_cemc_cell = do_cemc && true;
+  bool do_cemc_cell = do_cemc && false;
   bool do_cemc_twr = do_cemc_cell && true;
-  bool do_cemc_cluster = do_cemc_twr && false;
-  bool do_cemc_eval = do_cemc_cluster && false;
+  bool do_cemc_cluster = true;
+  bool do_cemc_eval = do_cemc_cluster && true;
 
   bool do_hcalin = true;
-  bool do_hcalin_cell = do_hcalin && true;
+  bool do_hcalin_cell = do_hcalin && false;
   bool do_hcalin_twr = do_hcalin_cell && true;
-  bool do_hcalin_cluster = do_hcalin_twr && false;
-  bool do_hcalin_eval = do_hcalin_cluster && false;
+  bool do_hcalin_cluster = true;
+  bool do_hcalin_eval = do_hcalin_cluster && true;
 
   bool do_magnet = true;
 
   bool do_hcalout = true;
-  bool do_hcalout_cell = do_hcalout && true;
+  bool do_hcalout_cell = do_hcalout && false;
   bool do_hcalout_twr = do_hcalout_cell && true;
-  bool do_hcalout_cluster = do_hcalout_twr && false;
-  bool do_hcalout_eval = do_hcalout_cluster && false;
+  bool do_hcalout_cluster = true;
+  bool do_hcalout_eval = do_hcalout_cluster && true;
 
   //! forward flux return plug door. Out of acceptance and off by default.
   bool do_plugdoor = false;
@@ -87,15 +87,15 @@ int Fun4All_G4_sPHENIX(
   bool do_global = true;
   bool do_global_fastsim = true;
 
-  bool do_calotrigger = false && do_cemc_twr && do_hcalin_twr && do_hcalout_twr;
+  bool do_calotrigger = true && do_cemc_twr && do_hcalin_twr && do_hcalout_twr;
 
-  bool do_jet_reco = false;
+  bool do_jet_reco = true;
   bool do_jet_eval = do_jet_reco && true;
 
   // HI Jet Reco for p+Au / Au+Au collisions (default is false for
   // single particle / p+p-only simulations, or for p+Au / Au+Au
   // simulations which don't particularly care about jets)
-  bool do_HIjetreco = false && do_cemc_twr && do_hcalin_twr && do_hcalout_twr;
+  bool do_HIjetreco = true && do_cemc_twr && do_hcalin_twr && do_hcalout_twr;
 
   bool do_dst_compress = true;
 
