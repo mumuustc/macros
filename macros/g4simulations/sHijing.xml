@@ -10,7 +10,7 @@
   <IZT>79</IZT>
   <N>1</N>
   <BMIN>0</BMIN>
-  <BMAX>12</BMAX>
+  <BMAX>20</BMAX>
   <KEEP_SPECTATORS>1</KEEP_SPECTATORS>
   <OUTPUT>sHijing_0-12fm.dat</OUTPUT>
   <RANDOM>
