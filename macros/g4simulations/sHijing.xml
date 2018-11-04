@@ -12,7 +12,7 @@
   <BMIN>0</BMIN>
   <BMAX>20</BMAX>
   <KEEP_SPECTATORS>1</KEEP_SPECTATORS>
-  <OUTPUT>sHijing_0-12fm.dat</OUTPUT>
+  <OUTPUT>sHijing_0-20fm.dat</OUTPUT>
   <RANDOM>
     <SEED>11793</SEED>
   </RANDOM>
