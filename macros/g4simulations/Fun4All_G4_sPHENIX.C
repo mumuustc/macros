@@ -38,7 +38,7 @@ using namespace std;
 
 
 int Fun4All_G4_sPHENIX(
-    const int nEvents = 1,
+    const int nEvents = 10,
     const char *inputFile = "/sphenix/data/data02/review_2017-08-02/single_particle/spacal2d/fieldmap/G4Hits_sPHENIX_e-_eta0_8GeV-0002.root",
     const char *outputFile = "G4sPHENIX.root",
     const char *embed_input_file = "/sphenix/data/data02/review_2017-08-02/sHijing/fm_0-4.list")
@@ -61,7 +61,7 @@ int Fun4All_G4_sPHENIX(
   const bool readhepmc = false;  // read HepMC files
   // Or:
   // Use pythia
-  const bool runpythia8 = false;
+  const bool runpythia8 = true;
   const bool runpythia6 = false;
   //
   // **** And ****
@@ -72,7 +72,7 @@ int Fun4All_G4_sPHENIX(
 
   // Besides the above flags. One can further choose to further put in following particles in Geant4 simulation
   // Use multi-particle generator (PHG4SimpleEventGenerator), see the code block below to choose particle species and kinematics
-  const bool particles = true && !readhits;
+  const bool particles = false && !readhits;
   // or gun/ very simple single particle gun generator
   const bool usegun = false && !readhits;
   // Throw single Upsilons, may be embedded in Hijing by setting readhepmc flag also  (note, careful to set Z vertex equal to Hijing events)
@@ -97,21 +97,21 @@ int Fun4All_G4_sPHENIX(
 
   bool do_pstof = false;
 
-  bool do_cemc = true;
+  bool do_cemc = false;
   bool do_cemc_cell = do_cemc && true;
   bool do_cemc_twr = do_cemc_cell && true;
   bool do_cemc_cluster = do_cemc_twr && true;
   bool do_cemc_eval = do_cemc_cluster && true;
 
-  bool do_hcalin = true;
+  bool do_hcalin = false;
   bool do_hcalin_cell = do_hcalin && true;
   bool do_hcalin_twr = do_hcalin_cell && true;
   bool do_hcalin_cluster = do_hcalin_twr && true;
   bool do_hcalin_eval = do_hcalin_cluster && true;
 
-  bool do_magnet = true;
+  bool do_magnet = false;
 
-  bool do_hcalout = true;
+  bool do_hcalout = false;
   bool do_hcalout_cell = do_hcalout && true;
   bool do_hcalout_twr = do_hcalout_cell && true;
   bool do_hcalout_cluster = do_hcalout_twr && true;
@@ -125,7 +125,7 @@ int Fun4All_G4_sPHENIX(
 
   bool do_calotrigger = true && do_cemc_twr && do_hcalin_twr && do_hcalout_twr;
 
-  bool do_jet_reco = true;
+  bool do_jet_reco = false;
   bool do_jet_eval = do_jet_reco && true;
 
   // HI Jet Reco for p+Au / Au+Au collisions (default is false for
@@ -152,7 +152,7 @@ int Fun4All_G4_sPHENIX(
   gROOT->LoadMacro("G4Setup_sPHENIX.C");
   G4Init(do_tracking, do_pstof, do_cemc, do_hcalin, do_magnet, do_hcalout, do_pipe, do_plugdoor);
 
-  int absorberactive = 1;  // set to 1 to make all absorbers active volumes
+  int absorberactive = 0;  // set to 1 to make all absorbers active volumes
   //  const string magfield = "1.5"; // alternatively to specify a constant magnetic field, give a float number, which will be translated to solenoidal field in T, if string use as fieldmap name (including path)
   const string magfield = string(getenv("CALIBRATIONROOT")) + string("/Field/Map/sPHENIX.2d.root"); // default map from the calibration database
   const float magfield_rescale = -1.4 / 1.5;                                     // scale the map to a 1.4 T field
@@ -168,7 +168,7 @@ int Fun4All_G4_sPHENIX(
     }
 
   Fun4AllServer *se = Fun4AllServer::instance();
-  se->Verbosity(0);
+  se->Verbosity(01);
   // just if we set some flags somewhere in this macro
   recoConsts *rc = recoConsts::instance();
   // By default every random number generator uses
@@ -214,7 +214,11 @@ int Fun4All_G4_sPHENIX(
       pythia8->set_config_file("phpythia8.cfg");
       if (readhepmc)
         pythia8->set_reuse_vertex(0);  // reuse vertex of subevent with embedding ID of 0
-      // pythia8->set_vertex_distribution_width(0,0,10,0); // additional vertex smearing if needed, more vertex options available
+      pythia8->set_vertex_distribution_width(0.01,0.01,10,0); // additional vertex smearing if needed, more vertex options available
+      pythia8->set_vertex_distribution_function(PHHepMCGenHelper::Gaus,
+          PHHepMCGenHelper::Gaus,
+          PHHepMCGenHelper::Uniform,
+          PHHepMCGenHelper::Uniform);
       se->registerSubsystem(pythia8);
     }
 
