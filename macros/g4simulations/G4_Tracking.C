@@ -612,10 +612,10 @@ void Tracking_Eval(std::string outputfile, int verbosity = 0)
 
   SvtxEvaluator* eval;
   eval = new SvtxEvaluator("SVTXEVALUATOR", outputfile.c_str(), "SvtxTrackMap", n_maps_layer, n_intt_layer, n_gas_layer);
-  eval->do_cluster_eval(true);
-  eval->do_g4hit_eval(true);
-  eval->do_hit_eval(true);  // enable to see the hits that includes the chamber physics...
-  eval->do_gpoint_eval(false);
+  eval->do_cluster_eval(false);
+  eval->do_g4hit_eval(false);
+  eval->do_hit_eval(false);  // enable to see the hits that includes the chamber physics...
+  eval->do_gpoint_eval(true);
   eval->scan_for_embedded(false);  // take all tracks if false - take only embedded tracks if true
   eval->Verbosity(0);
   se->registerSubsystem(eval);
