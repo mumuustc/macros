@@ -38,7 +38,7 @@ using namespace std;
 
 
 int Fun4All_G4_sPHENIX(
-    const int nEvents = 10,
+    const int nEvents = 2,
     const char *inputFile = "/sphenix/data/data02/review_2017-08-02/single_particle/spacal2d/fieldmap/G4Hits_sPHENIX_e-_eta0_8GeV-0002.root",
     const char *outputFile = "G4sPHENIX.root",
     const char *embed_input_file = "/sphenix/data/data02/review_2017-08-02/sHijing/fm_0-4.list")
@@ -564,6 +564,14 @@ int Fun4All_G4_sPHENIX(
     Fun4AllDstOutputManager *out = new Fun4AllDstOutputManager("DSTOUT", outputFile);
    if (do_dst_compress) DstCompress(out);
     se->registerOutputManager(out);
+
+    if (gSystem->Load("libHFMLTrigger") == 0)
+    {
+      HFMLTriggerInterface * hf_ml_interface = new HFMLTriggerInterface(string(outputFile) + string("_HFMLTriggerInterface"));
+      se -> registerSubsystem(hf_ml_interface);
+    }
+
+
 
   //-----------------
   // Event processing
