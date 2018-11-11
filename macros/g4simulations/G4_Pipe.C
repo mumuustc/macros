@@ -35,7 +35,7 @@ double Pipe(PHG4Reco* g4Reco,
   cyl->set_double_param("radius",0.0);
   cyl->set_int_param("lengthviarapidity",0);
   cyl->set_double_param("length",be_pipe_length);
-  cyl->set_string_param("material","G4_He"); // Use light gas to calculate radiation dose
+  cyl->set_string_param("material","G4_H"); // Use light gas to calculate radiation dose
   cyl->set_double_param("thickness",be_pipe_radius);
   cyl->SuperDetector("PIPE");
   if (absorberactive)  cyl->SetActive();
@@ -45,7 +45,7 @@ double Pipe(PHG4Reco* g4Reco,
   cyl->set_double_param("radius",be_pipe_radius);
   cyl->set_int_param("lengthviarapidity",0);
   cyl->set_double_param("length",be_pipe_length);
-  cyl->set_string_param("material","G4_Be");
+  cyl->set_string_param("material","G4_H");
   cyl->set_double_param("thickness",be_pipe_thickness);
   cyl->SuperDetector("PIPE");
   if (absorberactive)  cyl->SetActive();
@@ -57,7 +57,7 @@ double Pipe(PHG4Reco* g4Reco,
   cyl->set_double_param("radius",0.0);
   cyl->set_int_param("lengthviarapidity",0);
   cyl->set_double_param("length",al_pipe_length);
-  cyl->set_string_param("material","G4_He"); // Use light gas to calculate radiation dose
+  cyl->set_string_param("material","G4_H"); // Use light gas to calculate radiation dose
   cyl->set_double_param("thickness",al_pipe_radius);
   cyl->SuperDetector("PIPE");
   if (absorberactive)  cyl->SetActive();
