@@ -127,7 +127,7 @@ int G4Setup(const int absorberactive = 0,
   g4Reco->set_rapidity_coverage(1.1); // according to drawings
 // uncomment to set QGSP_BERT_HP physics list for productions 
 // (default is QGSP_BERT for speed)
-  g4Reco->setDisableSteppingActions();
+  g4Reco->setDisableUserActions();
     g4Reco->SetPhysicsList("QGSP_BERT_HP");
 
 #if ROOT_VERSION_CODE >= ROOT_VERSION(6,00,0)
