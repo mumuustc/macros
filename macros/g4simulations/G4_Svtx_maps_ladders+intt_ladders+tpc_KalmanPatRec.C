@@ -401,9 +401,10 @@ double Svtx(PHG4Reco* g4Reco, double radius,
   cyl->set_int_param("lengthviarapidity", 0);
   cyl->set_double_param("length", cage_length);
   cyl->set_string_param("material", "G4_KAPTON");
-  cyl->set_double_param("thickness", cage_thickness);
+  cyl->set_double_param("thickness", cage_thickness - no_overlapp);
   cyl->SuperDetector("SVTXSUPPORT");
   cyl->Verbosity(0);
+  cyl->OverlapCheck(overlapcheck);
   g4Reco->registerSubsystem(cyl);
 
   radius += cage_thickness;
@@ -421,8 +422,9 @@ double Svtx(PHG4Reco* g4Reco, double radius,
     cyl->set_int_param("lengthviarapidity", 0);
     cyl->set_double_param("length", cage_length);
     cyl->set_string_param("material", tpcgas.c_str());
-    cyl->set_double_param("thickness", inner_readout_radius - radius);
+    cyl->set_double_param("thickness", inner_readout_radius - radius - no_overlapp);
     cyl->SuperDetector("SVTXSUPPORT");
+    cyl->OverlapCheck(overlapcheck);
     g4Reco->registerSubsystem(cyl);
   }
 
@@ -443,9 +445,10 @@ double Svtx(PHG4Reco* g4Reco, double radius,
     cyl->set_int_param("lengthviarapidity", 0);
     cyl->set_double_param("length", cage_length);
     cyl->set_string_param("material", tpcgas.c_str());
-    cyl->set_double_param("thickness", tpc_layer_thick_inner - 0.01);
+    cyl->set_double_param("thickness", tpc_layer_thick_inner - no_overlapp);
     cyl->SetActive();
     cyl->SuperDetector("SVTX");
+    cyl->OverlapCheck(overlapcheck);
     g4Reco->registerSubsystem(cyl);
 
     radius += tpc_layer_thick_inner;
@@ -464,9 +467,10 @@ double Svtx(PHG4Reco* g4Reco, double radius,
     cyl->set_int_param("lengthviarapidity", 0);
     cyl->set_double_param("length", cage_length);
     cyl->set_string_param("material", tpcgas.c_str());
-    cyl->set_double_param("thickness", tpc_layer_thick_mid - 0.01);
-    cyl->SetActive();
+    cyl->set_double_param("thickness", tpc_layer_thick_mid - no_overlapp);
+    cyl->SetActive(0);
     cyl->SuperDetector("SVTX");
+    cyl->OverlapCheck(overlapcheck);
     g4Reco->registerSubsystem(cyl);
 
     radius += tpc_layer_thick_mid;
@@ -485,9 +489,10 @@ double Svtx(PHG4Reco* g4Reco, double radius,
     cyl->set_int_param("lengthviarapidity", 0);
     cyl->set_double_param("length", cage_length);
     cyl->set_string_param("material", tpcgas.c_str());
-    cyl->set_double_param("thickness", tpc_layer_thick_outer - 0.01);
-    cyl->SetActive();
+    cyl->set_double_param("thickness", tpc_layer_thick_outer - no_overlapp);
+    cyl->SetActive(0);
     cyl->SuperDetector("SVTX");
+    cyl->OverlapCheck(overlapcheck);
     g4Reco->registerSubsystem(cyl);
 
     radius += tpc_layer_thick_outer;
@@ -499,8 +504,9 @@ double Svtx(PHG4Reco* g4Reco, double radius,
   cyl->set_int_param("lengthviarapidity", 0);
   cyl->set_double_param("length", cage_length);
   cyl->set_string_param("material", "G4_KAPTON");
-  cyl->set_double_param("thickness", cage_thickness);  // Kapton X_0 = 28.6 cm
+  cyl->set_double_param("thickness", cage_thickness- no_overlapp);  // Kapton X_0 = 28.6 cm
   cyl->SuperDetector("SVTXSUPPORT");
+  cyl->OverlapCheck(overlapcheck);
   g4Reco->registerSubsystem(cyl);
 
   radius += cage_thickness;
