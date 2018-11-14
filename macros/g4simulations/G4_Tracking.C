@@ -519,7 +519,7 @@ DAC0-7 threshold as fraction to MIP voltage are set to PHG4SiliconTrackerDigitiz
   se->registerSubsystem(tpcclusterizer);
 
   // This should be true for everything except testing!
-  const bool use_kalman_pat_rec = true;
+  const bool use_kalman_pat_rec = false;
   if (use_kalman_pat_rec)
   {
     //---------------------
