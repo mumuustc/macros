@@ -140,6 +140,7 @@ void HCALOuter_Towers(int verbosity = 0) {
   TowerDigitizer->set_pedstal_width_ADC(1); // From Jin's guess. No EMCal High Gain data yet! TODO: update
   TowerDigitizer->set_photonelec_ADC(16. / 5.);
   TowerDigitizer->set_photonelec_yield_visible_GeV(16. / 5 / (0.2e-3));
+  TowerDigitizer->Verbosity(verbosity);
   TowerDigitizer->set_zero_suppression_ADC(-0); // no-zero suppression
   se->registerSubsystem(TowerDigitizer);
 
@@ -153,6 +154,7 @@ void HCALOuter_Towers(int verbosity = 0) {
   TowerCalibration->set_calib_const_GeV_ADC(0.2e-3 / visible_sample_fraction_HCALOUT);
   TowerCalibration->set_pedstal_ADC(0);
   TowerCalibration->set_zero_suppression_GeV(-1); // no-zero suppression
+  TowerCalibration->Verbosity(verbosity);
   se->registerSubsystem(TowerCalibration);
 
   return;

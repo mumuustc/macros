@@ -90,7 +90,7 @@ int Fun4All_G4_sPHENIX(
 
   bool do_pipe = true;
 
-  bool do_tracking = true;
+  bool do_tracking = false;
   bool do_tracking_cell = do_tracking && false;
   bool do_tracking_track = do_tracking_cell && true;
   bool do_tracking_eval = do_tracking_track && true;
@@ -100,7 +100,7 @@ int Fun4All_G4_sPHENIX(
   bool do_cemc = true;
   bool do_cemc_cell = do_cemc && true;
   bool do_cemc_twr = do_cemc_cell && true;
-  bool do_cemc_cluster = true;
+  bool do_cemc_cluster =do_cemc_twr && true;
   bool do_cemc_eval = do_cemc_cluster && true;
 
   bool do_hcalin = true;
