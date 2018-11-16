@@ -58,7 +58,7 @@ int Fun4All_G4_sPHENIX(
   const bool readhits = false;
   // Or:
   // read files in HepMC format (typically output from event generators like hijing or pythia)
-  const bool readhepmc = true;  // read HepMC files
+  const bool readhepmc = false;  // read HepMC files
   // Or:
   // Use pythia
   const bool runpythia8 = false;
@@ -72,7 +72,7 @@ int Fun4All_G4_sPHENIX(
 
   // Besides the above flags. One can further choose to further put in following particles in Geant4 simulation
   // Use multi-particle generator (PHG4SimpleEventGenerator), see the code block below to choose particle species and kinematics
-  const bool particles = false && !readhits;
+  const bool particles = true && !readhits;
   // or gun/ very simple single particle gun generator
   const bool usegun = false && !readhits;
   // Throw single Upsilons, may be embedded in Hijing by setting readhepmc flag also  (note, careful to set Z vertex equal to Hijing events)
@@ -240,7 +240,7 @@ int Fun4All_G4_sPHENIX(
     {
       // toss low multiplicity dummy events
       PHG4SimpleEventGenerator *gen = new PHG4SimpleEventGenerator();
-      gen->add_particles("pi-", 1);  // mu+,e+,proton,pi+,Upsilon
+      gen->add_particles("e-", 1);  // mu+,e+,proton,pi+,Upsilon
       //gen->add_particles("pi+",100); // 100 pion option
       if (readhepmc || do_embedding || runpythia8 || runpythia6)
       {
@@ -257,9 +257,9 @@ int Fun4All_G4_sPHENIX(
       }
       gen->set_vertex_size_function(PHG4SimpleEventGenerator::Uniform);
       gen->set_vertex_size_parameters(0.0, 0.0);
-      gen->set_eta_range(-1.0, 1.0);
+      gen->set_eta_range(-.0, .10);
       gen->set_phi_range(-1.0 * TMath::Pi(), 1.0 * TMath::Pi());
-      gen->set_pt_range(0.1, 20.0);
+      gen->set_pt_range(40, 40.0);
       gen->Embed(2);
       gen->Verbosity(0);
 
