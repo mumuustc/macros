@@ -93,7 +93,7 @@ int Fun4All_G4_sPHENIX(
   bool do_tracking = true;
   bool do_tracking_cell = do_tracking && true;
   bool do_tracking_track = do_tracking_cell && true;
-  bool do_tracking_eval = do_tracking_track && true;
+  bool do_tracking_eval = do_tracking_track && false;
 
   bool do_pstof = false;
 
@@ -222,7 +222,7 @@ int Fun4All_G4_sPHENIX(
       se->registerSubsystem(pythia8);
 
 
-      assert (gSystem->Load("libHFMLTrigger") == 0);
+      assert (gSystem->Load("libHFMLTrigger") >= 0);
       {
         HFMLTriggerHepMCTrigger * trig = new HFMLTriggerHepMCTrigger(string(outputFile) + string("_HFMLTriggerHepMCTrigger"));
         trig->Verbosity(1);
@@ -573,7 +573,7 @@ int Fun4All_G4_sPHENIX(
    if (do_dst_compress) DstCompress(out);
     se->registerOutputManager(out);
 
-    assert (gSystem->Load("libHFMLTrigger") == 0);
+    assert (gSystem->Load("libHFMLTrigger") >= 0);
     {
       HFMLTriggerInterface * hf_ml_interface = new HFMLTriggerInterface(string(outputFile) + string("_HFMLTriggerInterface"));
       hf_ml_interface->Verbosity(1);
