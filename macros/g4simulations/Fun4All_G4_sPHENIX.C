@@ -38,7 +38,7 @@ using namespace std;
 
 
 int Fun4All_G4_sPHENIX(
-    const int nEvents = 1000,
+    const int nEvents = 5,
     const char *inputFile = "phpythia8.cfg",
     const char *outputFile = "G4sPHENIX.root",
     const char *embed_input_file = "/sphenix/data/data02/review_2017-08-02/sHijing/fm_0-4.list")
@@ -168,7 +168,7 @@ int Fun4All_G4_sPHENIX(
     }
 
   Fun4AllServer *se = Fun4AllServer::instance();
-  se->Verbosity(01);
+//  se->Verbosity(01);
   // just if we set some flags somewhere in this macro
   recoConsts *rc = recoConsts::instance();
   // By default every random number generator uses
@@ -569,14 +569,14 @@ int Fun4All_G4_sPHENIX(
                 /*bool*/ do_hcalout_twr);
   }
 
-    Fun4AllDstOutputManager *out = new Fun4AllDstOutputManager("DSTOUT", outputFile);
-   if (do_dst_compress) DstCompress(out);
-    se->registerOutputManager(out);
+//    Fun4AllDstOutputManager *out = new Fun4AllDstOutputManager("DSTOUT", outputFile);
+//   if (do_dst_compress) DstCompress(out);
+//    se->registerOutputManager(out);
 
     assert (gSystem->Load("libHFMLTrigger") >= 0);
     {
       HFMLTriggerInterface * hf_ml_interface = new HFMLTriggerInterface(string(outputFile) + string("_HFMLTriggerInterface"));
-      hf_ml_interface->Verbosity(1);
+//      hf_ml_interface->Verbosity(1);
       se -> registerSubsystem(hf_ml_interface);
     }
 
@@ -606,7 +606,7 @@ int Fun4All_G4_sPHENIX(
       cin >> i;
     }
 
-  se->run(nEvents);
+  se->run( nEvents, true);
 
   //-----
   // Exit
