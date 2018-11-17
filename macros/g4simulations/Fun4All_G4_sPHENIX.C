@@ -220,6 +220,14 @@ int Fun4All_G4_sPHENIX(
           PHHepMCGenHelper::Uniform,
           PHHepMCGenHelper::Uniform);
       se->registerSubsystem(pythia8);
+
+
+      assert (gSystem->Load("libHFMLTrigger") == 0);
+      {
+        HFMLTriggerHepMCTrigger * trig = new HFMLTriggerHepMCTrigger(string(outputFile) + string("_HFMLTriggerHepMCTrigger"));
+        trig->Verbosity(1);
+        se -> registerSubsystem(trig);
+      }
     }
 
     if (runpythia6)
