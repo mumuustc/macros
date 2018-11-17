@@ -38,7 +38,7 @@ using namespace std;
 
 
 int Fun4All_G4_sPHENIX(
-    const int nEvents = 10,
+    const int nEvents = 1000,
     const char *inputFile = "/sphenix/data/data02/review_2017-08-02/single_particle/spacal2d/fieldmap/G4Hits_sPHENIX_e-_eta0_8GeV-0002.root",
     const char *outputFile = "G4sPHENIX.root",
     const char *embed_input_file = "/sphenix/data/data02/review_2017-08-02/sHijing/fm_0-4.list")
@@ -179,7 +179,7 @@ int Fun4All_G4_sPHENIX(
   // this would be:
   //  rc->set_IntFlag("RANDOMSEED",PHRandomSeed());
   // or set it to a fixed value so you can debug your code
-  //  rc->set_IntFlag("RANDOMSEED", 12345);
+//    rc->set_IntFlag("RANDOMSEED", 1);
 
   //-----------------
   // Event generation
@@ -224,8 +224,8 @@ int Fun4All_G4_sPHENIX(
 
       assert (gSystem->Load("libHFMLTrigger") >= 0);
       {
-        HFMLTriggerHepMCTrigger * trig = new HFMLTriggerHepMCTrigger(string(outputFile) + string("_HFMLTriggerHepMCTrigger"));
-        trig->Verbosity(1);
+        HFMLTriggerHepMCTrigger * trig = new HFMLTriggerHepMCTrigger("D0toPiKInAcceptance",string(outputFile) + string("_D0toPiKInAcceptance"));
+//        trig->Verbosity(1);
         se -> registerSubsystem(trig);
       }
     }
@@ -342,7 +342,7 @@ int Fun4All_G4_sPHENIX(
       }
     }
   }
-
+//
   if (!readhits)
   {
     //---------------------
@@ -539,7 +539,7 @@ int Fun4All_G4_sPHENIX(
 
     if (do_tracking)
     {
-      // This gets the default drift velocity only! 
+      // This gets the default drift velocity only!
       PHG4TPCElectronDrift *dr = (PHG4TPCElectronDrift *)se->getSubsysReco("PHG4TPCElectronDrift");
       assert(dr);
       double TPCDriftVelocity = dr->get_double_param("drift_velocity");
