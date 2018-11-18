@@ -226,6 +226,7 @@ int Fun4All_G4_sPHENIX(
       {
         HFMLTriggerHepMCTrigger * trig = new HFMLTriggerHepMCTrigger("D0toPiKInAcceptance",string(outputFile) + string("_D0toPiKInAcceptance"));
 //        trig->Verbosity(1);
+        trig->set_RejectReturnCode(0);
         se -> registerSubsystem(trig);
       }
     }
@@ -606,7 +607,7 @@ int Fun4All_G4_sPHENIX(
       cin >> i;
     }
 
-  se->run( nEvents, true);
+  se->run( nEvents);
 
   //-----
   // Exit
