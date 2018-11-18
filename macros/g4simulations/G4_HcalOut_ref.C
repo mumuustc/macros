@@ -130,6 +130,9 @@ void HCALOuter_Towers(int verbosity = 0) {
   TowerBuilder->Verbosity(verbosity);
   se->registerSubsystem( TowerBuilder );
 
+  cout <<"Special setting. Not to perform tower digitization in production!"<<endl;
+  return ;
+
   // From 2016 Test beam sim
   RawTowerDigitizer *TowerDigitizer = new RawTowerDigitizer("HcalOutRawTowerDigitizer");
   TowerDigitizer->Detector("HCALOUT");
