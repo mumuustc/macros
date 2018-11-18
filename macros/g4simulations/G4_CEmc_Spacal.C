@@ -333,6 +333,8 @@ void CEMC_Towers(int verbosity = 0)
   TowerBuilder->Verbosity(verbosity);
   se->registerSubsystem(TowerBuilder);
 
+  cout <<"Special setting. Not to perform tower digitization in production!"<<endl;
+  return ;
   double sampling_fraction = 1;
   if (Cemc_spacal_configuration == PHG4CylinderGeom_Spacalv1::k1DProjectiveSpacal)
   {
