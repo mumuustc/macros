@@ -508,6 +508,8 @@ DAC0-7 threshold as fraction to MIP voltage are set to PHG4SiliconTrackerDigitiz
   }
   se->registerSubsystem(clusterizer);
 
+  return;
+
   // For the TPC
   
   PHG4TPCClusterizer* tpcclusterizer = new PHG4TPCClusterizer();
@@ -517,6 +519,8 @@ DAC0-7 threshold as fraction to MIP voltage are set to PHG4SiliconTrackerDigitiz
   tpcclusterizer->setFitWindowSigmas(0.0150, 0.10);  // should be changed when TPC cluster resolution changes
   tpcclusterizer->setFitWindowMax(5 /*rphibins*/, 5 /*zbins*/);
   se->registerSubsystem(tpcclusterizer);
+
+
 
   // This should be true for everything except testing!
   const bool use_kalman_pat_rec = false;
