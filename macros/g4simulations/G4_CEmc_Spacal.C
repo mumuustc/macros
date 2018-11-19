@@ -327,11 +327,11 @@ void CEMC_Towers(int verbosity = 0)
   gSystem->Load("libcalo_reco.so");
   Fun4AllServer *se = Fun4AllServer::instance();
 
-  RawTowerBuilder *TowerBuilder = new RawTowerBuilder("EmcRawTowerBuilder");
-  TowerBuilder->Detector("CEMC");
-  TowerBuilder->set_sim_tower_node_prefix("SIM");
-  TowerBuilder->Verbosity(verbosity);
-  se->registerSubsystem(TowerBuilder);
+//  RawTowerBuilder *TowerBuilder = new RawTowerBuilder("EmcRawTowerBuilder");
+//  TowerBuilder->Detector("CEMC");
+//  TowerBuilder->set_sim_tower_node_prefix("SIM");
+//  TowerBuilder->Verbosity(verbosity);
+//  se->registerSubsystem(TowerBuilder);
 
   double sampling_fraction = 1;
   if (Cemc_spacal_configuration == PHG4CylinderGeom_Spacalv1::k1DProjectiveSpacal)

@@ -90,8 +90,8 @@ int Fun4All_G4_sPHENIX(
 
   bool do_pipe = true;
 
-  bool do_tracking = true;
-  bool do_tracking_cell = do_tracking && false;
+  bool do_tracking = false;
+  bool do_tracking_cell = do_tracking && true;
   bool do_tracking_track = do_tracking_cell && true;
   bool do_tracking_eval = do_tracking_track && true;
 
@@ -99,22 +99,22 @@ int Fun4All_G4_sPHENIX(
 
   bool do_cemc = true;
   bool do_cemc_cell = do_cemc && false;
-  bool do_cemc_twr = do_cemc_cell && true;
-  bool do_cemc_cluster = true;
+  bool do_cemc_twr = true;
+  bool do_cemc_cluster = do_cemc_twr && true;
   bool do_cemc_eval = do_cemc_cluster && true;
 
   bool do_hcalin = true;
   bool do_hcalin_cell = do_hcalin && false;
-  bool do_hcalin_twr = do_hcalin_cell && true;
-  bool do_hcalin_cluster = true;
+  bool do_hcalin_twr =  true;
+  bool do_hcalin_cluster = do_hcalin_twr && true;
   bool do_hcalin_eval = do_hcalin_cluster && true;
 
   bool do_magnet = true;
 
   bool do_hcalout = true;
   bool do_hcalout_cell = do_hcalout && false;
-  bool do_hcalout_twr = do_hcalout_cell && true;
-  bool do_hcalout_cluster = true;
+  bool do_hcalout_twr = true;
+  bool do_hcalout_cluster = do_hcalout_twr && true;
   bool do_hcalout_eval = do_hcalout_cluster && true;
 
   //! forward flux return plug door. Out of acceptance and off by default.

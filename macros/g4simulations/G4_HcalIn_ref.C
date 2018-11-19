@@ -193,11 +193,11 @@ void HCALInner_Towers(int verbosity = 0) {
   gSystem->Load("libcalo_reco.so");
   Fun4AllServer *se = Fun4AllServer::instance();
   
-  HcalRawTowerBuilder *TowerBuilder = new HcalRawTowerBuilder("HcalInRawTowerBuilder");
-  TowerBuilder->Detector("HCALIN");
-  TowerBuilder->set_sim_tower_node_prefix("SIM");
-  TowerBuilder->Verbosity(verbosity);
-  se->registerSubsystem( TowerBuilder );
+//  HcalRawTowerBuilder *TowerBuilder = new HcalRawTowerBuilder("HcalInRawTowerBuilder");
+//  TowerBuilder->Detector("HCALIN");
+//  TowerBuilder->set_sim_tower_node_prefix("SIM");
+//  TowerBuilder->Verbosity(verbosity);
+//  se->registerSubsystem( TowerBuilder );
 
   // From 2016 Test beam sim
   RawTowerDigitizer *TowerDigitizer = new RawTowerDigitizer("HcalInRawTowerDigitizer");
