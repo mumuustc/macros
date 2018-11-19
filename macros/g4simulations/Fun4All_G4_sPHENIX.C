@@ -39,7 +39,7 @@ using namespace std;
 
 int Fun4All_G4_sPHENIX(
     const int nEvents = 1,
-    const char *inputFile = "/sphenix/user/dvp/gen/QCD40/hepmc_QCD50GeV_R04jet60GeVeta0p45_seq00364.dat",
+    const char *inputFile = "RecosPHENIX.root",
     const char *outputFile = "RecosPHENIX.root",
     const char *embed_input_file = "/sphenix/user/jinhuang/JetBackground/Iteration2/Iteration2_3098.xml.root")
 {

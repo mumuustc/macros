@@ -40,7 +40,7 @@ void HIJetReco(int verbosity = 0, bool do_flow = false ) {
 
   JetReco *truthjetreco = new JetReco();
   TruthJetInput *tji = new TruthJetInput(Jet::PARTICLE);
-  tji->add_embedding_flag( 1 ); // changes depending on signal vs. embedded
+  tji->add_embedding_flag( 2 ); // changes depending on signal vs. embedded
   truthjetreco->add_input(tji);
   truthjetreco->add_algo(new FastJetAlgo(Jet::ANTIKT,0.2),"AntiKt_Truth_Embeded_r02");
   truthjetreco->add_algo(new FastJetAlgo(Jet::ANTIKT,0.3),"AntiKt_Truth_Embeded_r03");
