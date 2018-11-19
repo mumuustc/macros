@@ -90,7 +90,7 @@ int Fun4All_G4_sPHENIX(
 
   bool do_pipe = true;
 
-  bool do_tracking = false;
+  bool do_tracking = true;
   bool do_tracking_cell = do_tracking && false;
   bool do_tracking_track = do_tracking_cell && true;
   bool do_tracking_eval = do_tracking_track && true;
