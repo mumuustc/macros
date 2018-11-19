@@ -204,8 +204,8 @@ int Fun4All_G4_sPHENIX(
     {
       // place holder. Additional action is performed in later stage at the input manager level
 
-      HepMCFlowAfterBurner * fl = new HepMCFlowAfterBurner();
-      se->registerSubsystem(fl);
+//      HepMCFlowAfterBurner * fl = new HepMCFlowAfterBurner();
+//      se->registerSubsystem(fl);
 
     }
 
