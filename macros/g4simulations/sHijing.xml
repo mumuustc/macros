@@ -9,8 +9,8 @@
   <IAT>197</IAT>
   <IZT>79</IZT>
   <N>20</N>
-  <BMIN>6.6</BMIN>
-  <BMAX>9.3</BMAX>
+  <BMIN>0</BMIN>
+  <BMAX>6.6</BMAX>
   <KEEP_SPECTATORS>1</KEEP_SPECTATORS>
   <OUTPUT>sHijing.dat</OUTPUT>
   <HIPR1>
