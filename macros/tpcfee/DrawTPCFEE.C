@@ -37,8 +37,9 @@ void DrawTPCFEE(
     //        const char *infile = "data/tpcfee_00002697-0000.evt_TPCFEETestRecov1.root"  // check pad 13,9
     //    const char *infile = "data/xraygen/tpc_fee_xraygen-ALL-0000.evt_TPCFEETestRecov1.root"  // check pad 13,9
     //    const char *infile = "data/xraygen/run2/tpc_fee_xraygen-0000287ALL-0000.evt_TPCFEETestRecov1.root"  // check pad 13,9
-    const char *infile = "data/xraygen/run2/tpc_fee_xraygen-ALL-0000.evt_TPCFEETestRecov1.root"  // check pad 13,9
-                                                                                                 //    const TString infile = "data/tpcfee_00002658-0000.evt_TPCFEETestRecov1_DefaultMap.root"  //
+    //    const char *infile = "data/xraygen/run2/tpc_fee_xraygen-ALL-0000.evt_TPCFEETestRecov1.root"  // check pad 13,9
+        const char *infile = "data/pulser/tpc_fee_pulser-0000ALL-0000.evt_TPCFEETestRecov1.root" //
+//    const TString infile = "data/xraygen_motorscan/tpc_fee_xraygen_pos_scan-00003600-0000.evt_TPCFEETestRecov1.root"  //
 )
 {
   gSystem->Load("libtpcdaq.so");
