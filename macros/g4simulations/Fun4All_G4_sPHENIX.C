@@ -180,7 +180,13 @@ int Fun4All_G4_sPHENIX(
   // this would be:
   //  rc->set_IntFlag("RANDOMSEED",PHRandomSeed());
   // or set it to a fixed value so you can debug your code
-  //  rc->set_IntFlag("RANDOMSEED", 12345);
+
+  const long seed =  std::time(NULL);
+
+    rc->set_IntFlag("RANDOMSEED", seed);
+    cout <<"    rc->set_IntFlag(\"RANDOMSEED\", "<<seed<<");"<<endl;
+
+  PHRandomSeed::Verbosity(1);
 
   //-----------------
   // Event generation
