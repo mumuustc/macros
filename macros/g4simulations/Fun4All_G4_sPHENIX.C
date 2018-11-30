@@ -38,7 +38,7 @@ using namespace std;
 
 
 int Fun4All_G4_sPHENIX(
-    const int nEvents = 2,
+    const int nEvents = 20,
     const char *inputFile = "phpythia8.cfg",
     const char *inputParticle = "pi+",
     const char *outputFile = "G4sPHENIX.root",
@@ -181,7 +181,7 @@ int Fun4All_G4_sPHENIX(
   //  rc->set_IntFlag("RANDOMSEED",PHRandomSeed());
   // or set it to a fixed value so you can debug your code
 
-  const long seed =  std::time(NULL);
+  const long seed = 1543541208; //  std::time(NULL);
 
     rc->set_IntFlag("RANDOMSEED", seed);
     cout <<"    rc->set_IntFlag(\"RANDOMSEED\", "<<seed<<");"<<endl;
