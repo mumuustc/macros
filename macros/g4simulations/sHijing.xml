@@ -13,6 +13,9 @@
   <BMAX>9.3</BMAX>
   <KEEP_SPECTATORS>1</KEEP_SPECTATORS>
   <OUTPUT>sHijing.dat</OUTPUT>
+    <RANDOM>
+    <SEED>12345</SEED>
+  </RANDOM>
   <HIPR1>
     <5>5.0</5>
   </HIPR1>
