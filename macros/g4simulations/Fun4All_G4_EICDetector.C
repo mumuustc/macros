@@ -1,7 +1,7 @@
 int Fun4All_G4_EICDetector(
                            const int nEvents = 2,
                            const int nSkip = 1,
-                           const char * inputFile = "/phenix/u/jinhuang/links/sPHENIX_work/EIC/EventGen/pythia.ep.20x250.1Mevents.RadCor=0_DST.root",
+                           const char * inputFile = "phpythia8_mb.cfg",
                            const char * outputFile = "G4EICDetector.root"
                            )
 {
@@ -25,7 +25,7 @@ int Fun4All_G4_EICDetector(
   const bool readeictree = false;
   // Or:
   // Use Pythia 8
-  const bool runpythia8 = false;
+  const bool runpythia8 = true;
   // Or:
   // Use Pythia 6
   const bool runpythia6 = false;
@@ -202,7 +202,7 @@ int Fun4All_G4_EICDetector(
 
       PHPythia8* pythia8 = new PHPythia8();
       // see coresoftware/generators/PHPythia8 for example config
-      pythia8->set_config_file("phpythia8.cfg");
+      pythia8->set_config_file(inputFile);
       se->registerSubsystem(pythia8);
     }
   else if (runpythia6)
@@ -503,7 +503,7 @@ int Fun4All_G4_EICDetector(
   // IO management
   //--------------
 
-//  if (readhits)
+  if (readhits)
     {
       // Hits file
       Fun4AllInputManager *hitsin = new Fun4AllDstInputManager("DSTin");
