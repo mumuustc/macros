@@ -203,6 +203,10 @@ int Fun4All_G4_EICDetector(
       PHPythia8* pythia8 = new PHPythia8();
       // see coresoftware/generators/PHPythia8 for example config
       pythia8->set_config_file(inputFile);
+      pythia8->set_vertex_distribution_function(PHG4SimpleEventGenerator::Gaus,
+                                            PHG4SimpleEventGenerator::Gaus,
+                                            PHG4SimpleEventGenerator::Uniform);
+      pythia8->set_vertex_distribution_width(0.005,0.005,450 * 2,0); // z = +/- 4.5m
       se->registerSubsystem(pythia8);
     }
   else if (runpythia6)
