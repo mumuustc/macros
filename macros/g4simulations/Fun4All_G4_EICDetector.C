@@ -56,7 +56,7 @@ int Fun4All_G4_EICDetector(
 
   bool do_svtx = true;
   bool do_svtx_cell = do_svtx && true;
-  bool do_svtx_track = do_svtx_cell && true;
+  bool do_svtx_track = do_svtx_cell && false;
   bool do_svtx_eval = do_svtx_track && false; // in order to use this evaluation, please build this analysis module analysis/blob/master/Tracking/FastTrackingEval/
 
   bool do_pstof = false;
@@ -173,6 +173,15 @@ int Fun4All_G4_EICDetector(
   //  rc->set_IntFlag("RANDOMSEED",PHRandomSeed());
   // or set it to a fixed value so you can debug your code
 //   rc->set_IntFlag("RANDOMSEED", 12);
+
+  TRandom3 r(0);
+  const long seed = r.GetSeed(); //  std::time(NULL);
+
+  rc->set_IntFlag("RANDOMSEED", seed);
+  cout <<"    rc->set_IntFlag(\"RANDOMSEED\", "<<seed<<");"<<endl;
+
+  PHRandomSeed::Verbosity(1);
+
 
   //-----------------
   // Event generation
