@@ -1,7 +1,6 @@
 int Fun4All_G4_EICDetector(
                            const int nEvents = 2,
-                           const int nSkip = 1,
-                           const char * inputFile = "phpythia8_mb.cfg",
+                           const char * inputFile = "phpythia8.cfg",
                            const char * outputFile = "G4EICDetector.root"
                            )
 {
@@ -173,7 +172,7 @@ int Fun4All_G4_EICDetector(
   // this would be:
   //  rc->set_IntFlag("RANDOMSEED",PHRandomSeed());
   // or set it to a fixed value so you can debug your code
-  // rc->set_IntFlag("RANDOMSEED", 12345);
+//   rc->set_IntFlag("RANDOMSEED", 12);
 
   //-----------------
   // Event generation
@@ -207,7 +206,7 @@ int Fun4All_G4_EICDetector(
                                             PHG4SimpleEventGenerator::Gaus,
                                             PHG4SimpleEventGenerator::Uniform,
                                             PHG4SimpleEventGenerator::Uniform);
-      pythia8->set_vertex_distribution_width(0.005,0.005,450 * 2,0); // z = +/- 4.5m
+      pythia8->set_vertex_distribution_width(0.005,0.005,450, 0); // z = +/- 4.5m
       se->registerSubsystem(pythia8);
     }
   else if (runpythia6)
@@ -573,7 +572,7 @@ int Fun4All_G4_EICDetector(
       return;
     }
 
-  se->skip(nSkip);
+//  se->skip(nSkip);
   se->run(nEvents);
 
   //-----
