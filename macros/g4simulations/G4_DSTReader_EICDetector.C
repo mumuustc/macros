@@ -55,6 +55,7 @@ G4DSTreader_EICDetector( const char * outputFile = "G4sPHENIXCells.root",//
       if (do_svtx)
         {
           ana->AddNode("SVTX");
+          ana->AddNode("MAPS");
           ana->AddNode("EGEM_0");
           ana->AddNode("EGEM_1");
           ana->AddNode("EGEM_2");
