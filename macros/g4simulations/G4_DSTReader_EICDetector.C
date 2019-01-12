@@ -42,7 +42,7 @@ G4DSTreader_EICDetector( const char * outputFile = "G4sPHENIXCells.root",//
                                          string(outputFile) + string("_DSTReader.root"));
   ana->set_save_particle(true);
   ana->set_load_all_particle(false);
-  ana->set_load_active_particle(true);
+  ana->set_load_active_particle(false);
   ana->set_save_vertex(true);
 
   if (debug)
