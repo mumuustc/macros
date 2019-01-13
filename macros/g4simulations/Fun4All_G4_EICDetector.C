@@ -215,7 +215,8 @@ int Fun4All_G4_EICDetector(
                                             PHG4SimpleEventGenerator::Gaus,
                                             PHG4SimpleEventGenerator::Uniform,
                                             PHG4SimpleEventGenerator::Uniform);
-      pythia8->set_vertex_distribution_width(0.005,0.005,450, 0); // z = +/- 4.5m
+      pythia8->set_vertex_distribution_mean(0,0,-400,0);
+      pythia8->set_vertex_distribution_width(0.005,0.005,0, 0); // z = +/- 4.5m
       se->registerSubsystem(pythia8);
     }
   else if (runpythia6)
