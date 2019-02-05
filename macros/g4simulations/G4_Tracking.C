@@ -133,7 +133,7 @@ double Tracking(PHG4Reco* g4Reco, double radius,
 
   if (n_maps_layer > 0)
     {
-      bool maps_overlapcheck = false;  // set to true if you want to check for overlaps
+      bool maps_overlapcheck = true;  // set to true if you want to check for overlaps
       
       // MAPS inner barrel layers
       //======================================================
