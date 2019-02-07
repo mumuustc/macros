@@ -1,32 +1,32 @@
-#if ROOT_VERSION_CODE >= ROOT_VERSION(6,00,0)
-#include <fun4all/SubsysReco.h>
-#include <fun4all/Fun4AllServer.h>
-#include <fun4all/Fun4AllInputManager.h>
-#include <fun4all/Fun4AllDummyInputManager.h>
-#include <fun4all/Fun4AllOutputManager.h>
+#if ROOT_VERSION_CODE >= ROOT_VERSION(6, 00, 0)
 #include <fun4all/Fun4AllDstInputManager.h>
-#include <fun4all/Fun4AllNoSyncDstInputManager.h>
 #include <fun4all/Fun4AllDstOutputManager.h>
-#include <g4main/PHG4ParticleGeneratorBase.h>
+#include <fun4all/Fun4AllDummyInputManager.h>
+#include <fun4all/Fun4AllInputManager.h>
+#include <fun4all/Fun4AllNoSyncDstInputManager.h>
+#include <fun4all/Fun4AllOutputManager.h>
+#include <fun4all/Fun4AllServer.h>
+#include <fun4all/SubsysReco.h>
+#include <g4detectors/PHG4DetectorSubsystem.h>
+#include <g4main/HepMCNodeReader.h>
 #include <g4main/PHG4ParticleGenerator.h>
-#include <g4main/PHG4SimpleEventGenerator.h>
+#include <g4main/PHG4ParticleGeneratorBase.h>
 #include <g4main/PHG4ParticleGeneratorVectorMeson.h>
 #include <g4main/PHG4ParticleGun.h>
-#include <g4main/HepMCNodeReader.h>
-#include <g4detectors/PHG4DetectorSubsystem.h>
+#include <g4main/PHG4SimpleEventGenerator.h>
+#include <phhepmc/Fun4AllHepMCInputManager.h>
+#include <phhepmc/Fun4AllHepMCPileupInputManager.h>
 #include <phool/recoConsts.h>
 #include <phpythia6/PHPythia6.h>
 #include <phpythia8/PHPythia8.h>
-#include <phhepmc/Fun4AllHepMCPileupInputManager.h>
-#include <phhepmc/Fun4AllHepMCInputManager.h>
+#include "DisplayOn.C"
 #include "G4Setup_sPHENIX.C"
 #include "G4_Bbc.C"
-#include "G4_Global.C"
 #include "G4_CaloTrigger.C"
-#include "G4_Jets.C"
-#include "G4_HIJetReco.C"
 #include "G4_DSTReader.C"
-#include "DisplayOn.C"
+#include "G4_Global.C"
+#include "G4_HIJetReco.C"
+#include "G4_Jets.C"
 R__LOAD_LIBRARY(libfun4all.so)
 R__LOAD_LIBRARY(libg4testbench.so)
 R__LOAD_LIBRARY(libphhepmc.so)
@@ -36,14 +36,12 @@ R__LOAD_LIBRARY(libPHPythia8.so)
 
 using namespace std;
 
-
 int Fun4All_G4_sPHENIX(
     const int nEvents = 1,
-    const char *inputFile = "/sphenix/data/data02/review_2017-08-02/single_particle/spacal2d/fieldmap/G4Hits_sPHENIX_e-_eta0_8GeV-0002.root",
+    const char *inputFile = "data/pythia8_200pp_MB.dat",
     const char *outputFile = "G4sPHENIX.root",
     const char *embed_input_file = "/sphenix/data/data02/review_2017-08-02/sHijing/fm_0-4.list")
 {
-
   //===============
   // Input options
   //===============
@@ -58,7 +56,7 @@ int Fun4All_G4_sPHENIX(
   const bool readhits = false;
   // Or:
   // read files in HepMC format (typically output from event generators like hijing or pythia)
-  const bool readhepmc = false;  // read HepMC files
+  const bool readhepmc = true;  // read HepMC files
   // Or:
   // Use pythia
   const bool runpythia8 = false;
@@ -72,7 +70,7 @@ int Fun4All_G4_sPHENIX(
 
   // Besides the above flags. One can further choose to further put in following particles in Geant4 simulation
   // Use multi-particle generator (PHG4SimpleEventGenerator), see the code block below to choose particle species and kinematics
-  const bool particles = true && !readhits;
+  const bool particles = false && !readhits;
   // or gun/ very simple single particle gun generator
   const bool usegun = false && !readhits;
   // Throw single Upsilons, may be embedded in Hijing by setting readhepmc flag also  (note, careful to set Z vertex equal to Hijing events)
@@ -93,7 +91,7 @@ int Fun4All_G4_sPHENIX(
   bool do_tracking = true;
   bool do_tracking_cell = do_tracking && true;
   bool do_tracking_track = do_tracking_cell && true;
-  bool do_tracking_eval = do_tracking_track && true;
+  bool do_tracking_eval = do_tracking_track && false;
 
   bool do_pstof = false;
 
@@ -154,18 +152,18 @@ int Fun4All_G4_sPHENIX(
 
   int absorberactive = 1;  // set to 1 to make all absorbers active volumes
   //  const string magfield = "1.5"; // alternatively to specify a constant magnetic field, give a float number, which will be translated to solenoidal field in T, if string use as fieldmap name (including path)
-  const string magfield = string(getenv("CALIBRATIONROOT")) + string("/Field/Map/sPHENIX.2d.root"); // default map from the calibration database
-  const float magfield_rescale = -1.4 / 1.5;                                     // scale the map to a 1.4 T field
+  const string magfield = string(getenv("CALIBRATIONROOT")) + string("/Field/Map/sPHENIX.2d.root");  // default map from the calibration database
+  const float magfield_rescale = -1.4 / 1.5;                                                         // scale the map to a 1.4 T field
 
   //---------------
   // Fun4All server
   //---------------
 
   bool display_on = false;
-  if(display_on)
-    {
-      gROOT->LoadMacro("DisplayOn.C");
-    }
+  if (display_on)
+  {
+    gROOT->LoadMacro("DisplayOn.C");
+  }
 
   Fun4AllServer *se = Fun4AllServer::instance();
   se->Verbosity(01);
@@ -211,7 +209,7 @@ int Fun4All_G4_sPHENIX(
 
       PHPythia8 *pythia8 = new PHPythia8();
       // see coresoftware/generators/PHPythia8 for example config
-      pythia8->set_config_file("phpythia8.cfg"); // example configure files : https://github.com/sPHENIX-Collaboration/coresoftware/tree/master/generators/PHPythia8
+      pythia8->set_config_file("phpythia8.cfg");  // example configure files : https://github.com/sPHENIX-Collaboration/coresoftware/tree/master/generators/PHPythia8
       if (readhepmc)
         pythia8->set_reuse_vertex(0);  // reuse vertex of subevent with embedding ID of 0
       // pythia8->set_vertex_distribution_width(0,0,10,0); // additional vertex smearing if needed, more vertex options available
@@ -223,7 +221,7 @@ int Fun4All_G4_sPHENIX(
       gSystem->Load("libPHPythia6.so");
 
       PHPythia6 *pythia6 = new PHPythia6();
-      pythia6->set_config_file("phpythia6.cfg"); // example configure files : https://github.com/sPHENIX-Collaboration/coresoftware/tree/master/generators/PHPythia6
+      pythia6->set_config_file("phpythia6.cfg");  // example configure files : https://github.com/sPHENIX-Collaboration/coresoftware/tree/master/generators/PHPythia6
       if (readhepmc)
         pythia6->set_reuse_vertex(0);  // reuse vertex of subevent with embedding ID of 0
       // pythia6->set_vertex_distribution_width(0,0,10,0); // additional vertex smearing if needed, more vertex options available
@@ -287,46 +285,46 @@ int Fun4All_G4_sPHENIX(
     {
       // run upsilons for momentum, dca performance, alone or embedded in Hijing
 
-      for(int iups = 0; iups < num_upsilons_per_event;iups++)
+      for (int iups = 0; iups < num_upsilons_per_event; iups++)
       {
-	PHG4ParticleGeneratorVectorMeson *vgen = new PHG4ParticleGeneratorVectorMeson();
-	vgen->add_decay_particles("e+", "e-", 0);  // i = decay id
-	// event vertex
-	if (readhepmc || do_embedding || particles || runpythia8 || runpythia6)
-	{
-	  vgen->set_reuse_existing_vertex(true);
-	}
+        PHG4ParticleGeneratorVectorMeson *vgen = new PHG4ParticleGeneratorVectorMeson();
+        vgen->add_decay_particles("e+", "e-", 0);  // i = decay id
+        // event vertex
+        if (readhepmc || do_embedding || particles || runpythia8 || runpythia6)
+        {
+          vgen->set_reuse_existing_vertex(true);
+        }
 
-	// Note: this rapidity range completely fills the acceptance of eta = +/- 1 unit
-	vgen->set_rapidity_range(-1.0, +1.0);
-	vgen->set_pt_range(0.0, 10.0);
+        // Note: this rapidity range completely fills the acceptance of eta = +/- 1 unit
+        vgen->set_rapidity_range(-1.0, +1.0);
+        vgen->set_pt_range(0.0, 10.0);
 
-	int istate = 1;
+        int istate = 1;
 
-	if (istate == 1)
-	{
-	  // Upsilon(1S)
-	  vgen->set_mass(9.46);
-	  vgen->set_width(54.02e-6);
-	}
-	else if (istate == 2)
-	{
-	  // Upsilon(2S)
-	  vgen->set_mass(10.0233);
-	  vgen->set_width(31.98e-6);
-	}
-	else
-	{
-	  // Upsilon(3S)
-	  vgen->set_mass(10.3552);
-	  vgen->set_width(20.32e-6);
-	}
+        if (istate == 1)
+        {
+          // Upsilon(1S)
+          vgen->set_mass(9.46);
+          vgen->set_width(54.02e-6);
+        }
+        else if (istate == 2)
+        {
+          // Upsilon(2S)
+          vgen->set_mass(10.0233);
+          vgen->set_width(31.98e-6);
+        }
+        else
+        {
+          // Upsilon(3S)
+          vgen->set_mass(10.3552);
+          vgen->set_width(20.32e-6);
+        }
 
-	vgen->Verbosity(0);
-	vgen->Embed(3);
-	se->registerSubsystem(vgen);
+        vgen->Verbosity(0);
+        vgen->Embed(3);
+        se->registerSubsystem(vgen);
 
-	cout << "Upsilon generator for istate = " << istate << " created and registered " << endl;
+        cout << "Upsilon generator for istate = " << istate << " created and registered " << endl;
       }
     }
   }
@@ -337,12 +335,12 @@ int Fun4All_G4_sPHENIX(
     // Detector description
     //---------------------
 
-#if ROOT_VERSION_CODE >= ROOT_VERSION(6,00,0)
+#if ROOT_VERSION_CODE >= ROOT_VERSION(6, 00, 0)
     G4Setup(absorberactive, magfield, EDecayType::kAll,
-            do_tracking, do_pstof, do_cemc, do_hcalin, do_magnet, do_hcalout, do_pipe,do_plugdoor, magfield_rescale);
+            do_tracking, do_pstof, do_cemc, do_hcalin, do_magnet, do_hcalout, do_pipe, do_plugdoor, magfield_rescale);
 #else
     G4Setup(absorberactive, magfield, TPythia6Decayer::kAll,
-            do_tracking, do_pstof, do_cemc, do_hcalin, do_magnet, do_hcalout, do_pipe,do_plugdoor, magfield_rescale);
+            do_tracking, do_pstof, do_cemc, do_hcalin, do_magnet, do_hcalout, do_pipe, do_plugdoor, magfield_rescale);
 #endif
   }
 
@@ -454,6 +452,7 @@ int Fun4All_G4_sPHENIX(
     HFMLTriggerHepMCTrigger *trig = new HFMLTriggerHepMCTrigger("D0toPiKInAcceptance", string(outputFile) + string("_D0toPiKInAcceptance"));
     //        trig->Verbosity(1);
     trig->set_RejectReturnCode(0);
+    trig->set_embedding_id(0);
     se->registerSubsystem(trig);
 
     HFMLTriggerOccupancy *hf_ml_interface = new HFMLTriggerOccupancy(string(outputFile) + string("_HFMLTriggerOccupancy"));
@@ -501,15 +500,15 @@ int Fun4All_G4_sPHENIX(
     Fun4AllHepMCInputManager *in = new Fun4AllHepMCInputManager("HepMCInput_1");
     se->registerInputManager(in);
     se->fileopen(in->Name().c_str(), inputFile);
-    //in->set_vertex_distribution_width(100e-4,100e-4,30,0);//optional collision smear in space, time
+    in->set_vertex_distribution_width(100e-4, 100e-4, 30, 0);  //optional collision smear in space, time
     //in->set_vertex_distribution_mean(0,0,1,0);//optional collision central position shift in space, time
     // //optional choice of vertex distribution function in space, time
-    //in->set_vertex_distribution_function(PHHepMCGenHelper::Gaus,PHHepMCGenHelper::Gaus,PHHepMCGenHelper::Uniform,PHHepMCGenHelper::Gaus);
+    in->set_vertex_distribution_function(PHHepMCGenHelper::Gaus, PHHepMCGenHelper::Gaus, PHHepMCGenHelper::Gaus, PHHepMCGenHelper::Gaus);
     //! embedding ID for the event
     //! positive ID is the embedded event of interest, e.g. jetty event from pythia
     //! negative IDs are backgrounds, .e.g out of time pile up collisions
     //! Usually, ID = 0 means the primary Au+Au collision background
-    //in->set_embedding_id(2);
+    in->set_embedding_id(0);
   }
   else
   {
@@ -539,8 +538,8 @@ int Fun4All_G4_sPHENIX(
 
     if (do_tracking)
     {
-      // This gets the default drift velocity only! 
-      PHG4TPCElectronDrift *dr = (PHG4TPCElectronDrift *)se->getSubsysReco("PHG4TPCElectronDrift");
+      // This gets the default drift velocity only!
+      PHG4TPCElectronDrift *dr = (PHG4TPCElectronDrift *) se->getSubsysReco("PHG4TPCElectronDrift");
       assert(dr);
       double TPCDriftVelocity = dr->get_double_param("drift_velocity");
       time_window_minus = -105.5 / TPCDriftVelocity;  // ns
@@ -588,14 +587,14 @@ int Fun4All_G4_sPHENIX(
     return 0;
   }
 
-  if(display_on)
-    {
-      DisplayOn();
-      // prevent macro from finishing so can see display
-      int i;
-      cout << "***** Enter any integer to proceed" << endl;
-      cin >> i;
-    }
+  if (display_on)
+  {
+    DisplayOn();
+    // prevent macro from finishing so can see display
+    int i;
+    cout << "***** Enter any integer to proceed" << endl;
+    cin >> i;
+  }
 
   se->run(nEvents);
 
@@ -603,14 +602,12 @@ int Fun4All_G4_sPHENIX(
   // Exit
   //-----
 
-
   se->End();
   std::cout << "All done" << std::endl;
   delete se;
   gSystem->Exit(0);
   return 0;
 }
-
 
 // This function is only used to test if we can load this as root6 macro
 // without running into unresolved libraries and include files
