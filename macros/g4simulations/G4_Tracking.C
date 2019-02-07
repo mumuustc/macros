@@ -533,72 +533,72 @@ DAC0-7 threshold as fraction to MIP voltage are set to PHG4INTTDigitizer::set_ad
 
   // For the TPC
   
-  TPCClusterizer* tpcclusterizer = new TPCClusterizer();
-  tpcclusterizer->Verbosity(0);
-  tpcclusterizer->setRangeLayers(n_maps_layer + n_intt_layer, Max_si_layer);
-  tpcclusterizer->setEnergyCut(15 /*adc*/);
-  tpcclusterizer->setFitWindowSigmas(0.0150, 0.10);  // should be changed when TPC cluster resolution changes
-  tpcclusterizer->setFitWindowMax(5 /*rphibins*/, 5 /*zbins*/);
-  se->registerSubsystem(tpcclusterizer);
+//  TPCClusterizer* tpcclusterizer = new TPCClusterizer();
+//  tpcclusterizer->Verbosity(0);
+//  tpcclusterizer->setRangeLayers(n_maps_layer + n_intt_layer, Max_si_layer);
+//  tpcclusterizer->setEnergyCut(15 /*adc*/);
+//  tpcclusterizer->setFitWindowSigmas(0.0150, 0.10);  // should be changed when TPC cluster resolution changes
+//  tpcclusterizer->setFitWindowMax(5 /*rphibins*/, 5 /*zbins*/);
+//  se->registerSubsystem(tpcclusterizer);
 
-  // This should be true for everything except testing!
-  const bool use_kalman_pat_rec = true;
-  if (use_kalman_pat_rec)
-  {
-    //---------------------
-    // PHG4KalmanPatRec
-    //---------------------
-
-    PHG4KalmanPatRec* kalman_pat_rec = new PHG4KalmanPatRec("PHG4KalmanPatRec", n_maps_layer, n_intt_layer, n_gas_layer);
-    kalman_pat_rec->Verbosity(0);
-    
-    for(int i = 0;i<n_intt_layer;i++)
-      {
-	if(laddertype[i] == PHG4INTTDefs::SEGMENTATION_Z)
-	  {
-	    // strip length is along phi
-	    kalman_pat_rec->set_max_search_win_theta_intt(i, 0.010);
-	    kalman_pat_rec->set_min_search_win_theta_intt(i, 0.00);
-	    kalman_pat_rec->set_max_search_win_phi_intt(i, 0.20);
-	    kalman_pat_rec->set_min_search_win_phi_intt(i, 0.20);
-	  }
-	else
-	  {
-	    // strip length is along theta
-	    kalman_pat_rec->set_max_search_win_theta_intt(i, 0.200);
-	    kalman_pat_rec->set_min_search_win_theta_intt(i, 0.200);
-	    kalman_pat_rec->set_max_search_win_phi_intt(i, 0.0050);
-	    kalman_pat_rec->set_min_search_win_phi_intt(i, 0.000);
-	  }
-      }
-    
-    se->registerSubsystem(kalman_pat_rec);
-  }
-  else
-  {
-    //---------------------
-    // Truth Pattern Recognition
-    //---------------------
-    PHG4TruthPatRec* pat_rec = new PHG4TruthPatRec();
-    se->registerSubsystem(pat_rec);
-  }
-
-  //---------------------
-  // Kalman Filter
-  //---------------------
-
-  PHG4TrackKalmanFitter* kalman = new PHG4TrackKalmanFitter();
-  kalman->Verbosity(0);
-  if (use_primary_vertex)
-    kalman->set_fit_primary_tracks(true);  // include primary vertex in track fit if true
-  se->registerSubsystem(kalman);
-
-  //------------------
-  // Track Projections
-  //------------------
-  PHG4GenFitTrackProjection* projection = new PHG4GenFitTrackProjection();
-  projection->Verbosity(verbosity);
-  se->registerSubsystem(projection);
+//  // This should be true for everything except testing!
+//  const bool use_kalman_pat_rec = true;
+//  if (use_kalman_pat_rec)
+//  {
+//    //---------------------
+//    // PHG4KalmanPatRec
+//    //---------------------
+//
+//    PHG4KalmanPatRec* kalman_pat_rec = new PHG4KalmanPatRec("PHG4KalmanPatRec", n_maps_layer, n_intt_layer, n_gas_layer);
+//    kalman_pat_rec->Verbosity(0);
+//
+//    for(int i = 0;i<n_intt_layer;i++)
+//      {
+//	if(laddertype[i] == PHG4INTTDefs::SEGMENTATION_Z)
+//	  {
+//	    // strip length is along phi
+//	    kalman_pat_rec->set_max_search_win_theta_intt(i, 0.010);
+//	    kalman_pat_rec->set_min_search_win_theta_intt(i, 0.00);
+//	    kalman_pat_rec->set_max_search_win_phi_intt(i, 0.20);
+//	    kalman_pat_rec->set_min_search_win_phi_intt(i, 0.20);
+//	  }
+//	else
+//	  {
+//	    // strip length is along theta
+//	    kalman_pat_rec->set_max_search_win_theta_intt(i, 0.200);
+//	    kalman_pat_rec->set_min_search_win_theta_intt(i, 0.200);
+//	    kalman_pat_rec->set_max_search_win_phi_intt(i, 0.0050);
+//	    kalman_pat_rec->set_min_search_win_phi_intt(i, 0.000);
+//	  }
+//      }
+//
+//    se->registerSubsystem(kalman_pat_rec);
+//  }
+//  else
+//  {
+//    //---------------------
+//    // Truth Pattern Recognition
+//    //---------------------
+//    PHG4TruthPatRec* pat_rec = new PHG4TruthPatRec();
+//    se->registerSubsystem(pat_rec);
+//  }
+//
+//  //---------------------
+//  // Kalman Filter
+//  //---------------------
+//
+//  PHG4TrackKalmanFitter* kalman = new PHG4TrackKalmanFitter();
+//  kalman->Verbosity(0);
+//  if (use_primary_vertex)
+//    kalman->set_fit_primary_tracks(true);  // include primary vertex in track fit if true
+//  se->registerSubsystem(kalman);
+//
+//  //------------------
+//  // Track Projections
+//  //------------------
+//  PHG4GenFitTrackProjection* projection = new PHG4GenFitTrackProjection();
+//  projection->Verbosity(verbosity);
+//  se->registerSubsystem(projection);
 
   /*  
   //----------------------
@@ -635,12 +635,13 @@ void Tracking_Eval(std::string outputfile, int verbosity = 0)
 
   SvtxEvaluator* eval;
   eval = new SvtxEvaluator("SVTXEVALUATOR", outputfile.c_str(), "SvtxTrackMap", n_maps_layer, n_intt_layer, n_gas_layer);
-  eval->do_cluster_eval(true);
+  eval->do_cluster_eval(false);
   eval->do_g4hit_eval(true);
   eval->do_hit_eval(true);  // enable to see the hits that includes the chamber physics...
   eval->do_gpoint_eval(false);
   eval->scan_for_embedded(false);  // take all tracks if false - take only embedded tracks if true
   eval->Verbosity(0);
+  eval->do_track_eval(false);
   se->registerSubsystem(eval);
 
   if (use_primary_vertex)
