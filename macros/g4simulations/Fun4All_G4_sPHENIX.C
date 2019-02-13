@@ -37,7 +37,7 @@ R__LOAD_LIBRARY(libPHPythia8.so)
 using namespace std;
 
 int Fun4All_G4_sPHENIX(
-    const int nEvents = 100,
+    const int nEvents = 10000,
     const char *inputFile = "data/pythia8_200pp_MB.dat",
     const char *outputFile = "G4sPHENIX.root",
     const char *embed_input_file = "/sphenix/data/data02/review_2017-08-02/sHijing/fm_0-4.list")
@@ -233,8 +233,8 @@ int Fun4All_G4_sPHENIX(
     {
       // toss low multiplicity dummy events
       PHG4SimpleEventGenerator *gen = new PHG4SimpleEventGenerator();
-      gen->add_particles("pi-", 100);  // mu+,e+,proton,pi+,Upsilon
-      gen->add_particles("pi+",100); // 100 pion option
+      gen->add_particles("mu-", 1);  // mu+,e+,proton,pi+,Upsilon
+//      gen->add_particles("pi+",100); // 100 pion option
       if (readhepmc || do_embedding || runpythia8 || runpythia6)
       {
         gen->set_reuse_existing_vertex(true);
