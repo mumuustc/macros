@@ -452,7 +452,7 @@ DAC0-7 threshold as fraction to MIP voltage are set to PHG4INTTDigitizer::set_ad
     {
       digiintt->set_adc_scale(n_maps_layer + i, userrange);
     }
-    se->registerSubsystem(digiintt);
+//    se->registerSubsystem(digiintt);
   }
 
   // TPC
@@ -465,7 +465,7 @@ DAC0-7 threshold as fraction to MIP voltage are set to PHG4INTTDigitizer::set_ad
     cout << " TPC digitizer: Setting ENC to " << ENC << " ADC threshold to " << ADC_threshold 
        << " maps+INTT layers set to " << n_maps_layer + n_intt_layer << endl;
  
-  se->registerSubsystem(digitpc);
+//  se->registerSubsystem(digitpc);
 
   //-------------------------------------
   // Apply Live Area Inefficiency to Hits
@@ -529,7 +529,7 @@ DAC0-7 threshold as fraction to MIP voltage are set to PHG4INTTDigitizer::set_ad
     if(laddertype[i-n_maps_layer] == PHG4INTTDefs::SEGMENTATION_PHI)
       inttclusterizer->set_z_clustering(i, false);
   }
-  se->registerSubsystem(inttclusterizer);
+//  se->registerSubsystem(inttclusterizer);
 
   // For the TPC
   
