@@ -303,7 +303,7 @@ void Tracking_Cells(int verbosity = 0)
     //reco->set_double_param("tmax",80.0);
     //reco->set_double_param("tmin",-20.0);
     reco->Verbosity(verbosity);
-    se->registerSubsystem(reco);
+//    se->registerSubsystem(reco);
   }
 
   // Set up TPC distortion calculation
@@ -336,7 +336,7 @@ void Tracking_Cells(int verbosity = 0)
   edrift->set_double_param("added_smear_long",0.15);
   PHG4TPCPadPlane *padplane = new PHG4TPCPadPlaneReadout();
   edrift->registerPadPlane(padplane);
-  se->registerSubsystem(edrift);
+//  se->registerSubsystem(edrift);
 
   // The pad plane readout default is set in PHG4TPCPadPlaneReadout
   // We may want to change the number of inner layers, and can do that here
@@ -411,7 +411,7 @@ void Tracking_Reco(int verbosity = 0)
         }
       }
 //      deadMapINTT -> Verbosity(1);
-      se->registerSubsystem(deadMapINTT);
+//      se->registerSubsystem(deadMapINTT);
     }
 
     // INTT
