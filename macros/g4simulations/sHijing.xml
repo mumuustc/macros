@@ -8,9 +8,9 @@
   <IZP>79</IZP>
   <IAT>197</IAT>
   <IZT>79</IZT>
-  <N>1</N>
+  <N>200</N>
   <BMIN>0</BMIN>
-  <BMAX>100</BMAX>
+  <BMAX>20</BMAX>
   <KEEP_SPECTATORS>1</KEEP_SPECTATORS>
   <OUTPUT>sHijing_0-20fm.dat</OUTPUT>
   <HIPR1>
