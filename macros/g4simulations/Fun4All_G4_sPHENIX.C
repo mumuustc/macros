@@ -38,7 +38,7 @@ using namespace std;
 
 int Fun4All_G4_sPHENIX(
     const int nEvents = 10,
-    const char *inputFile = "data/pythia8_200pp_MB.dat",
+    const char *inputFile = "phpythia8.cfg",
     const char *outputFile = "G4sPHENIX.root",
     const char *embed_input_file = "/sphenix/data/data02/review_2017-08-02/sHijing/fm_0-4.list")
 {
@@ -56,10 +56,10 @@ int Fun4All_G4_sPHENIX(
   const bool readhits = false;
   // Or:
   // read files in HepMC format (typically output from event generators like hijing or pythia)
-  const bool readhepmc = true;  // read HepMC files
+  const bool readhepmc = false;  // read HepMC files
   // Or:
   // Use pythia
-  const bool runpythia8 = false;
+  const bool runpythia8 = true;
   const bool runpythia6 = false;
   //
   // **** And ****
@@ -209,11 +209,17 @@ int Fun4All_G4_sPHENIX(
 
       PHPythia8 *pythia8 = new PHPythia8();
       // see coresoftware/generators/PHPythia8 for example config
-      pythia8->set_config_file("phpythia8.cfg");  // example configure files : https://github.com/sPHENIX-Collaboration/coresoftware/tree/master/generators/PHPythia8
+      pythia8->set_config_file(inputFile);
       if (readhepmc)
         pythia8->set_reuse_vertex(0);  // reuse vertex of subevent with embedding ID of 0
-      // pythia8->set_vertex_distribution_width(0,0,10,0); // additional vertex smearing if needed, more vertex options available
+      pythia8->set_vertex_distribution_width(0.01,0.01,30,0); // additional vertex smearing if needed, more vertex options available
+      pythia8->set_vertex_distribution_function(PHHepMCGenHelper::Gaus,
+          PHHepMCGenHelper::Gaus,
+          PHHepMCGenHelper::Gaus,
+          PHHepMCGenHelper::Uniform);
+      pythia8->set_embedding_id(0);
       se->registerSubsystem(pythia8);
+
     }
 
     if (runpythia6)
