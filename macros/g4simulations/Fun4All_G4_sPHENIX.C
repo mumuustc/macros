@@ -219,7 +219,6 @@ int Fun4All_G4_sPHENIX(
           PHHepMCGenHelper::Uniform);
       pythia8->set_embedding_id(0);
       se->registerSubsystem(pythia8);
-
     }
 
     if (runpythia6)
