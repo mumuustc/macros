@@ -594,8 +594,8 @@ int Fun4All_G4_sPHENIX(
 
   se->End();
   std::cout << "All done" << std::endl;
-  delete se;
-  gSystem->Exit(0);
+//  delete se;
+//  gSystem->Exit(0);
   return 0;
 }
 

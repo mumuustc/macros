@@ -572,6 +572,8 @@ DAC0-7 threshold as fraction to MIP voltage are set to PHG4INTTDigitizer::set_ad
 	  }
       }
     
+    kalman_pat_rec->set_do_evt_display();
+
     se->registerSubsystem(kalman_pat_rec);
   }
   else
