@@ -572,8 +572,6 @@ DAC0-7 threshold as fraction to MIP voltage are set to PHG4INTTDigitizer::set_ad
 	  }
       }
     
-    kalman_pat_rec->set_do_evt_display(true);
-
     se->registerSubsystem(kalman_pat_rec);
   }
   else
@@ -591,6 +589,8 @@ DAC0-7 threshold as fraction to MIP voltage are set to PHG4INTTDigitizer::set_ad
 
   PHG4TrackKalmanFitter* kalman = new PHG4TrackKalmanFitter();
   kalman->Verbosity(0);
+  kalman->set_do_evt_display(true);
+
   if (use_primary_vertex)
     kalman->set_fit_primary_tracks(true);  // include primary vertex in track fit if true
   se->registerSubsystem(kalman);
