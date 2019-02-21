@@ -354,6 +354,7 @@ void Tracking_Cells(int verbosity = 0)
    TPCIntegratedCharge* integratedChage = new TPCIntegratedCharge(
       n_maps_layer + n_intt_layer, Max_si_layer - 1, "TPCIntegratedCharge.root");
 //  integratedChage->Verbosity(3);
+   integratedChage->setVertexZAcceptanceCut(200);
   se->registerSubsystem(integratedChage);
 
   return;
