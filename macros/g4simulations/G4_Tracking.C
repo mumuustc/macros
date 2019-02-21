@@ -354,7 +354,6 @@ void Tracking_Cells(int verbosity = 0)
    TPCIntegratedCharge* integratedChage = new TPCIntegratedCharge(
       n_maps_layer + n_intt_layer, Max_si_layer - 1, "TPCIntegratedCharge.root");
 //  integratedChage->Verbosity(3);
-   integratedChage->setVertexZAcceptanceCut(200);
   se->registerSubsystem(integratedChage);
 
   return;
@@ -491,6 +490,7 @@ DAC0-7 threshold as fraction to MIP voltage are set to PHG4INTTDigitizer::set_ad
   TPCDataStreamEmulator* tpcDaqEmu = new TPCDataStreamEmulator(
      n_maps_layer + n_intt_layer, Max_si_layer - 1);
 //  tpcDaqEmu->Verbosity(3);
+  tpcDaqEmu->setVertexZAcceptanceCut(200);
  se->registerSubsystem(tpcDaqEmu);
 
   return;
