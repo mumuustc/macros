@@ -37,7 +37,7 @@ R__LOAD_LIBRARY(libPHPythia8.so)
 using namespace std;
 
 int Fun4All_G4_sPHENIX(
-    const int nEvents = 10,
+    const int nEvents = 100,
     const char *inputFile = "phpythia8.cfg",
     const char *outputFile = "G4sPHENIX.root",
     const char *embed_input_file = "/sphenix/data/data02/review_2017-08-02/sHijing/fm_0-4.list")
@@ -91,7 +91,7 @@ int Fun4All_G4_sPHENIX(
   bool do_tracking = true;
   bool do_tracking_cell = do_tracking && true;
   bool do_tracking_track = do_tracking_cell && true;
-  bool do_tracking_eval = do_tracking_track && false;
+  bool do_tracking_eval = do_tracking_track && true;
 
   bool do_pstof = false;
 
@@ -145,7 +145,7 @@ int Fun4All_G4_sPHENIX(
   gSystem->Load("libg4testbench.so");
   gSystem->Load("libg4hough.so");
   gSystem->Load("libg4eval.so");
-
+  gSystem->Load("libg4intt.so");
   // establish the geometry and reconstruction setup
   gROOT->LoadMacro("G4Setup_sPHENIX.C");
   G4Init(do_tracking, do_pstof, do_cemc, do_hcalin, do_magnet, do_hcalout, do_pipe, do_plugdoor);
@@ -452,18 +452,18 @@ int Fun4All_G4_sPHENIX(
 
   if (do_jet_eval) Jet_Eval(string(outputFile) + "_g4jet_eval.root");
 
-  assert(gSystem->Load("libHFMLTrigger") >= 0);
-  {
-    HFMLTriggerHepMCTrigger *trig = new HFMLTriggerHepMCTrigger("D0toPiKInAcceptance", string(outputFile) + string("_D0toPiKInAcceptance"));
-    //        trig->Verbosity(1);
-    trig->set_RejectReturnCode(0);
-    trig->set_embedding_id(0);
-    se->registerSubsystem(trig);
-
-    HFMLTriggerOccupancy *hf_ml_interface = new HFMLTriggerOccupancy(string(outputFile) + string("_HFMLTriggerOccupancy"));
-    //      hf_ml_interface->Verbosity(1);
-    se->registerSubsystem(hf_ml_interface);
-  }
+//  assert(gSystem->Load("libHFMLTrigger") >= 0);
+//  {
+//    HFMLTriggerHepMCTrigger *trig = new HFMLTriggerHepMCTrigger("D0toPiKInAcceptance", string(outputFile) + string("_D0toPiKInAcceptance"));
+//    //        trig->Verbosity(1);
+//    trig->set_RejectReturnCode(0);
+//    trig->set_embedding_id(0);
+//    se->registerSubsystem(trig);
+//
+//    HFMLTriggerOccupancy *hf_ml_interface = new HFMLTriggerOccupancy(string(outputFile) + string("_HFMLTriggerOccupancy"));
+//    //      hf_ml_interface->Verbosity(1);
+//    se->registerSubsystem(hf_ml_interface);
+//  }
 
   //--------------
   // IO management
@@ -543,8 +543,8 @@ int Fun4All_G4_sPHENIX(
 
     if (do_tracking)
     {
-      // This gets the default drift velocity only!
-      PHG4TPCElectronDrift *dr = (PHG4TPCElectronDrift *) se->getSubsysReco("PHG4TPCElectronDrift");
+      // This gets the default drift velocity only! 
+      PHG4TpcElectronDrift *dr = (PHG4TpcElectronDrift *)se->getSubsysReco("PHG4TpcElectronDrift");
       assert(dr);
       double TPCDriftVelocity = dr->get_double_param("drift_velocity");
       time_window_minus = -105.5 / TPCDriftVelocity;  // ns
