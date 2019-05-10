@@ -199,6 +199,11 @@ int Fun4All_G4_fsPHENIX(
       PHPythia8* pythia8 = new PHPythia8();
       // see coresoftware/generators/PHPythia8 for example config
       pythia8->set_config_file("phpythia8.cfg"); 
+
+      PHPy8GenTrigger * forward_jet_trigger = PHPy8JetTrigger();
+      forward_jet_trigger -> SetEtaHighLow(2.0, 3.0);
+      pythia8->register_trigger(forward_jet_trigger);
+
       se->registerSubsystem(pythia8);
     }
   else if (runpythia6)
