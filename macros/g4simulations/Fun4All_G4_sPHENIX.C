@@ -19,6 +19,8 @@
 #include <phpythia8/PHPythia8.h>
 #include <phhepmc/Fun4AllHepMCPileupInputManager.h>
 #include <phhepmc/Fun4AllHepMCInputManager.h>
+
+
 #include "G4Setup_sPHENIX.C"
 #include "G4_Bbc.C"
 #include "G4_Global.C"
@@ -32,6 +34,12 @@ R__LOAD_LIBRARY(libg4testbench.so)
 R__LOAD_LIBRARY(libphhepmc.so)
 R__LOAD_LIBRARY(libPHPythia6.so)
 R__LOAD_LIBRARY(libPHPythia8.so)
+
+
+#include <tpcmldatainterface/TPCMLDataInterface.h>
+R__LOAD_LIBRARY(libtpcmldatainterface.so)
+
+
 #endif
 
 using namespace std;
@@ -97,7 +105,7 @@ int Fun4All_G4_sPHENIX(
 
   bool do_pstof = false;
 
-  bool do_cemc = true;
+  bool do_cemc = false;
   bool do_cemc_cell = do_cemc && false;
   bool do_cemc_twr = do_cemc_cell && true;
   bool do_cemc_cluster = do_cemc_twr && true;
@@ -147,7 +155,7 @@ int Fun4All_G4_sPHENIX(
   gSystem->Load("libg4testbench.so");
   gSystem->Load("libg4hough.so");
   gSystem->Load("libg4eval.so");
-
+  gSystem->Load("libg4intt.so");
   // establish the geometry and reconstruction setup
   gROOT->LoadMacro("G4Setup_sPHENIX.C");
   G4Init(do_tracking, do_pstof, do_cemc, do_hcalin, do_magnet, do_hcalout, do_pipe, do_plugdoor);
@@ -179,7 +187,7 @@ int Fun4All_G4_sPHENIX(
   // this would be:
   //  rc->set_IntFlag("RANDOMSEED",PHRandomSeed());
   // or set it to a fixed value so you can debug your code
-  //  rc->set_IntFlag("RANDOMSEED", 12345);
+//    rc->set_IntFlag("RANDOMSEED", 12345);
 
   //-----------------
   // Event generation
@@ -526,7 +534,7 @@ int Fun4All_G4_sPHENIX(
     if (do_tracking)
     {
       // This gets the default drift velocity only! 
-      PHG4TPCElectronDrift *dr = (PHG4TPCElectronDrift *)se->getSubsysReco("PHG4TPCElectronDrift");
+      PHG4TpcElectronDrift *dr = (PHG4TpcElectronDrift *)se->getSubsysReco("PHG4TpcElectronDrift");
       assert(dr);
       double TPCDriftVelocity = dr->get_double_param("drift_velocity");
       time_window_minus = -105.5 / TPCDriftVelocity;  // ns
@@ -559,6 +567,18 @@ int Fun4All_G4_sPHENIX(
   // if (do_dst_compress) DstCompress(out);
   //  se->registerOutputManager(out);
 
+  //----------------------------------
+ // Data stat.
+ //----------------------------------
+
+  gSystem->Load("libtpcmldatainterface.so");
+
+  TPCMLDataInterface* tpcDaqEmu = new TPCMLDataInterface(
+     n_maps_layer + n_intt_layer, Max_si_layer - 1);
+  tpcDaqEmu->Verbosity(3);
+//  tpcDaqEmu->setVertexZAcceptanceCut(200);
+ se->registerSubsystem(tpcDaqEmu);
+
   //-----------------
   // Event processing
   //-----------------
@@ -584,6 +604,7 @@ int Fun4All_G4_sPHENIX(
       cin >> i;
     }
 
+  gSystem->ListLibraries();
   se->run(nEvents);
 
   //-----
