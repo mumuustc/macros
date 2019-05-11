@@ -19,6 +19,7 @@
 #include <phool/recoConsts.h>
 #include <phpythia6/PHPythia6.h>
 #include <phpythia8/PHPythia8.h>
+#include <phpythia8/PHPy8JetTrigger.h>
 #include "DisplayOn.C"
 #include "G4Setup_fsPHENIX.C"
 #include "G4_Bbc.C"
@@ -57,7 +58,7 @@ int Fun4All_G4_fsPHENIX(
   const bool readhepmc = false; // read HepMC files
   // Or:
   // Use particle generator
-  const bool runpythia8 = false;
+  const bool runpythia8 = true;
   const bool runpythia6 = false;
   // And
   // Further choose to embed newly simulated events to a previous simulation. Not compatible with `readhits = true`
@@ -77,7 +78,7 @@ int Fun4All_G4_fsPHENIX(
   bool do_tracking = true;
   bool do_tracking_cell = do_tracking && true;
   bool do_tracking_track = do_tracking_cell && true;
-  bool do_tracking_eval = do_tracking_track && true;
+  bool do_tracking_eval = do_tracking_track && false;
 
   // central calorimeters, which is a detailed simulation and slow to run
   bool do_cemc = true;
@@ -161,7 +162,7 @@ int Fun4All_G4_fsPHENIX(
 
   Fun4AllServer *se = Fun4AllServer::instance();
 //  se->Verbosity(0); // uncomment for batch production running with minimal output messages
-//  se->Verbosity(Fun4AllServer::VERBOSITY_SOME); // uncomment for some info for interactive running
+  se->Verbosity(Fun4AllServer::VERBOSITY_SOME); // uncomment for some info for interactive running
   // just if we set some flags somewhere in this macro
   recoConsts *rc = recoConsts::instance();
   // By default every random number generator uses
@@ -200,8 +201,9 @@ int Fun4All_G4_fsPHENIX(
       // see coresoftware/generators/PHPythia8 for example config
       pythia8->set_config_file("phpythia8.cfg"); 
 
-      PHPy8GenTrigger * forward_jet_trigger = PHPy8JetTrigger();
+      PHPy8JetTrigger * forward_jet_trigger = new PHPy8JetTrigger();
       forward_jet_trigger -> SetEtaHighLow(2.0, 3.0);
+      forward_jet_trigger -> SetMinJetPt(5);
       pythia8->register_trigger(forward_jet_trigger);
 
       se->registerSubsystem(pythia8);
