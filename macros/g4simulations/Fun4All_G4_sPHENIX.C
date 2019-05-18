@@ -48,6 +48,7 @@ using namespace std;
 int Fun4All_G4_sPHENIX(
     const int nEvents = 10,
     const char *inputFile = "data/sHijing_0-4.4fm.dat",
+    const chat *inputFile_PileUp = "data/sHijing_0-20fm.dat",
     const char *outputFile = "G4sPHENIX.root",
     const char *embed_input_file = "/sphenix/data/data02/review_2017-08-02/sHijing/fm_0-4.list")
 {
@@ -522,7 +523,7 @@ int Fun4All_G4_sPHENIX(
     Fun4AllHepMCPileupInputManager *pileup = new Fun4AllHepMCPileupInputManager("HepMCPileupInput");
     se->registerInputManager(pileup);
 
-    const string pileupfile("data/sHijing_0-20fm.dat");
+    const string pileupfile(inputFile_PileUp);
     pileup->AddFile(pileupfile);  // HepMC events used in pile up collisions. You can add multiple files, and the file list will be reused.
     //pileup->set_vertex_distribution_width(100e-4,100e-4,30,5);//override collision smear in space time
     //pileup->set_vertex_distribution_mean(0,0,0,0);//override collision central position shift in space time
