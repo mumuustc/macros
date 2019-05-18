@@ -10,9 +10,9 @@
   <IZT>79</IZT>
   <N>100</N>
   <BMIN>0</BMIN>
-  <BMAX>20</BMAX>
+  <BMAX>4.4</BMAX>
   <KEEP_SPECTATORS>1</KEEP_SPECTATORS>
-  <OUTPUT>sHijing_0-20fm.dat</OUTPUT>
+  <OUTPUT>sHijing.dat</OUTPUT>
   <HIPR1>
     <5>5.0</5>
   </HIPR1>
