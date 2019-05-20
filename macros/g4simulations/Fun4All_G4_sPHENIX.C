@@ -46,9 +46,9 @@ using namespace std;
 
 
 int Fun4All_G4_sPHENIX(
-    const int nEvents = 10,
+    const int nEvents = 2,
     const char *inputFile = "data/sHijing_0-4.4fm.dat",
-    const chat *inputFile_PileUp = "data/sHijing_0-20fm.dat",
+    const char *inputFile_PileUp = "data/sHijing_0-20fm.dat",
     const char *outputFile = "G4sPHENIX.root",
     const char *embed_input_file = "/sphenix/data/data02/review_2017-08-02/sHijing/fm_0-4.list")
 {
