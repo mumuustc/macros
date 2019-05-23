@@ -577,7 +577,7 @@ int Fun4All_G4_sPHENIX(
   TPCMLDataInterface* tpcDaqEmu = new TPCMLDataInterface(
      n_maps_layer + n_intt_layer, Max_si_layer - 1);
 //  tpcDaqEmu->Verbosity(3);
-//  tpcDaqEmu->setVertexZAcceptanceCut(200);
+  tpcDaqEmu->setVertexZAcceptanceCut(200);
  se->registerSubsystem(tpcDaqEmu);
 
   //-----------------
