@@ -61,7 +61,7 @@ int Fun4All_G4_sPHENIX(
   const bool readhepmc = false;  // read HepMC files
   // Or:
   // Use pythia
-  const bool runpythia8 = true;
+  const bool runpythia8 = false;
   const bool runpythia6 = false;
   //
   // **** And ****
@@ -91,8 +91,8 @@ int Fun4All_G4_sPHENIX(
   bool do_pipe = true;
 
   bool do_tracking = true;
-  bool do_tracking_cell = do_tracking && false;
-  bool do_tracking_track = do_tracking_cell && true;
+  bool do_tracking_cell = do_tracking && true;
+  bool do_tracking_track = do_tracking_cell && false;
   bool do_tracking_eval = do_tracking_track && true;
 
   bool do_pstof = false;
@@ -179,7 +179,13 @@ int Fun4All_G4_sPHENIX(
   // this would be:
   //  rc->set_IntFlag("RANDOMSEED",PHRandomSeed());
   // or set it to a fixed value so you can debug your code
-    rc->set_IntFlag("RANDOMSEED", Hash(TString(inputFile)));
+
+//  TRandom3 rnd(0);
+  unsigned int rnd_seed = Hash(gSystem->pwd());
+
+  cout <<"Use randoms seed "<<rnd_seed<<endl;
+
+    rc->set_IntFlag("RANDOMSEED", rnd_seed);
 
   //-----------------
   // Event generation
@@ -235,8 +241,13 @@ int Fun4All_G4_sPHENIX(
     {
       // toss low multiplicity dummy events
       PHG4SimpleEventGenerator *gen = new PHG4SimpleEventGenerator();
-      gen->add_particles("pi-", 1);  // mu+,e+,proton,pi+,Upsilon
-      //gen->add_particles("pi+",100); // 100 pion option
+      gen->add_particles("pi-", 100);  // mu+,e+,proton,pi+,Upsilon
+      gen->add_particles("pi+",100); // 100 pion option
+      gen->add_particles("Upsilon", 100);  // mu+,e+,proton,pi+,Upsilon
+      gen->add_particles("gamma",100); // 100 pion option
+      gen->add_particles("e-", 100);  // mu+,e+,proton,pi+,Upsilon
+      gen->add_particles("e+",100); // 100 pion option
+      gen->add_particles("pi0",100); // 100 pion option
       if (readhepmc || do_embedding || runpythia8 || runpythia6)
       {
         gen->set_reuse_existing_vertex(true);
@@ -248,7 +259,7 @@ int Fun4All_G4_sPHENIX(
                                               PHG4SimpleEventGenerator::Uniform,
                                               PHG4SimpleEventGenerator::Uniform);
         gen->set_vertex_distribution_mean(0.0, 0.0, 0.0);
-        gen->set_vertex_distribution_width(0.0, 0.0, 5.0);
+        gen->set_vertex_distribution_width(0.0, 0.0, 10.0);
       }
       gen->set_vertex_size_function(PHG4SimpleEventGenerator::Uniform);
       gen->set_vertex_size_parameters(0.0, 0.0);

@@ -328,6 +328,8 @@ void Tracking_Cells(int verbosity = 0)
     se->registerSubsystem(reco);
   }
 
+  return;
+
   //=========================
   // setup Tpc readout for filling cells
   // g4tpc/PHG4TpcElectronDrift uses
