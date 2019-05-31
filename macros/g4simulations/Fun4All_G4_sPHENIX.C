@@ -181,7 +181,8 @@ int Fun4All_G4_sPHENIX(
   // or set it to a fixed value so you can debug your code
 
 //  TRandom3 rnd(0);
-  unsigned int rnd_seed = Hash(gSystem->pwd());
+//  unsigned int rnd_seed = Hash(gSystem->pwd());
+  unsigned int rnd_seed = 1123335181;
 
   cout <<"Use randoms seed "<<rnd_seed<<endl;
 
