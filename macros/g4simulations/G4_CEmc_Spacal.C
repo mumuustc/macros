@@ -250,7 +250,7 @@ CEmc_2DProjectiveSpacal(PHG4Reco *g4Reco, double radius, const int crossings,
 
     cemc->set_int_param("virualize_fiber", 0);
     cemc->set_int_param("azimuthal_seg_visible", 1);
-    cemc->set_int_param("construction_verbose", 0);
+    cemc->set_int_param("construction_verbose", 2);
     cemc->Verbosity(0);
 
     cemc->UseCalibFiles(PHG4DetectorSubsystem::xml);
