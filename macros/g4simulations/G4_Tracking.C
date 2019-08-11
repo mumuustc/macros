@@ -95,7 +95,7 @@ double sensor_radius[6] = {6.876, 7.462, 10.835, 11.361};  // radius of center o
 double offsetphi[6] = {0.0, 0.5 * 360.0 / nladder[1] , 0.0, 0.5 * 360.0 / nladder[3]};
 #endif
 #ifdef INTTLADDER4_PP
-int n_intt_layer = 4;
+int n_intt_layer = 0;
 int laddertype[4] = {PHG4SiliconTrackerDefs::SEGMENTATION_PHI, 
 		       PHG4SiliconTrackerDefs::SEGMENTATION_PHI, 
 		       PHG4SiliconTrackerDefs::SEGMENTATION_PHI,
