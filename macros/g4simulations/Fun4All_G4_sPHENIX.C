@@ -61,7 +61,7 @@ int Fun4All_G4_sPHENIX(
   const bool readhepmc = false;  // read HepMC files
   // Or:
   // Use pythia
-  const bool runpythia8 = false;
+  const bool runpythia8 = true;
   const bool runpythia6 = false;
   //
   // **** And ****
@@ -72,7 +72,7 @@ int Fun4All_G4_sPHENIX(
 
   // Besides the above flags. One can further choose to further put in following particles in Geant4 simulation
   // Use multi-particle generator (PHG4SimpleEventGenerator), see the code block below to choose particle species and kinematics
-  const bool particles = true && !readhits;
+  const bool particles = false && !readhits;
   // or gun/ very simple single particle gun generator
   const bool usegun = false && !readhits;
   // Throw single Upsilons, may be embedded in Hijing by setting readhepmc flag also  (note, careful to set Z vertex equal to Hijing events)
@@ -80,7 +80,7 @@ int Fun4All_G4_sPHENIX(
   const int num_upsilons_per_event = 1;  // can set more than 1 upsilon per event, each has a unique embed flag
   // Event pile up simulation with collision rate in Hz MB collisions.
   // Note please follow up the macro to verify the settings for beam parameters
-  const double pileup_collision_rate = 0;  // 100e3 for 100kHz nominal AuAu collision rate.
+  const double pileup_collision_rate = 13e6;  // 100e3 for 100kHz nominal AuAu collision rate.
 
   //======================
   // What to run
@@ -167,7 +167,7 @@ int Fun4All_G4_sPHENIX(
     }
 
   Fun4AllServer *se = Fun4AllServer::instance();
-  se->Verbosity(0);
+  se->Verbosity(01);
   // just if we set some flags somewhere in this macro
   recoConsts *rc = recoConsts::instance();
   // By default every random number generator uses
@@ -513,10 +513,11 @@ int Fun4All_G4_sPHENIX(
     Fun4AllHepMCPileupInputManager *pileup = new Fun4AllHepMCPileupInputManager("HepMCPileupInput");
     se->registerInputManager(pileup);
 
-    const string pileupfile("/sphenix/sim/sim01/sHijing/sHijing_0-12fm.dat");
+    pileup->Repeat();
+    const string pileupfile("/sphenix/sim/sim01/phnxreco/users/jinhuang/simulation/macros/data/hpythia8_SoftQCD_inelastic_200GeV.list");
     //background files for p+p pileup sim
     //const string pileupfile("/gpfs/mnt/gpfs04/sphenix/user/shlim/04.InnerTrackerTaskForce/01.PythiaGen/list_pythia8_mb.dat");
-    pileup->AddFile(pileupfile);  // HepMC events used in pile up collisions. You can add multiple files, and the file list will be reused.
+    pileup->AddListFile(pileupfile, 1);  // HepMC events used in pile up collisions. You can add multiple files, and the file list will be reused.
     //pileup->set_vertex_distribution_width(100e-4,100e-4,30,5);//override collision smear in space time
     //pileup->set_vertex_distribution_mean(0,0,0,0);//override collision central position shift in space time
     pileup->set_collision_rate(pileup_collision_rate);
