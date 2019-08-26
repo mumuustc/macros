@@ -38,7 +38,7 @@ using namespace std;
 
 
 int Fun4All_G4_sPHENIX(
-    const int nEvents = 1,
+    const int nEvents = 1000,
     const char *inputFile = "/sphenix/data/data02/review_2017-08-02/single_particle/spacal2d/fieldmap/G4Hits_sPHENIX_e-_eta0_8GeV-0002.root",
     const char *outputFile = "G4sPHENIX.root",
     const char *embed_input_file = "/sphenix/data/data02/review_2017-08-02/sHijing/fm_0-4.list")
@@ -97,21 +97,21 @@ int Fun4All_G4_sPHENIX(
 
   bool do_pstof = false;
 
-  bool do_cemc = true;
+  bool do_cemc = false;
   bool do_cemc_cell = do_cemc && true;
   bool do_cemc_twr = do_cemc_cell && true;
   bool do_cemc_cluster = do_cemc_twr && true;
   bool do_cemc_eval = do_cemc_cluster && true;
 
-  bool do_hcalin = true;
+  bool do_hcalin = false;
   bool do_hcalin_cell = do_hcalin && true;
   bool do_hcalin_twr = do_hcalin_cell && true;
   bool do_hcalin_cluster = do_hcalin_twr && true;
   bool do_hcalin_eval = do_hcalin_cluster && true;
 
-  bool do_magnet = true;
+  bool do_magnet = false;
 
-  bool do_hcalout = true;
+  bool do_hcalout = false;
   bool do_hcalout_cell = do_hcalout && true;
   bool do_hcalout_twr = do_hcalout_cell && true;
   bool do_hcalout_cluster = do_hcalout_twr && true;
@@ -125,7 +125,7 @@ int Fun4All_G4_sPHENIX(
 
   bool do_calotrigger = true && do_cemc_twr && do_hcalin_twr && do_hcalout_twr;
 
-  bool do_jet_reco = true;
+  bool do_jet_reco = false;
   bool do_jet_eval = do_jet_reco && true;
 
   // HI Jet Reco for p+Au / Au+Au collisions (default is false for
@@ -167,7 +167,7 @@ int Fun4All_G4_sPHENIX(
     }
 
   Fun4AllServer *se = Fun4AllServer::instance();
-  se->Verbosity(0);
+  se->Verbosity(01);
   // just if we set some flags somewhere in this macro
   recoConsts *rc = recoConsts::instance();
   // By default every random number generator uses
@@ -178,7 +178,7 @@ int Fun4All_G4_sPHENIX(
   // this would be:
   //  rc->set_IntFlag("RANDOMSEED",PHRandomSeed());
   // or set it to a fixed value so you can debug your code
-  //  rc->set_IntFlag("RANDOMSEED", 12345);
+    rc->set_IntFlag("RANDOMSEED", 12345);
 
   //-----------------
   // Event generation
@@ -234,8 +234,8 @@ int Fun4All_G4_sPHENIX(
     {
       // toss low multiplicity dummy events
       PHG4SimpleEventGenerator *gen = new PHG4SimpleEventGenerator();
-      gen->add_particles("pi-", 1);  // mu+,e+,proton,pi+,Upsilon
-      //gen->add_particles("pi+",100); // 100 pion option
+      gen->add_particles("pi-", 10);  // mu+,e+,proton,pi+,Upsilon
+      gen->add_particles("pi+",10); // 100 pion option
       if (readhepmc || do_embedding || runpythia8 || runpythia6)
       {
         gen->set_reuse_existing_vertex(true);
@@ -556,9 +556,9 @@ int Fun4All_G4_sPHENIX(
                 /*bool*/ do_hcalout_twr);
   }
 
-  //  Fun4AllDstOutputManager *out = new Fun4AllDstOutputManager("DSTOUT", outputFile);
-  // if (do_dst_compress) DstCompress(out);
-  //  se->registerOutputManager(out);
+    Fun4AllDstOutputManager *out = new Fun4AllDstOutputManager("DSTOUT", outputFile);
+   if (do_dst_compress) DstCompress(out);
+    se->registerOutputManager(out);
 
   //-----------------
   // Event processing
@@ -592,6 +592,8 @@ int Fun4All_G4_sPHENIX(
 
 
   se->End();
+  se->PrintTimer();
+
   std::cout << "All done" << std::endl;
   delete se;
   gSystem->Exit(0);
