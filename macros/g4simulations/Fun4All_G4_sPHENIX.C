@@ -58,7 +58,7 @@ int Fun4All_G4_sPHENIX(
   const bool readhits = false;
   // Or:
   // read files in HepMC format (typically output from event generators like hijing or pythia)
-  const bool readhepmc = false;  // read HepMC files
+  const bool readhepmc = true;  // read HepMC files
   // Or:
   // Use pythia
   const bool runpythia8 = true;
@@ -80,7 +80,7 @@ int Fun4All_G4_sPHENIX(
   const int num_upsilons_per_event = 1;  // can set more than 1 upsilon per event, each has a unique embed flag
   // Event pile up simulation with collision rate in Hz MB collisions.
   // Note please follow up the macro to verify the settings for beam parameters
-  const double pileup_collision_rate = 13e6;  // 100e3 for 100kHz nominal AuAu collision rate.
+  const double pileup_collision_rate = 0;  // 100e3 for 100kHz nominal AuAu collision rate.
 
   //======================
   // What to run
@@ -211,9 +211,10 @@ int Fun4All_G4_sPHENIX(
       PHPythia8 *pythia8 = new PHPythia8();
       // see coresoftware/generators/PHPythia8 for example config
       pythia8->set_config_file("phpythia8.cfg"); // example configure files : https://github.com/sPHENIX-Collaboration/coresoftware/tree/master/generators/PHPythia8
-      if (readhepmc)
-        pythia8->set_reuse_vertex(0);  // reuse vertex of subevent with embedding ID of 0
-      // pythia8->set_vertex_distribution_width(0,0,10,0); // additional vertex smearing if needed, more vertex options available
+//      if (readhepmc)// use separated vertex
+//        pythia8->set_reuse_vertex(0);  // reuse vertex of subevent with embedding ID of 0
+      pythia8->set_vertex_distribution_width(0,0,10,0); // additional vertex smearing if needed, more vertex options available
+      pythia8->set_embedding_id(2);
       se->registerSubsystem(pythia8);
     }
 
@@ -487,16 +488,20 @@ int Fun4All_G4_sPHENIX(
 
     Fun4AllHepMCInputManager *in = new Fun4AllHepMCInputManager("HepMCInput_1");
     se->registerInputManager(in);
-    se->fileopen(in->Name().c_str(), inputFile);
-    //in->set_vertex_distribution_width(100e-4,100e-4,30,0);//optional collision smear in space, time
-    //in->set_vertex_distribution_mean(0,0,1,0);//optional collision central position shift in space, time
+
+    const string pileupfile("/sphenix/sim/sim01/phnxreco/users/jinhuang/simulation/macros/data/hpythia8_SoftQCD_inelastic_200GeV.list");
+    in->AddListFile(pileupfile, 1);  // HepMC events used in pile up collisions. You can add multiple files, and the file list will be reused.
+
+//    se->fileopen(in->Name().c_str(), inputFile);
+    in->set_vertex_distribution_width(100e-4,100e-4,30,0);//optional collision smear in space, time
+//    in->set_vertex_distribution_mean(0,0,10,0);//optional collision central position shift in space, time
     // //optional choice of vertex distribution function in space, time
-    //in->set_vertex_distribution_function(PHHepMCGenHelper::Gaus,PHHepMCGenHelper::Gaus,PHHepMCGenHelper::Uniform,PHHepMCGenHelper::Gaus);
+    in->set_vertex_distribution_function(PHHepMCGenHelper::Gaus,PHHepMCGenHelper::Gaus,PHHepMCGenHelper::Uniform,PHHepMCGenHelper::Gaus);
     //! embedding ID for the event
     //! positive ID is the embedded event of interest, e.g. jetty event from pythia
     //! negative IDs are backgrounds, .e.g out of time pile up collisions
     //! Usually, ID = 0 means the primary Au+Au collision background
-    //in->set_embedding_id(2);
+    in->set_embedding_id(1);
   }
   else
   {
