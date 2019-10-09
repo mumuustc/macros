@@ -291,13 +291,21 @@ void Tracking_Cells(int verbosity = 0)
 
   PHG4TpcPadPlane *padplane = new PHG4TpcPadPlaneReadout();
 
+  // special tune for no pre-amp smearing
+  padplane->set_double_param("sampa_shaping_lead", 1);//1ns shaping
+  padplane->set_double_param("sampa_shaping_tail", 1); //1ns shaping
+  padplane->set_double_param("tpc_adc_clock", 10.6); // speed up to 10ns spacing
+
   PHG4TpcElectronDrift *edrift = new PHG4TpcElectronDrift();
   edrift->Detector("TPC");
   // fudge factors to get drphi 150 microns (in mid and outer Tpc) and dz 500 microns cluster resolution
   // They represent effects not due to ideal gas properties and ideal readout plane behavior
   // defaults are 0.12 and 0.15, they can be changed here to get a different resolution
-  edrift->set_double_param("added_smear_trans",0.12);
-  edrift->set_double_param("added_smear_long",0.15);
+
+
+  // special tune for no added smearing
+  edrift->set_double_param("added_smear_trans",0.0);
+  edrift->set_double_param("added_smear_long",0.0);
   edrift->registerPadPlane(padplane);
   se->registerSubsystem(edrift);
 
@@ -434,7 +442,12 @@ void Tracking_Reco(int verbosity = 0)
   cout << " Tpc digitizer: Setting ENC to " << ENC << " ADC threshold to " << ADC_threshold
        << " maps+Intt layers set to " << n_maps_layer + n_intt_layer << endl;
 
+  // special tune for JSON output of input charge
+  digitpc->savePadChargeFile("PadCharge/PadCharge");
+
   se->registerSubsystem(digitpc);
+
+  return;
 
   //-------------
   // Cluster Hits
