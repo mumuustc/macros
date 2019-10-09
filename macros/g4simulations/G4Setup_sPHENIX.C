@@ -3,7 +3,8 @@
 #include "G4_Pipe.C"
 #include "G4_Tracking.C"
 #include "G4_PSTOF.C"
-#include "G4_CEmc_Spacal.C"
+//#include "G4_CEmc_Spacal.C"
+#include "G4_CEmc_EIC.C"
 #include "G4_HcalIn_ref.C"
 #include "G4_Magnet.C"
 #include "G4_HcalOut_ref.C"
@@ -65,7 +66,8 @@ void G4Init(const bool do_tracking = true,
 
   if (do_cemc)
     {
-      gROOT->LoadMacro("G4_CEmc_Spacal.C");
+    gROOT->LoadMacro("G4_CEmc_EIC.C");
+//      gROOT->LoadMacro("G4_CEmc_Spacal.C");
       CEmcInit(72); // make it 2*2*2*3*3 so we can try other combinations
     }
 
