@@ -1,4 +1,5 @@
 #if ROOT_VERSION_CODE >= ROOT_VERSION(6,00,0)
+#include <phgeom/PHGeomUtility.h>
 #include <phool/PHRandomSeed.h>
 #include <fun4all/SubsysReco.h>
 #include <fun4all/Fun4AllServer.h>
@@ -612,6 +613,13 @@ int Fun4All_G4_sPHENIX(
     }
 
   se->run(nEvents);
+
+  //-----
+  // Export geometry, after run
+  //-----
+
+  PHGeomUtility::ExportGeomtry(se->topNode(),"geometry_export.root");
+  cout <<"Done export Geometry to geometry_export.root"<<endl;
 
   //-----
   // Exit
