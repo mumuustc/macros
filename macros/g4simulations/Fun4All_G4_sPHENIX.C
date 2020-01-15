@@ -34,14 +34,19 @@ R__LOAD_LIBRARY(libg4testbench.so)
 R__LOAD_LIBRARY(libphhepmc.so)
 R__LOAD_LIBRARY(libPHPythia6.so)
 R__LOAD_LIBRARY(libPHPythia8.so)
+
+
+#include <hfmltrigger/HFMLTriggerHepMCTrigger.h>
+R__LOAD_LIBRARY(libHFMLTrigger.so)
+
 #endif
 
 using namespace std;
 
 
 int Fun4All_G4_sPHENIX(
-    const int nEvents = 1,
-    const char *inputFile = "/sphenix/data/data02/review_2017-08-02/single_particle/spacal2d/fieldmap/G4Hits_sPHENIX_e-_eta0_8GeV-0002.root",
+    const int nEvents = 300,
+    const char *inputFile = "phpythia8.cfg",
     const char *outputFile = "G4sPHENIX.root",
     const char *embed_input_file = "/sphenix/data/data02/review_2017-08-02/sHijing/fm_0-4.list")
 {
@@ -63,7 +68,7 @@ int Fun4All_G4_sPHENIX(
   const bool readhepmc = false;  // read HepMC files
   // Or:
   // Use pythia
-  const bool runpythia8 = false;
+  const bool runpythia8 = true;
   const bool runpythia6 = false;
   //
   // **** And ****
@@ -74,7 +79,7 @@ int Fun4All_G4_sPHENIX(
 
   // Besides the above flags. One can further choose to further put in following particles in Geant4 simulation
   // Use multi-particle generator (PHG4SimpleEventGenerator), see the code block below to choose particle species and kinematics
-  const bool particles = true && !readhits;
+  const bool particles = false && !readhits;
   // or gun/ very simple single particle gun generator
   const bool usegun = false && !readhits;
   // Throw single Upsilons, may be embedded in Hijing by setting readhepmc flag also  (note, careful to set Z vertex equal to Hijing events)
@@ -83,7 +88,7 @@ int Fun4All_G4_sPHENIX(
   // Event pile up simulation with collision rate in Hz MB collisions.
   // Note please follow up the macro to verify the settings for beam parameters
   const double pileup_collision_rate = 0;  // 100e3 for 100kHz nominal AuAu collision rate.
-  const bool do_write_output = false;
+  const bool do_write_output = true;
   // To write cluster files set do_write_output = true and set 
   // do_tracking = true, do_tracking_cell = true, do_tracking_cluster = true and 
   // leave the tracking for later do_tracking_track =  false,  do_tracking_eval = false
@@ -104,21 +109,21 @@ int Fun4All_G4_sPHENIX(
 
   bool do_pstof = false;
 
-  bool do_cemc = true;
+  bool do_cemc = false;
   bool do_cemc_cell = do_cemc && true;
   bool do_cemc_twr = do_cemc_cell && true;
   bool do_cemc_cluster = do_cemc_twr && true;
   bool do_cemc_eval = do_cemc_cluster && true;
 
-  bool do_hcalin = true;
+  bool do_hcalin = false;
   bool do_hcalin_cell = do_hcalin && true;
   bool do_hcalin_twr = do_hcalin_cell && true;
   bool do_hcalin_cluster = do_hcalin_twr && true;
   bool do_hcalin_eval = do_hcalin_cluster && true;
 
-  bool do_magnet = true;
+  bool do_magnet = false;
 
-  bool do_hcalout = true;
+  bool do_hcalout = false;
   bool do_hcalout_cell = do_hcalout && true;
   bool do_hcalout_twr = do_hcalout_cell && true;
   bool do_hcalout_cluster = do_hcalout_twr && true;
@@ -139,7 +144,7 @@ int Fun4All_G4_sPHENIX(
 
   bool do_calotrigger = true && do_cemc_twr && do_hcalin_twr && do_hcalout_twr;
 
-  bool do_jet_reco = true;
+  bool do_jet_reco = false;
   bool do_jet_eval = do_jet_reco && true;
 
   // HI Jet Reco for p+Au / Au+Au collisions (default is false for
@@ -184,7 +189,7 @@ int Fun4All_G4_sPHENIX(
     }
 
   Fun4AllServer *se = Fun4AllServer::instance();
-  se->Verbosity(0);
+  se->Verbosity(01);
 
   //Opt to print all random seed used for debugging reproducibility. Comment out to reduce stdout prints.
   PHRandomSeed::Verbosity(1);
@@ -229,13 +234,26 @@ int Fun4All_G4_sPHENIX(
     {
       gSystem->Load("libPHPythia8.so");
 
+
       PHPythia8 *pythia8 = new PHPythia8();
       // see coresoftware/generators/PHPythia8 for example config
-      pythia8->set_config_file("phpythia8.cfg"); // example configure files : https://github.com/sPHENIX-Collaboration/coresoftware/tree/master/generators/PHPythia8
+      pythia8->set_config_file(inputFile);
       if (readhepmc)
         pythia8->set_reuse_vertex(0);  // reuse vertex of subevent with embedding ID of 0
-      // pythia8->set_vertex_distribution_width(0,0,10,0); // additional vertex smearing if needed, more vertex options available
+      pythia8->set_vertex_distribution_width(0.01,0.01,10,0); // additional vertex smearing if needed, more vertex options available
+      pythia8->set_vertex_distribution_function(PHHepMCGenHelper::Gaus,
+          PHHepMCGenHelper::Gaus,
+          PHHepMCGenHelper::Uniform,
+          PHHepMCGenHelper::Uniform);
       se->registerSubsystem(pythia8);
+
+
+      assert (gSystem->Load("libHFMLTrigger") >= 0);
+      {
+        HFMLTriggerHepMCTrigger * trig = new HFMLTriggerHepMCTrigger("D0toPiKInAcceptance",string(outputFile) + string("_D0toPiKInAcceptance"));
+//        trig->Verbosity(1);
+        se -> registerSubsystem(trig);
+      }
     }
 
     if (runpythia6)
@@ -621,7 +639,7 @@ int Fun4All_G4_sPHENIX(
       cin >> i;
     }
 
-  se->run(nEvents);
+  se->run(nEvents, true);
 
   //-----
   // Exit
