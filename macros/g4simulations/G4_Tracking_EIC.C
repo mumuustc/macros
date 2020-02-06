@@ -201,8 +201,8 @@ void Tracking_Reco(int verbosity = 0, bool displaced_vertex = false)
   );
 
   // Saved track states (projections)
-  kalman->add_state_name("FEMC");
-  kalman->add_state_name("FHCAL");
+//  kalman->add_state_name("FEMC");
+//  kalman->add_state_name("FHCAL");
 
   se->registerSubsystem(kalman);
 

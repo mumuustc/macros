@@ -42,7 +42,7 @@ R__LOAD_LIBRARY(libPHSartre.so)
 using namespace std;
 
 int Fun4All_G4_EICDetector(
-                           const int nEvents = 1,
+                           const int nEvents = 10,
                            const char * inputFile = "/sphenix/data/data02/review_2017-08-02/single_particle/spacal2d/fieldmap/G4Hits_sPHENIX_e-_eta0_8GeV-0002.root",
                            const char * outputFile = "G4EICDetector.root"
                            )
@@ -95,7 +95,7 @@ int Fun4All_G4_EICDetector(
   // sPHENIX barrel
   bool do_bbc = true;
 
-  bool do_pipe = true;
+  bool do_pipe = false;
 
   bool do_tracking = true;
   bool do_tracking_cell = do_tracking && true;
@@ -105,13 +105,13 @@ int Fun4All_G4_EICDetector(
 
   bool do_pstof = false;
 
-  bool do_cemc = true;
+  bool do_cemc = false;
   bool do_cemc_cell = do_cemc && true;
   bool do_cemc_twr = do_cemc_cell && true;
   bool do_cemc_cluster = do_cemc_twr && true;
   bool do_cemc_eval = do_cemc_cluster && true;
 
-  bool do_hcalin = true;
+  bool do_hcalin = false;
   bool do_hcalin_cell = do_hcalin && true;
   bool do_hcalin_twr = do_hcalin_cell && true;
   bool do_hcalin_cluster = do_hcalin_twr && true;
@@ -119,7 +119,7 @@ int Fun4All_G4_EICDetector(
 
   bool do_magnet = true;
 
-  bool do_hcalout = true;
+  bool do_hcalout = false;
   bool do_hcalout_cell = do_hcalout && true;
   bool do_hcalout_twr = do_hcalout_cell && true;
   bool do_hcalout_cluster = do_hcalout_twr && true;
@@ -129,29 +129,29 @@ int Fun4All_G4_EICDetector(
   bool do_DIRC = true;
 
   // EICDetector geometry - 'hadron' direction
-  bool do_RICH = true;
-  bool do_Aerogel = true;
+  bool do_RICH = false;
+  bool do_Aerogel = false;
 
-  bool do_FEMC = true;
+  bool do_FEMC = false;
   bool do_FEMC_cell = do_FEMC && true;
   bool do_FEMC_twr = do_FEMC_cell && true;
   bool do_FEMC_cluster = do_FEMC_twr && true;
   bool do_FEMC_eval = do_FEMC_cluster && true;
 
-  bool do_FHCAL = true;
+  bool do_FHCAL = false;
   bool do_FHCAL_cell = do_FHCAL && true;
   bool do_FHCAL_twr = do_FHCAL_cell && true;
   bool do_FHCAL_cluster = do_FHCAL_twr && true;
   bool do_FHCAL_eval = do_FHCAL_cluster && true;
 
   // EICDetector geometry - 'electron' direction
-  bool do_EEMC = true;
+  bool do_EEMC = false;
   bool do_EEMC_cell = do_EEMC && true;
   bool do_EEMC_twr = do_EEMC_cell && true;
   bool do_EEMC_cluster = do_EEMC_twr && true;
   bool do_EEMC_eval = do_EEMC_cluster && true;
 
-  bool do_plugdoor = true;
+  bool do_plugdoor = false;
 
   // Other options
   bool do_global = true;
@@ -176,7 +176,7 @@ int Fun4All_G4_EICDetector(
   bool do_dst_compress = false;
 
   //Option to convert DST to human command readable TTree for quick poke around the outputs
-  bool do_DSTReader = false;
+  bool do_DSTReader = true;
 
   //---------------
   // Load libraries
@@ -202,7 +202,7 @@ int Fun4All_G4_EICDetector(
   //---------------
 
   Fun4AllServer *se = Fun4AllServer::instance();
-  // se->Verbosity(01); // uncomment for batch production running with minimal output messages
+   se->Verbosity(01); // uncomment for batch production running with minimal output messages
   // se->Verbosity(Fun4AllServer::VERBOSITY_SOME); // uncomment for some info for interactive running
 
   // just if we set some flags somewhere in this macro
@@ -215,7 +215,7 @@ int Fun4All_G4_EICDetector(
   // this would be:
   //  rc->set_IntFlag("RANDOMSEED",PHRandomSeed());
   // or set it to a fixed value so you can debug your code
-  // rc->set_IntFlag("RANDOMSEED", 12345);
+   rc->set_IntFlag("RANDOMSEED", 12345);
 
   //-----------------
   // Event generation
@@ -296,7 +296,7 @@ int Fun4All_G4_EICDetector(
     {
       // toss low multiplicity dummy events
       PHG4SimpleEventGenerator *gen = new PHG4SimpleEventGenerator();
-      gen->add_particles("pi-",1); // mu+,e+,proton,pi+,Upsilon
+      gen->add_particles("mu-",1); // mu+,e+,proton,pi+,Upsilon
       //gen->add_particles("pi+",100); // 100 pion option
 
       if (readhepmc)
@@ -314,10 +314,72 @@ int Fun4All_G4_EICDetector(
         }
       gen->set_vertex_size_function(PHG4SimpleEventGenerator::Uniform);
       gen->set_vertex_size_parameters(0.0, 0.0);
-      gen->set_eta_range(-3, 3);
-      gen->set_phi_range(-1.0 * TMath::Pi(), 1.0 * TMath::Pi());
+      gen->set_eta_range(-3, -3);
+      gen->set_phi_range(TMath::Pi()/2, TMath::Pi()/2);
       //gen->set_pt_range(0.1, 50.0);
-      gen->set_pt_range(0.1, 20.0);
+      gen->set_pt_range(10,10);
+      gen->Embed(1);
+      gen->Verbosity(0);
+
+      se->registerSubsystem(gen);
+    }
+  if(particles)
+    {
+      // toss low multiplicity dummy events
+      PHG4SimpleEventGenerator *gen = new PHG4SimpleEventGenerator();
+      gen->add_particles("mu-",1); // mu+,e+,proton,pi+,Upsilon
+      //gen->add_particles("pi+",100); // 100 pion option
+
+      if (readhepmc)
+        {
+          gen->set_reuse_existing_vertex(true);
+          gen->set_existing_vertex_offset_vector(0.0, 0.0, 0.0);
+        }
+      else
+        {
+          gen->set_vertex_distribution_function(PHG4SimpleEventGenerator::Uniform,
+                                                PHG4SimpleEventGenerator::Uniform,
+                                                PHG4SimpleEventGenerator::Uniform);
+          gen->set_vertex_distribution_mean(0.0, 0.0, 0.0);
+          gen->set_vertex_distribution_width(0.0, 0.0, 0.0);
+        }
+      gen->set_vertex_size_function(PHG4SimpleEventGenerator::Uniform);
+      gen->set_vertex_size_parameters(0.0, 0.0);
+      gen->set_eta_range(-2.5, -2.5);
+      gen->set_phi_range(TMath::Pi()/2, TMath::Pi()/2);
+      //gen->set_pt_range(0.1, 50.0);
+      gen->set_pt_range(10,10);
+      gen->Embed(1);
+      gen->Verbosity(0);
+
+      se->registerSubsystem(gen);
+    }
+  if(particles)
+    {
+      // toss low multiplicity dummy events
+      PHG4SimpleEventGenerator *gen = new PHG4SimpleEventGenerator();
+      gen->add_particles("mu-",1); // mu+,e+,proton,pi+,Upsilon
+      //gen->add_particles("pi+",100); // 100 pion option
+
+      if (readhepmc)
+        {
+          gen->set_reuse_existing_vertex(true);
+          gen->set_existing_vertex_offset_vector(0.0, 0.0, 0.0);
+        }
+      else
+        {
+          gen->set_vertex_distribution_function(PHG4SimpleEventGenerator::Uniform,
+                                                PHG4SimpleEventGenerator::Uniform,
+                                                PHG4SimpleEventGenerator::Uniform);
+          gen->set_vertex_distribution_mean(0.0, 0.0, 0.0);
+          gen->set_vertex_distribution_width(0.0, 0.0, 0.0);
+        }
+      gen->set_vertex_size_function(PHG4SimpleEventGenerator::Uniform);
+      gen->set_vertex_size_parameters(0.0, 0.0);
+      gen->set_eta_range(-2., -2.);
+      gen->set_phi_range(TMath::Pi()/2, TMath::Pi()/2);
+      //gen->set_pt_range(0.1, 50.0);
+      gen->set_pt_range(10, 10);
       gen->Embed(1);
       gen->Verbosity(0);
 
