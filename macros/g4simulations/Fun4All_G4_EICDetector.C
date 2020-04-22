@@ -203,7 +203,7 @@ int Fun4All_G4_EICDetector(
 
   Fun4AllServer *se = Fun4AllServer::instance();
   // se->Verbosity(01); // uncomment for batch production running with minimal output messages
-  // se->Verbosity(Fun4AllServer::VERBOSITY_SOME); // uncomment for some info for interactive running
+   se->Verbosity(Fun4AllServer::VERBOSITY_SOME); // uncomment for some info for interactive running
 
   // just if we set some flags somewhere in this macro
   recoConsts *rc = recoConsts::instance();
