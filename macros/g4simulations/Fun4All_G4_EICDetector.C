@@ -70,7 +70,7 @@ int Fun4All_G4_EICDetector(
   const bool runpythia8 = false;
   // Or:
   // Use Pythia 6
-  const bool runpythia6 = false;
+  const bool runpythia6 = true;
   // Or:
   // Use HEPGen
   const bool runhepgen = false;
@@ -82,7 +82,7 @@ int Fun4All_G4_EICDetector(
 
   // Besides the above flags. One can further choose to further put in following particles in Geant4 simulation
   // Use multi-particle generator (PHG4SimpleEventGenerator), see the code block below to choose particle species and kinematics
-  const bool particles = true && !readhits;
+  const bool particles = false && !readhits;
   // or gun/ very simple single particle gun generator
   const bool usegun = false && !readhits;
   // Throw single Upsilons, may be embedded in Hijing by setting readhepmc flag also  (note, careful to set Z vertex equal to Hijing events)
@@ -215,7 +215,7 @@ int Fun4All_G4_EICDetector(
   // this would be:
   //  rc->set_IntFlag("RANDOMSEED",PHRandomSeed());
   // or set it to a fixed value so you can debug your code
-  // rc->set_IntFlag("RANDOMSEED", 12345);
+   rc->set_IntFlag("RANDOMSEED", 12345);
 
   //-----------------
   // Event generation
@@ -253,7 +253,8 @@ int Fun4All_G4_EICDetector(
 
       PHPythia6 *pythia6 = new PHPythia6();
       // see coresoftware/generators/PHPythia6 for example config
-      pythia6->set_config_file("phpythia6_ep.cfg");
+      pythia6->set_config_file("phpythia6.cfg");
+      pythia6->Verbosity(2);
       se->registerSubsystem(pythia6);
     }
 /*
