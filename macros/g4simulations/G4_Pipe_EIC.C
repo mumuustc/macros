@@ -21,7 +21,7 @@ double Pipe(PHG4Reco* g4Reco,
             )
 {
   // process pipe extentions?
-  bool use_forward_pipes = false;
+  bool use_forward_pipes = true;
   const static bool do_pipe_hadron_forward_extension = use_forward_pipes && true;
   const static bool do_pipe_electron_forward_extension = use_forward_pipes && true;
 
