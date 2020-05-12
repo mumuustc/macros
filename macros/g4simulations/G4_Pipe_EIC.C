@@ -69,7 +69,7 @@ double Pipe(PHG4Reco* g4Reco,
   cyl->set_double_param("thickness", be_pipe_thickness);
   cyl->SuperDetector("PIPE");
   cyl->OverlapCheck(overlapcheck);
-  if (absorberactive) cyl->SetActive();
+  cyl->SetActive();
   g4Reco->registerSubsystem(cyl);
 
   radius = be_pipe_radius + be_pipe_thickness;

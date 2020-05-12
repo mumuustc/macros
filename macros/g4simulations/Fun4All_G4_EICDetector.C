@@ -14,7 +14,6 @@
 #include <g4main/PHG4ParticleGeneratorVectorMeson.h>
 #include <g4main/PHG4ParticleGun.h>
 #include <g4main/HepMCNodeReader.h>
-#include <g4main/ReadSynRadFiles.h>
 #include <g4detectors/PHG4DetectorSubsystem.h>
 #include <g4eval/PHG4DSTReader.h>
 #include <phhepmc/Fun4AllHepMCInputManager.h>
@@ -37,12 +36,16 @@ R__LOAD_LIBRARY(libg4testbench.so)
 R__LOAD_LIBRARY(libPHPythia6.so)
 R__LOAD_LIBRARY(libPHPythia8.so)
 R__LOAD_LIBRARY(libPHSartre.so)
+
+#include <synradana/ReadSynRadFiles.h>
+#include <synradana/SynRadAna.h>
+R__LOAD_LIBRARY(libSynRadAna.so)
 #endif
 
 using namespace std;
 
 int Fun4All_G4_EICDetector(
-                           const int nEvents = 1,
+                           const int nEvents = 10,
 //                           const char * inputFile = "data/SynRad Example Particle log.csv",
 //                           const char * inputFile = "data/Particle log facet 18952 +4.5m.csv",
                            const char * inputFile = "data/23April2020_incidentFlux200- -200 cm.csv",
@@ -103,20 +106,20 @@ int Fun4All_G4_EICDetector(
 
   bool do_tracking = true;
   bool do_tracking_cell = do_tracking && true;
-  bool do_tracking_track = do_tracking_cell && true;
+  bool do_tracking_track = do_tracking_cell && false;
   bool do_tracking_eval = do_tracking_track && true; // in order to use this evaluation, please build this analysis module analysis/blob/master/Tracking/FastTrackingEval/
   bool do_vertex_finding = false; // this option exclude vertex in the track fitting and use RAVE to reconstruct primary and 2ndary vertexes
 
   bool do_pstof = false;
 
   bool do_cemc = true;
-  bool do_cemc_cell = do_cemc && true;
+  bool do_cemc_cell = do_cemc && false;
   bool do_cemc_twr = do_cemc_cell && true;
   bool do_cemc_cluster = do_cemc_twr && true;
   bool do_cemc_eval = do_cemc_cluster && false;
 
   bool do_hcalin = true;
-  bool do_hcalin_cell = do_hcalin && true;
+  bool do_hcalin_cell = do_hcalin && false;
   bool do_hcalin_twr = do_hcalin_cell && true;
   bool do_hcalin_cluster = do_hcalin_twr && true;
   bool do_hcalin_eval = do_hcalin_cluster && false;
@@ -124,7 +127,7 @@ int Fun4All_G4_EICDetector(
   bool do_magnet = true;
 
   bool do_hcalout = true;
-  bool do_hcalout_cell = do_hcalout && true;
+  bool do_hcalout_cell = do_hcalout && false;
   bool do_hcalout_twr = do_hcalout_cell && true;
   bool do_hcalout_cluster = do_hcalout_twr && true;
   bool do_hcalout_eval = do_hcalout_cluster && false;
@@ -137,20 +140,20 @@ int Fun4All_G4_EICDetector(
   bool do_Aerogel = true;
 
   bool do_FEMC = true;
-  bool do_FEMC_cell = do_FEMC && true;
+  bool do_FEMC_cell = do_FEMC && false;
   bool do_FEMC_twr = do_FEMC_cell && true;
   bool do_FEMC_cluster = do_FEMC_twr && true;
   bool do_FEMC_eval = do_FEMC_cluster && false;
 
   bool do_FHCAL = true;
-  bool do_FHCAL_cell = do_FHCAL && true;
+  bool do_FHCAL_cell = do_FHCAL && false;
   bool do_FHCAL_twr = do_FHCAL_cell && true;
   bool do_FHCAL_cluster = do_FHCAL_twr && true;
   bool do_FHCAL_eval = do_FHCAL_cluster && false;
 
   // EICDetector geometry - 'electron' direction
   bool do_EEMC = true;
-  bool do_EEMC_cell = do_EEMC && true;
+  bool do_EEMC_cell = do_EEMC && false;
   bool do_EEMC_twr = do_EEMC_cell && true;
   bool do_EEMC_cluster = do_EEMC_twr && true;
   bool do_EEMC_eval = do_EEMC_cluster && false;
@@ -180,7 +183,7 @@ int Fun4All_G4_EICDetector(
   bool do_dst_compress = false;
 
   //Option to convert DST to human command readable TTree for quick poke around the outputs
-  bool do_DSTReader = false;
+  bool do_DSTReader = true;
 
   //---------------
   // Load libraries
@@ -239,7 +242,7 @@ int Fun4All_G4_EICDetector(
       // this module is needed to read the EICTree style records into our G4 sims
       ReadSynRadFiles *eicr = new ReadSynRadFiles();
       eicr->OpenInputFile(inputFile);
-      eicr->SetEntryPerEvent(100000-1);
+      eicr->SetEntryPerEvent(1);
 //      eicr->Verbosity(1);
 
       se->registerSubsystem(eicr);
@@ -599,9 +602,72 @@ int Fun4All_G4_EICDetector(
                                );
     }
 
-  //Fun4AllDstOutputManager *out = new Fun4AllDstOutputManager("DSTOUT", outputFile);
-  //if (do_dst_compress) DstCompress(out);
-  //se->registerOutputManager(out);
+  Fun4AllDstOutputManager *out = new Fun4AllDstOutputManager("DSTOUT", outputFile);
+  if (do_dst_compress) DstCompress(out);
+  se->registerOutputManager(out);
+
+  {
+    SynRadAna *ana = new SynRadAna(string(outputFile) + "_SynRadAna.root");
+    //    ana->AddNode("SVTX");
+    ana->AddNode("PIPE");
+    if (do_tracking)
+    {
+      ana->AddNode("SVTX");
+      ana->AddNode("MVTX");
+
+      ana->AddNode("EGEM_0");
+      ana->AddNode("EGEM_1");
+      ana->AddNode("EGEM_2");
+      ana->AddNode("EGEM_3");
+
+      ana->AddNode("FGEM_2");
+      ana->AddNode("FGEM_3");
+      ana->AddNode("FGEM_4");
+
+      ana->AddNode("FST_0");
+      ana->AddNode("FST_1");
+      ana->AddNode("FST_2");
+      ana->AddNode("FST_3");
+      ana->AddNode("FST_4");
+    }
+
+    if (do_cemc)
+    {
+      ana->AddNode("CEMC");
+    }
+
+    if (do_hcalin)
+    {
+      ana->AddNode("HCALIN");
+    }
+
+    if (do_hcalout)
+    {
+      ana->AddNode("HCALOUT");
+    }
+
+    if (do_FHCAL)
+    {
+      ana->AddNode("FHCAL");
+    }
+
+    if (do_FEMC)
+    {
+      ana->AddNode("FEMC");
+    }
+
+    if (do_EEMC)
+    {
+      ana->AddNode("EEMC");
+    }
+
+    ana->AddNode("BH_1");
+    ana->AddNode("BH_FORWARD_PLUS");
+    ana->AddNode("BH_FORWARD_NEG");
+
+    //    ana->Verbosity(2);
+    se->registerSubsystem(ana);
+  }
 
   //-----------------
   // Event processing
