@@ -6,7 +6,9 @@
 #include <g4eval/SvtxEvaluator.h>
 #include <g4main/PHG4Reco.h>
 #include <g4mvtx/PHG4MvtxDefs.h>
+#include <g4mvtx/PHG4MvtxDigitizer.h>
 #include <g4mvtx/PHG4MvtxSubsystem.h>
+#include <g4mvtx/PHG4MvtxHitReco.h>
 #include <g4tpc/PHG4TpcSpaceChargeDistortion.h>
 #include "GlobalVariables.C"
 R__LOAD_LIBRARY(libg4eval.so)
@@ -436,6 +438,36 @@ void Svtx_Cells(int verbosity = 0)
   //-----------
   // SVTX cells
   //-----------
+
+  // new storage containers
+  PHG4MvtxHitReco* maps_hits = new PHG4MvtxHitReco("MVTX");
+  maps_hits->Verbosity(verbosity);
+  for (int ilayer = 0; ilayer < n_maps_layer; ilayer++)
+  {
+    // override the default timing window for this layer - default is +/- 5000 ns
+    maps_hits->set_timing_window(ilayer, -5000, 5000);
+  }
+  se->registerSubsystem(maps_hits);
+
+
+  //-------------------------------------------
+  // Digitize the hit energy into ADC
+  //------------------------------------------
+
+  // Mvtx
+  //======
+  PHG4MvtxDigitizer* digimvtx = new PHG4MvtxDigitizer();
+  digimvtx->Verbosity(0);
+  // https://ep-news.web.cern.ch/content/alice-its-upgrade-pixels-quarks
+  // use 100e threshold, * 3.62 eV/e-h = 362 eV
+//  const double scale =  0.95e-06;
+  const double scale = 362e-9;
+//  const double scale = 1e-9;
+
+  digimvtx->set_adc_scale(0, 1, scale);  // default set in code is 0.95e-06, which is 99 electrons
+  digimvtx->set_adc_scale(1, 1, scale);  // default set in code is 0.95e-06, which is 99 electrons
+  digimvtx->set_adc_scale(2, 1, scale);  // default set in code is 0.95e-06, which is 99 electrons
+  se->registerSubsystem(digimvtx);
 
   return;
 }
