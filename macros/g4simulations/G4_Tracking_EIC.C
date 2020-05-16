@@ -34,11 +34,19 @@ double Tracking(PHG4Reco *g4Reco, double radius,
                 const int absorberactive = 0,
                 int verbosity = 0)
 {
+
+  if (nDetectors>4)
+  {
   /* Place electron-going side tracking detectors */
   EGEMSetup(g4Reco);
+  }
 
+
+  if (nDetectors>4)
+  {
   /* Place hadron-going side tracking detectors */
   FGEMSetup(g4Reco);
+  }
 
   /* Place central tracking detectors */
   Svtx(g4Reco, radius);

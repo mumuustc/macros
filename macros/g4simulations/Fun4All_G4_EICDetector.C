@@ -23,6 +23,7 @@
 #include <phpythia8/PHPythia8.h>
 #include <phsartre/PHSartre.h>
 #include <phsartre/PHSartreParticleTrigger.h>
+#include "GlobalVariables.C"
 #include "G4Setup_EICDetector.C"
 #include "G4_Bbc.C"
 #include "G4_Global.C"
@@ -42,11 +43,14 @@ R__LOAD_LIBRARY(libPHSartre.so)
 using namespace std;
 
 int Fun4All_G4_EICDetector(
-                           const int nEvents = 1,
+                           const int nEvents = 10,
                            const char * inputFile = "/sphenix/data/data02/review_2017-08-02/single_particle/spacal2d/fieldmap/G4Hits_sPHENIX_e-_eta0_8GeV-0002.root",
                            const char * outputFile = "G4EICDetector.root"
                            )
 {
+
+  nDetectors = abs(nEvents);
+
   //===============
   // Input options
   //===============
@@ -96,10 +100,10 @@ int Fun4All_G4_EICDetector(
   bool do_bbc = true;
 
   // whether to simulate the Be section of the beam pipe
-  bool do_pipe = true;
+  bool do_pipe = (nDetectors>1);
   // EIC beam pipe extension beyond the Be-section can be turned on with use_forward_pipes = true in G4_Pipe_EIC.C
 
-  bool do_tracking = true;
+  bool do_tracking = (nDetectors>2);
   bool do_tracking_cell = do_tracking && false;
   bool do_tracking_track = do_tracking_cell && true;
   bool do_tracking_eval = do_tracking_track && true; // in order to use this evaluation, please build this analysis module analysis/blob/master/Tracking/FastTrackingEval/
@@ -128,11 +132,11 @@ int Fun4All_G4_EICDetector(
   bool do_hcalout_eval = do_hcalout_cluster && true;
 
   // EICDetector geometry - barrel
-  bool do_DIRC = true;
+  bool do_DIRC = (nDetectors>6);
 
   // EICDetector geometry - 'hadron' direction
-  bool do_RICH = true;
-  bool do_Aerogel = true;
+  bool do_RICH = (nDetectors>7);
+  bool do_Aerogel = (nDetectors>8);
 
   bool do_FEMC = false;
   bool do_FEMC_cell = do_FEMC && true;
@@ -605,6 +609,46 @@ int Fun4All_G4_EICDetector(
   //-----------------
   if (nEvents < 0)
     {
+      return 0;
+    }
+  else if (nEvents > 0)
+    {
+    PHG4Reco *g4 = (PHG4Reco *) se->getSubsysReco("PHG4RECO");
+    g4->InitRun(se->topNode());
+    g4->ApplyDisplayAction();
+//    sprintf(cmd, "/control/execute %s", mac);
+//    g4->ApplyCommand(cmd);
+
+    g4->ApplyCommand("/control/matScan/phi 4 0 360 deg");
+
+    // the span is the delta phi/theta you want to cover, not the maximum
+    // angle. The default is 10 bins in azimuth at theta=0.1 (almost
+    // midrapidity, exact midrapidity we have gaps in the calorimeters and inner tracking
+    float phimin = 0.;
+    float phispan = 360.;
+//    int phibins = 47+1;
+    int phibins = 3+1;
+
+    for (double eta =-5; eta<=+5; eta += .1)
+
+    {
+      const double theta = 2*atan(exp(-eta));
+      const double theta_deg = 90 - theta/TMath::Pi()*180;
+      char cmd[200];
+
+      sprintf(cmd,"/control/matScan/phi %d %f %f deg",phibins,phimin,phispan);
+      cout << "executing " << cmd << endl;
+      g4->ApplyCommand(cmd);
+
+      // set theta range - one at theta=0 which is vertically w.r.t. the beam axis
+      sprintf(cmd,"/control/matScan/theta  %d %f 0 deg",1,theta_deg);
+      cout << "executing " << cmd << endl;
+      g4->ApplyCommand(cmd);
+      // do the scan
+      cout << "starting scan - patience" << endl;
+      g4->ApplyCommand("/control/matScan/scan");
+
+    }
       return 0;
     }
   // if we run the particle generator and use 0 it'll run forever

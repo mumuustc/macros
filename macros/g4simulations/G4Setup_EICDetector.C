@@ -270,7 +270,7 @@ int G4Setup(const int absorberactive = 0,
 
   // swallow all particles coming out of the backend of sPHENIX
   PHG4CylinderSubsystem *blackhole = new PHG4CylinderSubsystem("BH", 1);
-  blackhole->set_double_param("radius",radius + 100); // add 100 cm
+  blackhole->set_double_param("radius",200); // add 100 cm
 
   blackhole->set_int_param("lengthviarapidity",0);
   blackhole->set_double_param("length",g4Reco->GetWorldSizeZ() - no_overlapp); // make it cover the world in length

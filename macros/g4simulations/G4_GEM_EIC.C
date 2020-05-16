@@ -192,6 +192,7 @@ void FGEMSetup(PHG4Reco *g4Reco, const int N_Sector = 8,  //
 int make_LANL_FST_station(string name, PHG4Reco *g4Reco, double zpos, double Rmin,
                           double Rmax)
 {
+  if (!(nDetectors>5)) return 0;
   //  cout
   //      << "make_GEM_station - GEM construction with PHG4SectorSubsystem - make_GEM_station_EdgeReadout  of "
   //      << name << endl;
