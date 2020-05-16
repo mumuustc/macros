@@ -136,7 +136,7 @@ void FGEMSetup(PHG4Reco *g4Reco, const int N_Sector = 8,  //
   ///////////////////////////////////////////////////////////////////////////
 
   name = "FGEM_4";
-  etamax = 3.5;
+  etamax = 3.3;
   etamin = min_eta;
   zpos = 271.0;
   gem = new PHG4SectorSubsystem(name.c_str());

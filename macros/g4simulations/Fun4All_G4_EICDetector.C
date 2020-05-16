@@ -604,51 +604,46 @@ int Fun4All_G4_EICDetector(
   //if (do_dst_compress) DstCompress(out);
   //se->registerOutputManager(out);
 
-  //-----------------
-  // Event processing
-  //-----------------
-  if (nEvents < 0)
+    //-----------------
+    // Event processing
+    //-----------------
+    if (nEvents < 0)
     {
       return 0;
     }
-  else if (nEvents > 0)
+    else if (nEvents > 0)
     {
-    PHG4Reco *g4 = (PHG4Reco *) se->getSubsysReco("PHG4RECO");
-    g4->InitRun(se->topNode());
-    g4->ApplyDisplayAction();
-//    sprintf(cmd, "/control/execute %s", mac);
-//    g4->ApplyCommand(cmd);
+      PHG4Reco *g4 = (PHG4Reco *) se->getSubsysReco("PHG4RECO");
+      g4->InitRun(se->topNode());
+      g4->ApplyDisplayAction();
+      //    sprintf(cmd, "/control/execute %s", mac);
+      //    g4->ApplyCommand(cmd);
+      // the span is the delta phi/theta you want to cover, not the maximum
+      // angle. The default is 10 bins in azimuth at theta=0.1 (almost
+      // midrapidity, exact midrapidity we have gaps in the calorimeters and inner tracking
+      float phimin = 3;
+      float phispan = 360.;
+      int phibins = 101+1;
+      //int phibins = 3 + 1;
 
-    g4->ApplyCommand("/control/matScan/phi 4 0 360 deg");
+      for (double eta = -4.3; eta <= +4.3; eta += .1)
+      {
+        const double theta = 2 * atan(exp(-eta));
+        const double theta_deg = 90 - theta / TMath::Pi() * 180;
+        char cmd[200];
 
-    // the span is the delta phi/theta you want to cover, not the maximum
-    // angle. The default is 10 bins in azimuth at theta=0.1 (almost
-    // midrapidity, exact midrapidity we have gaps in the calorimeters and inner tracking
-    float phimin = 0.;
-    float phispan = 360.;
-//    int phibins = 47+1;
-    int phibins = 3+1;
+        sprintf(cmd, "/control/matScan/phi %d %f %f deg", phibins, phimin, phispan);
+        cout << "executing " << cmd << endl;
+        g4->ApplyCommand(cmd);
 
-    for (double eta =-5; eta<=+5; eta += .1)
-
-    {
-      const double theta = 2*atan(exp(-eta));
-      const double theta_deg = 90 - theta/TMath::Pi()*180;
-      char cmd[200];
-
-      sprintf(cmd,"/control/matScan/phi %d %f %f deg",phibins,phimin,phispan);
-      cout << "executing " << cmd << endl;
-      g4->ApplyCommand(cmd);
-
-      // set theta range - one at theta=0 which is vertically w.r.t. the beam axis
-      sprintf(cmd,"/control/matScan/theta  %d %f 0 deg",1,theta_deg);
-      cout << "executing " << cmd << endl;
-      g4->ApplyCommand(cmd);
-      // do the scan
-      cout << "starting scan - patience" << endl;
-      g4->ApplyCommand("/control/matScan/scan");
-
-    }
+        // set theta range - one at theta=0 which is vertically w.r.t. the beam axis
+        sprintf(cmd, "/control/matScan/theta  %d %f 0 deg", 1, theta_deg);
+        cout << "executing " << cmd << endl;
+        g4->ApplyCommand(cmd);
+        // do the scan
+        cout << "starting scan - patience" << endl;
+        g4->ApplyCommand("/control/matScan/scan");
+      }
       return 0;
     }
   // if we run the particle generator and use 0 it'll run forever
