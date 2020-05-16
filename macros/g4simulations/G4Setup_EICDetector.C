@@ -174,6 +174,7 @@ int G4Setup(const int absorberactive = 0,
 // uncomment to set QGSP_BERT_HP physics list for productions 
 // (default is QGSP_BERT for speed)
   //  g4Reco->SetPhysicsList("QGSP_BERT_HP"); 
+  g4Reco->SetWorldMaterial("G4_Galactic");
  
 #if ROOT_VERSION_CODE >= ROOT_VERSION(6,00,0)
   if (decayType != EDecayType::kAll) 

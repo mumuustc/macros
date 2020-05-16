@@ -100,28 +100,28 @@ int Fun4All_G4_EICDetector(
   // EIC beam pipe extension beyond the Be-section can be turned on with use_forward_pipes = true in G4_Pipe_EIC.C
 
   bool do_tracking = true;
-  bool do_tracking_cell = do_tracking && true;
+  bool do_tracking_cell = do_tracking && false;
   bool do_tracking_track = do_tracking_cell && true;
   bool do_tracking_eval = do_tracking_track && true; // in order to use this evaluation, please build this analysis module analysis/blob/master/Tracking/FastTrackingEval/
   bool do_vertex_finding = false; // this option exclude vertex in the track fitting and use RAVE to reconstruct primary and 2ndary vertexes
 
   bool do_pstof = false;
 
-  bool do_cemc = true;
+  bool do_cemc = false;
   bool do_cemc_cell = do_cemc && true;
   bool do_cemc_twr = do_cemc_cell && true;
   bool do_cemc_cluster = do_cemc_twr && true;
   bool do_cemc_eval = do_cemc_cluster && true;
 
-  bool do_hcalin = true;
+  bool do_hcalin = false;
   bool do_hcalin_cell = do_hcalin && true;
   bool do_hcalin_twr = do_hcalin_cell && true;
   bool do_hcalin_cluster = do_hcalin_twr && true;
   bool do_hcalin_eval = do_hcalin_cluster && true;
 
-  bool do_magnet = true;
+  bool do_magnet = false;
 
-  bool do_hcalout = true;
+  bool do_hcalout = false;
   bool do_hcalout_cell = do_hcalout && true;
   bool do_hcalout_twr = do_hcalout_cell && true;
   bool do_hcalout_cluster = do_hcalout_twr && true;
@@ -134,26 +134,26 @@ int Fun4All_G4_EICDetector(
   bool do_RICH = true;
   bool do_Aerogel = true;
 
-  bool do_FEMC = true;
+  bool do_FEMC = false;
   bool do_FEMC_cell = do_FEMC && true;
   bool do_FEMC_twr = do_FEMC_cell && true;
   bool do_FEMC_cluster = do_FEMC_twr && true;
   bool do_FEMC_eval = do_FEMC_cluster && true;
 
-  bool do_FHCAL = true;
+  bool do_FHCAL = false;
   bool do_FHCAL_cell = do_FHCAL && true;
   bool do_FHCAL_twr = do_FHCAL_cell && true;
   bool do_FHCAL_cluster = do_FHCAL_twr && true;
   bool do_FHCAL_eval = do_FHCAL_cluster && true;
 
-  // EICDetector geometry - 'electron' direction
-  bool do_EEMC = true;
+  // EICDetector false - 'electron' direction
+  bool do_EEMC = false;
   bool do_EEMC_cell = do_EEMC && true;
   bool do_EEMC_twr = do_EEMC_cell && true;
   bool do_EEMC_cluster = do_EEMC_twr && true;
   bool do_EEMC_eval = do_EEMC_cluster && true;
 
-  bool do_plugdoor = true;
+  bool do_plugdoor = false;
 
   // Other options
   bool do_global = true;
@@ -166,7 +166,7 @@ int Fun4All_G4_EICDetector(
   bool do_jet_reco = false;
   bool do_jet_eval = do_jet_reco && true;
 
-  bool do_fwd_jet_reco = true;
+  bool do_fwd_jet_reco = false;
   bool do_fwd_jet_eval = do_fwd_jet_reco && true;
 
   // HI Jet Reco for jet simulations in Au+Au (default is false for
