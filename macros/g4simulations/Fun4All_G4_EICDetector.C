@@ -45,7 +45,7 @@ R__LOAD_LIBRARY(libSynRadAna.so)
 using namespace std;
 
 int Fun4All_G4_EICDetector(
-                           const int nEvents = 10,
+                           const int nEvents = 10000,
 //                           const char * inputFile = "data/SynRad Example Particle log.csv",
 //                           const char * inputFile = "data/Particle log facet 18952 +4.5m.csv",
                            const char * inputFile = "data/23April2020_incidentFlux200- -200 cm.csv",
@@ -171,7 +171,7 @@ int Fun4All_G4_EICDetector(
   bool do_jet_reco = false;
   bool do_jet_eval = do_jet_reco && true;
 
-  bool do_fwd_jet_reco = true;
+  bool do_fwd_jet_reco = false;
   bool do_fwd_jet_eval = do_fwd_jet_reco && true;
 
   // HI Jet Reco for jet simulations in Au+Au (default is false for
@@ -222,7 +222,7 @@ int Fun4All_G4_EICDetector(
   // this would be:
   //  rc->set_IntFlag("RANDOMSEED",PHRandomSeed());
   // or set it to a fixed value so you can debug your code
-   rc->set_IntFlag("RANDOMSEED", 12345);
+//   rc->set_IntFlag("RANDOMSEED", 12345);
 
   //-----------------
   // Event generation
