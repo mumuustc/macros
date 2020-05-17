@@ -626,7 +626,7 @@ int Fun4All_G4_EICDetector(
       int phibins = 101+1;
       //int phibins = 3 + 1;
 
-      for (double eta = -4.3; eta <= +4.3; eta += .1)
+      for (double eta = -4.3; eta <= +4.3; eta += .02)
       {
         const double theta = 2 * atan(exp(-eta));
         const double theta_deg = 90 - theta / TMath::Pi() * 180;
