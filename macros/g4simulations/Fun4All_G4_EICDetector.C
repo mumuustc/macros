@@ -49,8 +49,8 @@ R__LOAD_LIBRARY(libSynRadAna.so)
 using namespace std;
 
 int Fun4All_G4_EICDetector(
-    const int nEvents = 1000000,
-    //    const int nEvents = 1000,
+        const int nEvents = 100000000,
+//    const int nEvents = 1000,
     //                           const char * inputFile = "data/SynRad Example Particle log.csv",
     const char *inputFile = "data/Particle log facet 18952 +4.5m.csv",
     //                           const char * inputFile = "data/23April2020_incidentFlux200- -200 cm.csv",
@@ -70,25 +70,43 @@ int Fun4All_G4_EICDetector(
   // Input options
   //===============
 
-  //  // this module is needed to read the EICTree style records into our G4 sims
-  ReadSynRadFiles *eicr = new ReadSynRadFiles();
-  eicr->OpenInputFile(inputFile);
-  eicr->SetEntryPerEvent(1);
-  //  eicr->Verbosity(1);
-  se->registerSubsystem(eicr);
+  //  //  // this module is needed to read the EICTree style records into our G4 sims
+  //  ReadSynRadFiles *eicr = new ReadSynRadFiles();
+  //  eicr->OpenInputFile(inputFile);
+  //  eicr->SetEntryPerEvent(1);
+  //  //  eicr->Verbosity(1);
+  //  se->registerSubsystem(eicr);
+  //
+  //  // read-in HepMC events to Geant4 if there is any
+  //  HepMCNodeReader *hr = new HepMCNodeReader();
+  //  se->registerSubsystem(hr);
 
-  // read-in HepMC events to Geant4 if there is any
-  HepMCNodeReader *hr = new HepMCNodeReader();
-  se->registerSubsystem(hr);
+  //  //  //   particle gun
+  //    PHG4ParticleGun *gun = new PHG4ParticleGun("PGUN");
+  //    //  gun->set_name("anti_proton");
+  //    gun->set_name("gamma");
+  //    //  gun->set_name("proton");
+  //    gun->set_vtx(0, 0, 450);
+  //    gun->set_mom(0, 0, -100);
+  //    se->registerSubsystem(gun);
 
-  //  //   particle gun
-  //  PHG4ParticleGun *gun = new PHG4ParticleGun("PGUN");
-  //  //  gun->set_name("anti_proton");
-  //  gun->set_name("mu-");
-  //  //  gun->set_name("proton");
-  //  gun->set_vtx(0, 0, 450);
-  //  gun->set_mom(0, 0, -100);
-  //  se->registerSubsystem(gun);
+  PHG4SimpleEventGenerator *gen = new PHG4SimpleEventGenerator();
+  gen->add_particles("gamma", 1);  // mu+,e+,proton,pi+,Upsilon
+                                   //gen->add_particles("pi+",100); // 100 pion option
+
+  gen->set_vertex_distribution_function(PHG4SimpleEventGenerator::Uniform,
+                                        PHG4SimpleEventGenerator::Uniform,
+                                        PHG4SimpleEventGenerator::Uniform);
+  gen->set_vertex_distribution_mean(0.0, 0.0, 450.0);
+  gen->set_vertex_distribution_width(0.1, 0.1, 0.0);
+
+  gen->set_eta_range(-100, -100);
+  gen->set_phi_range(-1.0 * TMath::Pi(), 1.0 * TMath::Pi());
+  //gen->set_pt_range(0.1, 50.0);
+  gen->set_p_range(0e-6, 100e-6);
+  gen->Embed(1);
+  gen->Verbosity(0);
+  se->registerSubsystem(gen);
 
   // Fun4All G4 module
   PHG4Reco *g4Reco = new PHG4Reco();
@@ -103,10 +121,10 @@ int Fun4All_G4_EICDetector(
   // shape of our world - it is a box
   g4Reco->SetWorldShape("G4BOX");
   // this is what our world is filled with
-  g4Reco->SetWorldMaterial("G4_AIR");
+  g4Reco->SetWorldMaterial("G4_Galactic");
   // Geant4 Physics list to use
   g4Reco->SetPhysicsList("FTFP_BERT");
-  g4Reco->SetPhysicsList("FTFP_BERT_HP");
+    g4Reco->SetPhysicsList("FTFP_BERT_HP");
 
   g4Reco->ApplyCommand("/control/verbose 2");
   g4Reco->ApplyCommand("/run/verbose 2");
@@ -166,13 +184,13 @@ int Fun4All_G4_EICDetector(
   Fun4AllDstOutputManager *out = new Fun4AllDstOutputManager("DSTOUT", outputFile);
   se->registerOutputManager(out);
 
-  {
-    SynRadAna *ana = new SynRadAna();
-    ana->AddNode("SVTX");
-    ana->AddNode("PIPE");
-    //    ana->Verbosity(2);
-    se->registerSubsystem(ana);
-  }
+//  {
+//    SynRadAna *ana = new SynRadAna();
+//    ana->AddNode("SVTX");
+//    ana->AddNode("PIPE");
+//    //    ana->Verbosity(2);
+//    se->registerSubsystem(ana);
+//  }
 
   //-----------------
   // Event processing
