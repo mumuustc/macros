@@ -159,6 +159,8 @@ int Fun4All_G4_EICDetector(
     box->OverlapCheck(true);
     g4Reco->registerSubsystem(box);
 
+  }
+  {
 
     PHG4BlockSubsystem *box = new PHG4BlockSubsystem("PIPE-Au");
     box->SuperDetector("PIPE");
