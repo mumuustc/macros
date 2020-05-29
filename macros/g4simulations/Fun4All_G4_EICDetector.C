@@ -161,14 +161,28 @@ int Fun4All_G4_EICDetector(
 
   }
   {
+    //https://avs.scitation.org/doi/10.1116/1.5037023
 
-    PHG4BlockSubsystem *box = new PHG4BlockSubsystem("PIPE_Au", 1);
-    box->SuperDetector("PIPE_Au");
+    PHG4BlockSubsystem *box = new PHG4BlockSubsystem("PIPE_NEG", 0);
+    box->SuperDetector("PIPE_NEG");
     box->set_double_param("size_x", xsize);
     box->set_double_param("size_y", ysize);
-    box->set_double_param("size_z", 2e-4);
+    box->set_double_param("size_z", 0.05e-4);
     box->set_double_param("place_z", 0.2);       // shift box so we do not create particles in its center and shift by 10 so we can see the track of the incoming particle
-    box->set_string_param("material", "G4_Au");  // material of box
+    box->set_string_param("material", "G4_Pd");  // material of box
+    box->SetActive();                            // it is an active volume - save G4Hits
+    box->OverlapCheck(true);
+    g4Reco->registerSubsystem(box);
+  }
+  {
+
+    PHG4BlockSubsystem *box = new PHG4BlockSubsystem("PIPE_NEG", 1);
+    box->SuperDetector("PIPE_NEG");
+    box->set_double_param("size_x", xsize);
+    box->set_double_param("size_y", ysize);
+    box->set_double_param("size_z", 1.3e-4);
+    box->set_double_param("place_z", 0.3);       // shift box so we do not create particles in its center and shift by 10 so we can see the track of the incoming particle
+    box->set_string_param("material", "G4_Ti");  // material of box
     box->SetActive();                            // it is an active volume - save G4Hits
     box->OverlapCheck(true);
     g4Reco->registerSubsystem(box);
@@ -188,7 +202,7 @@ int Fun4All_G4_EICDetector(
     ana->set_save_vertex(true);
     ana->AddNode("SVTX");
     ana->AddNode("PIPE");
-    ana->AddNode("PIPE_Au");
+    ana->AddNode("PIPE_NEG");
     se->registerSubsystem(ana);
   }
   // for single particle generators we just need something which drives
