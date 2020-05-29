@@ -1,24 +1,39 @@
 void PhotonConversion()
 {
 //=========Macro generated from canvas: PhotonConversion/PhotonConversion
-//=========  (Fri May 29 17:33:37 2020) by ROOT version 6.16/00
+//=========  (Fri May 29 17:38:22 2020) by ROOT version 6.16/00
    TCanvas *PhotonConversion = new TCanvas("PhotonConversion", "PhotonConversion",0,0,1000,1000);
+   gStyle->SetOptFit(1);
+   gStyle->SetOptStat(0);
+   gStyle->SetOptTitle(0);
    PhotonConversion->SetHighLightColor(2);
    PhotonConversion->Range(0,0,1,1);
    PhotonConversion->SetFillColor(0);
    PhotonConversion->SetBorderMode(0);
    PhotonConversion->SetBorderSize(2);
+   PhotonConversion->SetTickx(1);
+   PhotonConversion->SetTicky(1);
+   PhotonConversion->SetLeftMargin(0.16);
+   PhotonConversion->SetRightMargin(0.05);
+   PhotonConversion->SetTopMargin(0.05);
+   PhotonConversion->SetBottomMargin(0.16);
    PhotonConversion->SetFrameBorderMode(0);
   
 // ------------>Primitives in pad: PhotonConversion_1
    TPad *PhotonConversion_1 = new TPad("PhotonConversion_1", "PhotonConversion_1",0.01,0.01,0.99,0.99);
    PhotonConversion_1->Draw();
    PhotonConversion_1->cd();
-   PhotonConversion_1->Range(-0.125,0.4043753,1.125,6.572515);
+   PhotonConversion_1->Range(-0.2025316,0.02179455,1.063291,6.268012);
    PhotonConversion_1->SetFillColor(0);
    PhotonConversion_1->SetBorderMode(0);
    PhotonConversion_1->SetBorderSize(2);
    PhotonConversion_1->SetLogy();
+   PhotonConversion_1->SetTickx(1);
+   PhotonConversion_1->SetTicky(1);
+   PhotonConversion_1->SetLeftMargin(0.16);
+   PhotonConversion_1->SetRightMargin(0.05);
+   PhotonConversion_1->SetTopMargin(0.05);
+   PhotonConversion_1->SetBottomMargin(0.16);
    PhotonConversion_1->SetFrameBorderMode(0);
    PhotonConversion_1->SetFrameBorderMode(0);
    
@@ -125,23 +140,6 @@ void PhotonConversion()
    hPhotonSiliconConverted__5->SetBinContent(100,476598);
    hPhotonSiliconConverted__5->SetBinContent(101,645026);
    hPhotonSiliconConverted__5->SetEntries(1220054);
-   
-   TPaveStats *ptstats = new TPaveStats(0.78,0.775,0.98,0.935,"brNDC");
-   ptstats->SetName("stats");
-   ptstats->SetBorderSize(1);
-   ptstats->SetFillColor(0);
-   ptstats->SetTextAlign(12);
-   ptstats->SetTextFont(42);
-   TText *ptstats_LaTex = ptstats->AddText("hPhotonSiliconConverted");
-   ptstats_LaTex->SetTextSize(0.0368);
-   ptstats_LaTex = ptstats->AddText("Entries = 1220054");
-   ptstats_LaTex = ptstats->AddText("Mean  = 0.8631");
-   ptstats_LaTex = ptstats->AddText("Std Dev   = 0.3234");
-   ptstats->SetOptStat(1111);
-   ptstats->SetOptFit(0);
-   ptstats->Draw();
-   hPhotonSiliconConverted__5->GetListOfFunctions()->Add(ptstats);
-   ptstats->SetParent(hPhotonSiliconConverted__5);
 
    Int_t ci;      // for color index setting
    TColor *color; // for color definition with alpha
@@ -151,19 +149,23 @@ void PhotonConversion()
 
    ci = TColor::GetColor("#000099");
    hPhotonSiliconConverted__5->SetLineColor(ci);
+   hPhotonSiliconConverted__5->SetLineWidth(2);
+   hPhotonSiliconConverted__5->SetMarkerStyle(20);
+   hPhotonSiliconConverted__5->SetMarkerSize(1.2);
    hPhotonSiliconConverted__5->GetXaxis()->SetTitle("Fraction of photon energy ionized");
    hPhotonSiliconConverted__5->GetXaxis()->SetLabelFont(42);
-   hPhotonSiliconConverted__5->GetXaxis()->SetLabelSize(0.035);
-   hPhotonSiliconConverted__5->GetXaxis()->SetTitleSize(0.035);
-   hPhotonSiliconConverted__5->GetXaxis()->SetTitleOffset(1);
+   hPhotonSiliconConverted__5->GetXaxis()->SetLabelSize(0.05);
+   hPhotonSiliconConverted__5->GetXaxis()->SetTitleSize(0.05);
+   hPhotonSiliconConverted__5->GetXaxis()->SetTitleOffset(1.4);
    hPhotonSiliconConverted__5->GetXaxis()->SetTitleFont(42);
    hPhotonSiliconConverted__5->GetYaxis()->SetLabelFont(42);
-   hPhotonSiliconConverted__5->GetYaxis()->SetLabelSize(0.035);
-   hPhotonSiliconConverted__5->GetYaxis()->SetTitleSize(0.035);
+   hPhotonSiliconConverted__5->GetYaxis()->SetLabelSize(0.05);
+   hPhotonSiliconConverted__5->GetYaxis()->SetTitleSize(0.05);
+   hPhotonSiliconConverted__5->GetYaxis()->SetTitleOffset(1.4);
    hPhotonSiliconConverted__5->GetYaxis()->SetTitleFont(42);
    hPhotonSiliconConverted__5->GetZaxis()->SetLabelFont(42);
-   hPhotonSiliconConverted__5->GetZaxis()->SetLabelSize(0.035);
-   hPhotonSiliconConverted__5->GetZaxis()->SetTitleSize(0.035);
+   hPhotonSiliconConverted__5->GetZaxis()->SetLabelSize(0.05);
+   hPhotonSiliconConverted__5->GetZaxis()->SetTitleSize(0.05);
    hPhotonSiliconConverted__5->GetZaxis()->SetTitleOffset(1);
    hPhotonSiliconConverted__5->GetZaxis()->SetTitleFont(42);
    hPhotonSiliconConverted__5->Draw("");
@@ -278,19 +280,23 @@ void PhotonConversion()
 
    ci = TColor::GetColor("#009900");
    hPhotonBeConverted__6->SetLineColor(ci);
+   hPhotonBeConverted__6->SetLineWidth(2);
+   hPhotonBeConverted__6->SetMarkerStyle(20);
+   hPhotonBeConverted__6->SetMarkerSize(1.2);
    hPhotonBeConverted__6->GetXaxis()->SetTitle("Fraction of photon energy ionized");
    hPhotonBeConverted__6->GetXaxis()->SetLabelFont(42);
-   hPhotonBeConverted__6->GetXaxis()->SetLabelSize(0.035);
-   hPhotonBeConverted__6->GetXaxis()->SetTitleSize(0.035);
-   hPhotonBeConverted__6->GetXaxis()->SetTitleOffset(1);
+   hPhotonBeConverted__6->GetXaxis()->SetLabelSize(0.05);
+   hPhotonBeConverted__6->GetXaxis()->SetTitleSize(0.05);
+   hPhotonBeConverted__6->GetXaxis()->SetTitleOffset(1.4);
    hPhotonBeConverted__6->GetXaxis()->SetTitleFont(42);
    hPhotonBeConverted__6->GetYaxis()->SetLabelFont(42);
-   hPhotonBeConverted__6->GetYaxis()->SetLabelSize(0.035);
-   hPhotonBeConverted__6->GetYaxis()->SetTitleSize(0.035);
+   hPhotonBeConverted__6->GetYaxis()->SetLabelSize(0.05);
+   hPhotonBeConverted__6->GetYaxis()->SetTitleSize(0.05);
+   hPhotonBeConverted__6->GetYaxis()->SetTitleOffset(1.4);
    hPhotonBeConverted__6->GetYaxis()->SetTitleFont(42);
    hPhotonBeConverted__6->GetZaxis()->SetLabelFont(42);
-   hPhotonBeConverted__6->GetZaxis()->SetLabelSize(0.035);
-   hPhotonBeConverted__6->GetZaxis()->SetTitleSize(0.035);
+   hPhotonBeConverted__6->GetZaxis()->SetLabelSize(0.05);
+   hPhotonBeConverted__6->GetZaxis()->SetTitleSize(0.05);
    hPhotonBeConverted__6->GetZaxis()->SetTitleOffset(1);
    hPhotonBeConverted__6->GetZaxis()->SetTitleFont(42);
    hPhotonBeConverted__6->Draw("same");
@@ -405,25 +411,29 @@ void PhotonConversion()
 
    ci = TColor::GetColor("#990000");
    hPhotonNEGConverted__7->SetLineColor(ci);
+   hPhotonNEGConverted__7->SetLineWidth(2);
+   hPhotonNEGConverted__7->SetMarkerStyle(20);
+   hPhotonNEGConverted__7->SetMarkerSize(1.2);
    hPhotonNEGConverted__7->GetXaxis()->SetTitle("Fraction of photon energy ionized");
    hPhotonNEGConverted__7->GetXaxis()->SetLabelFont(42);
-   hPhotonNEGConverted__7->GetXaxis()->SetLabelSize(0.035);
-   hPhotonNEGConverted__7->GetXaxis()->SetTitleSize(0.035);
-   hPhotonNEGConverted__7->GetXaxis()->SetTitleOffset(1);
+   hPhotonNEGConverted__7->GetXaxis()->SetLabelSize(0.05);
+   hPhotonNEGConverted__7->GetXaxis()->SetTitleSize(0.05);
+   hPhotonNEGConverted__7->GetXaxis()->SetTitleOffset(1.4);
    hPhotonNEGConverted__7->GetXaxis()->SetTitleFont(42);
    hPhotonNEGConverted__7->GetYaxis()->SetLabelFont(42);
-   hPhotonNEGConverted__7->GetYaxis()->SetLabelSize(0.035);
-   hPhotonNEGConverted__7->GetYaxis()->SetTitleSize(0.035);
+   hPhotonNEGConverted__7->GetYaxis()->SetLabelSize(0.05);
+   hPhotonNEGConverted__7->GetYaxis()->SetTitleSize(0.05);
+   hPhotonNEGConverted__7->GetYaxis()->SetTitleOffset(1.4);
    hPhotonNEGConverted__7->GetYaxis()->SetTitleFont(42);
    hPhotonNEGConverted__7->GetZaxis()->SetLabelFont(42);
-   hPhotonNEGConverted__7->GetZaxis()->SetLabelSize(0.035);
-   hPhotonNEGConverted__7->GetZaxis()->SetTitleSize(0.035);
+   hPhotonNEGConverted__7->GetZaxis()->SetLabelSize(0.05);
+   hPhotonNEGConverted__7->GetZaxis()->SetTitleSize(0.05);
    hPhotonNEGConverted__7->GetZaxis()->SetTitleOffset(1);
    hPhotonNEGConverted__7->GetZaxis()->SetTitleFont(42);
    hPhotonNEGConverted__7->Draw("same");
    
    TLegend *leg = new TLegend(0.2,0.7,0.8,0.9,NULL,"brNDC");
-   leg->SetBorderSize(1);
+   leg->SetBorderSize(0);
    leg->SetLineColor(1);
    leg->SetLineStyle(1);
    leg->SetLineWidth(1);
@@ -447,7 +457,7 @@ void PhotonConversion()
    ci = TColor::GetColor("#990000");
    entry->SetLineColor(ci);
    entry->SetLineStyle(1);
-   entry->SetLineWidth(1);
+   entry->SetLineWidth(2);
    entry->SetMarkerColor(1);
    entry->SetMarkerStyle(21);
    entry->SetMarkerSize(1);
@@ -462,7 +472,7 @@ void PhotonConversion()
    ci = TColor::GetColor("#009900");
    entry->SetLineColor(ci);
    entry->SetLineStyle(1);
-   entry->SetLineWidth(1);
+   entry->SetLineWidth(2);
    entry->SetMarkerColor(1);
    entry->SetMarkerStyle(21);
    entry->SetMarkerSize(1);
@@ -477,7 +487,7 @@ void PhotonConversion()
    ci = TColor::GetColor("#000099");
    entry->SetLineColor(ci);
    entry->SetLineStyle(1);
-   entry->SetLineWidth(1);
+   entry->SetLineWidth(2);
    entry->SetMarkerColor(1);
    entry->SetMarkerStyle(21);
    entry->SetMarkerSize(1);

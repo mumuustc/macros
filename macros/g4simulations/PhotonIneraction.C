@@ -1,23 +1,38 @@
 void PhotonIneraction()
 {
 //=========Macro generated from canvas: PhotonIneraction/PhotonIneraction
-//=========  (Fri May 29 17:33:25 2020) by ROOT version 6.16/00
+//=========  (Fri May 29 17:38:10 2020) by ROOT version 6.16/00
    TCanvas *PhotonIneraction = new TCanvas("PhotonIneraction", "PhotonIneraction",0,0,1000,1000);
+   gStyle->SetOptFit(1);
+   gStyle->SetOptStat(0);
+   gStyle->SetOptTitle(0);
    PhotonIneraction->SetHighLightColor(2);
    PhotonIneraction->Range(0,0,1,1);
    PhotonIneraction->SetFillColor(0);
    PhotonIneraction->SetBorderMode(0);
    PhotonIneraction->SetBorderSize(2);
+   PhotonIneraction->SetTickx(1);
+   PhotonIneraction->SetTicky(1);
+   PhotonIneraction->SetLeftMargin(0.16);
+   PhotonIneraction->SetRightMargin(0.05);
+   PhotonIneraction->SetTopMargin(0.05);
+   PhotonIneraction->SetBottomMargin(0.16);
    PhotonIneraction->SetFrameBorderMode(0);
   
 // ------------>Primitives in pad: PhotonIneraction_1
    TPad *PhotonIneraction_1 = new TPad("PhotonIneraction_1", "PhotonIneraction_1",0.01,0.01,0.99,0.99);
    PhotonIneraction_1->Draw();
    PhotonIneraction_1->cd();
-   PhotonIneraction_1->Range(-6.25,-2062.6,56.25,18563.4);
+   PhotonIneraction_1->Range(-10.12658,-3341.934,53.16456,17545.15);
    PhotonIneraction_1->SetFillColor(0);
    PhotonIneraction_1->SetBorderMode(0);
    PhotonIneraction_1->SetBorderSize(2);
+   PhotonIneraction_1->SetTickx(1);
+   PhotonIneraction_1->SetTicky(1);
+   PhotonIneraction_1->SetLeftMargin(0.16);
+   PhotonIneraction_1->SetRightMargin(0.05);
+   PhotonIneraction_1->SetTopMargin(0.05);
+   PhotonIneraction_1->SetBottomMargin(0.16);
    PhotonIneraction_1->SetFrameBorderMode(0);
    PhotonIneraction_1->SetFrameBorderMode(0);
    
@@ -1025,42 +1040,24 @@ void PhotonIneraction()
    hAllPhoton__1->SetMinimum(0);
    hAllPhoton__1->SetMaximum(16500.8);
    hAllPhoton__1->SetEntries(1e+07);
-   
-   TPaveStats *ptstats = new TPaveStats(0.78,0.775,0.98,0.935,"brNDC");
-   ptstats->SetName("stats");
-   ptstats->SetBorderSize(1);
-   ptstats->SetFillColor(0);
-   ptstats->SetTextAlign(12);
-   ptstats->SetTextFont(42);
-   TText *ptstats_LaTex = ptstats->AddText("hAllPhoton");
-   ptstats_LaTex->SetTextSize(0.0368);
-   ptstats_LaTex = ptstats->AddText("Entries =          1e+07");
-   ptstats_LaTex = ptstats->AddText("Mean  =  25.01");
-   ptstats_LaTex = ptstats->AddText("Std Dev   =  14.43");
-   ptstats->SetOptStat(1111);
-   ptstats->SetOptFit(0);
-   ptstats->Draw();
-   hAllPhoton__1->GetListOfFunctions()->Add(ptstats);
-   ptstats->SetParent(hAllPhoton__1);
-
-   Int_t ci;      // for color index setting
-   TColor *color; // for color definition with alpha
-   ci = TColor::GetColor("#000099");
-   hAllPhoton__1->SetLineColor(ci);
+   hAllPhoton__1->SetLineWidth(2);
+   hAllPhoton__1->SetMarkerStyle(20);
+   hAllPhoton__1->SetMarkerSize(1.2);
    hAllPhoton__1->GetXaxis()->SetTitle("Photon Energy [keV]");
    hAllPhoton__1->GetXaxis()->SetRange(1,500);
    hAllPhoton__1->GetXaxis()->SetLabelFont(42);
-   hAllPhoton__1->GetXaxis()->SetLabelSize(0.035);
-   hAllPhoton__1->GetXaxis()->SetTitleSize(0.035);
-   hAllPhoton__1->GetXaxis()->SetTitleOffset(1);
+   hAllPhoton__1->GetXaxis()->SetLabelSize(0.05);
+   hAllPhoton__1->GetXaxis()->SetTitleSize(0.05);
+   hAllPhoton__1->GetXaxis()->SetTitleOffset(1.4);
    hAllPhoton__1->GetXaxis()->SetTitleFont(42);
    hAllPhoton__1->GetYaxis()->SetLabelFont(42);
-   hAllPhoton__1->GetYaxis()->SetLabelSize(0.035);
-   hAllPhoton__1->GetYaxis()->SetTitleSize(0.035);
+   hAllPhoton__1->GetYaxis()->SetLabelSize(0.05);
+   hAllPhoton__1->GetYaxis()->SetTitleSize(0.05);
+   hAllPhoton__1->GetYaxis()->SetTitleOffset(1.4);
    hAllPhoton__1->GetYaxis()->SetTitleFont(42);
    hAllPhoton__1->GetZaxis()->SetLabelFont(42);
-   hAllPhoton__1->GetZaxis()->SetLabelSize(0.035);
-   hAllPhoton__1->GetZaxis()->SetTitleSize(0.035);
+   hAllPhoton__1->GetZaxis()->SetLabelSize(0.05);
+   hAllPhoton__1->GetZaxis()->SetTitleSize(0.05);
    hAllPhoton__1->GetZaxis()->SetTitleOffset(1);
    hAllPhoton__1->GetZaxis()->SetTitleFont(42);
    hAllPhoton__1->Draw("");
@@ -2048,25 +2045,31 @@ void PhotonIneraction()
    hPhotonSilicon__2->SetBinContent(1000,120);
    hPhotonSilicon__2->SetEntries(1220054);
 
+   Int_t ci;      // for color index setting
+   TColor *color; // for color definition with alpha
    ci = 1181;
    color = new TColor(ci, 0, 0, 0.6, " ", 0.3);
    hPhotonSilicon__2->SetFillColor(ci);
 
    ci = TColor::GetColor("#000099");
    hPhotonSilicon__2->SetLineColor(ci);
+   hPhotonSilicon__2->SetLineWidth(2);
+   hPhotonSilicon__2->SetMarkerStyle(20);
+   hPhotonSilicon__2->SetMarkerSize(1.2);
    hPhotonSilicon__2->GetXaxis()->SetTitle("Photon Energy [keV]");
    hPhotonSilicon__2->GetXaxis()->SetLabelFont(42);
-   hPhotonSilicon__2->GetXaxis()->SetLabelSize(0.035);
-   hPhotonSilicon__2->GetXaxis()->SetTitleSize(0.035);
-   hPhotonSilicon__2->GetXaxis()->SetTitleOffset(1);
+   hPhotonSilicon__2->GetXaxis()->SetLabelSize(0.05);
+   hPhotonSilicon__2->GetXaxis()->SetTitleSize(0.05);
+   hPhotonSilicon__2->GetXaxis()->SetTitleOffset(1.4);
    hPhotonSilicon__2->GetXaxis()->SetTitleFont(42);
    hPhotonSilicon__2->GetYaxis()->SetLabelFont(42);
-   hPhotonSilicon__2->GetYaxis()->SetLabelSize(0.035);
-   hPhotonSilicon__2->GetYaxis()->SetTitleSize(0.035);
+   hPhotonSilicon__2->GetYaxis()->SetLabelSize(0.05);
+   hPhotonSilicon__2->GetYaxis()->SetTitleSize(0.05);
+   hPhotonSilicon__2->GetYaxis()->SetTitleOffset(1.4);
    hPhotonSilicon__2->GetYaxis()->SetTitleFont(42);
    hPhotonSilicon__2->GetZaxis()->SetLabelFont(42);
-   hPhotonSilicon__2->GetZaxis()->SetLabelSize(0.035);
-   hPhotonSilicon__2->GetZaxis()->SetTitleSize(0.035);
+   hPhotonSilicon__2->GetZaxis()->SetLabelSize(0.05);
+   hPhotonSilicon__2->GetZaxis()->SetTitleSize(0.05);
    hPhotonSilicon__2->GetZaxis()->SetTitleOffset(1);
    hPhotonSilicon__2->GetZaxis()->SetTitleFont(42);
    hPhotonSilicon__2->Draw("same");
@@ -3078,19 +3081,23 @@ void PhotonIneraction()
 
    ci = TColor::GetColor("#009900");
    hPhotonBe__3->SetLineColor(ci);
+   hPhotonBe__3->SetLineWidth(2);
+   hPhotonBe__3->SetMarkerStyle(20);
+   hPhotonBe__3->SetMarkerSize(1.2);
    hPhotonBe__3->GetXaxis()->SetTitle("Photon Energy [keV]");
    hPhotonBe__3->GetXaxis()->SetLabelFont(42);
-   hPhotonBe__3->GetXaxis()->SetLabelSize(0.035);
-   hPhotonBe__3->GetXaxis()->SetTitleSize(0.035);
-   hPhotonBe__3->GetXaxis()->SetTitleOffset(1);
+   hPhotonBe__3->GetXaxis()->SetLabelSize(0.05);
+   hPhotonBe__3->GetXaxis()->SetTitleSize(0.05);
+   hPhotonBe__3->GetXaxis()->SetTitleOffset(1.4);
    hPhotonBe__3->GetXaxis()->SetTitleFont(42);
    hPhotonBe__3->GetYaxis()->SetLabelFont(42);
-   hPhotonBe__3->GetYaxis()->SetLabelSize(0.035);
-   hPhotonBe__3->GetYaxis()->SetTitleSize(0.035);
+   hPhotonBe__3->GetYaxis()->SetLabelSize(0.05);
+   hPhotonBe__3->GetYaxis()->SetTitleSize(0.05);
+   hPhotonBe__3->GetYaxis()->SetTitleOffset(1.4);
    hPhotonBe__3->GetYaxis()->SetTitleFont(42);
    hPhotonBe__3->GetZaxis()->SetLabelFont(42);
-   hPhotonBe__3->GetZaxis()->SetLabelSize(0.035);
-   hPhotonBe__3->GetZaxis()->SetTitleSize(0.035);
+   hPhotonBe__3->GetZaxis()->SetLabelSize(0.05);
+   hPhotonBe__3->GetZaxis()->SetTitleSize(0.05);
    hPhotonBe__3->GetZaxis()->SetTitleOffset(1);
    hPhotonBe__3->GetZaxis()->SetTitleFont(42);
    hPhotonBe__3->Draw("same");
@@ -4093,25 +4100,29 @@ void PhotonIneraction()
 
    ci = TColor::GetColor("#990000");
    hPhotonNEG__4->SetLineColor(ci);
+   hPhotonNEG__4->SetLineWidth(2);
+   hPhotonNEG__4->SetMarkerStyle(20);
+   hPhotonNEG__4->SetMarkerSize(1.2);
    hPhotonNEG__4->GetXaxis()->SetTitle("Photon Energy [keV]");
    hPhotonNEG__4->GetXaxis()->SetLabelFont(42);
-   hPhotonNEG__4->GetXaxis()->SetLabelSize(0.035);
-   hPhotonNEG__4->GetXaxis()->SetTitleSize(0.035);
-   hPhotonNEG__4->GetXaxis()->SetTitleOffset(1);
+   hPhotonNEG__4->GetXaxis()->SetLabelSize(0.05);
+   hPhotonNEG__4->GetXaxis()->SetTitleSize(0.05);
+   hPhotonNEG__4->GetXaxis()->SetTitleOffset(1.4);
    hPhotonNEG__4->GetXaxis()->SetTitleFont(42);
    hPhotonNEG__4->GetYaxis()->SetLabelFont(42);
-   hPhotonNEG__4->GetYaxis()->SetLabelSize(0.035);
-   hPhotonNEG__4->GetYaxis()->SetTitleSize(0.035);
+   hPhotonNEG__4->GetYaxis()->SetLabelSize(0.05);
+   hPhotonNEG__4->GetYaxis()->SetTitleSize(0.05);
+   hPhotonNEG__4->GetYaxis()->SetTitleOffset(1.4);
    hPhotonNEG__4->GetYaxis()->SetTitleFont(42);
    hPhotonNEG__4->GetZaxis()->SetLabelFont(42);
-   hPhotonNEG__4->GetZaxis()->SetLabelSize(0.035);
-   hPhotonNEG__4->GetZaxis()->SetTitleSize(0.035);
+   hPhotonNEG__4->GetZaxis()->SetLabelSize(0.05);
+   hPhotonNEG__4->GetZaxis()->SetTitleSize(0.05);
    hPhotonNEG__4->GetZaxis()->SetTitleOffset(1);
    hPhotonNEG__4->GetZaxis()->SetTitleFont(42);
    hPhotonNEG__4->Draw("same");
    
    TLegend *leg = new TLegend(0.2,0.7,0.8,0.9,NULL,"brNDC");
-   leg->SetBorderSize(1);
+   leg->SetBorderSize(0);
    leg->SetLineColor(1);
    leg->SetLineStyle(1);
    leg->SetLineWidth(1);
@@ -4127,11 +4138,9 @@ void PhotonIneraction()
    entry->SetTextFont(42);
    entry=leg->AddEntry("hAllPhoton","All photons","lf");
    entry->SetFillStyle(1001);
-
-   ci = TColor::GetColor("#000099");
-   entry->SetLineColor(ci);
+   entry->SetLineColor(1);
    entry->SetLineStyle(1);
-   entry->SetLineWidth(1);
+   entry->SetLineWidth(2);
    entry->SetMarkerColor(1);
    entry->SetMarkerStyle(21);
    entry->SetMarkerSize(1);
@@ -4146,7 +4155,7 @@ void PhotonIneraction()
    ci = TColor::GetColor("#990000");
    entry->SetLineColor(ci);
    entry->SetLineStyle(1);
-   entry->SetLineWidth(1);
+   entry->SetLineWidth(2);
    entry->SetMarkerColor(1);
    entry->SetMarkerStyle(21);
    entry->SetMarkerSize(1);
@@ -4161,7 +4170,7 @@ void PhotonIneraction()
    ci = TColor::GetColor("#009900");
    entry->SetLineColor(ci);
    entry->SetLineStyle(1);
-   entry->SetLineWidth(1);
+   entry->SetLineWidth(2);
    entry->SetMarkerColor(1);
    entry->SetMarkerStyle(21);
    entry->SetMarkerSize(1);
@@ -4176,7 +4185,7 @@ void PhotonIneraction()
    ci = TColor::GetColor("#000099");
    entry->SetLineColor(ci);
    entry->SetLineStyle(1);
-   entry->SetLineWidth(1);
+   entry->SetLineWidth(2);
    entry->SetMarkerColor(1);
    entry->SetMarkerStyle(21);
    entry->SetMarkerSize(1);
