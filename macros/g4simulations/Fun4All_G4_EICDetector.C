@@ -162,7 +162,7 @@ int Fun4All_G4_EICDetector(
   }
   {
 
-    PHG4BlockSubsystem *box = new PHG4BlockSubsystem("PIPE-Au");
+    PHG4BlockSubsystem *box = new PHG4BlockSubsystem("PIPE-Au", 1);
     box->SuperDetector("PIPE");
     box->set_double_param("size_x", xsize);
     box->set_double_param("size_y", ysize);
