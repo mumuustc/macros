@@ -188,6 +188,7 @@ int Fun4All_G4_EICDetector(
     ana->set_save_vertex(true);
     ana->AddNode("SVTX");
     ana->AddNode("PIPE");
+    ana->AddNode("PIPE_Au");
     se->registerSubsystem(ana);
   }
   // for single particle generators we just need something which drives
