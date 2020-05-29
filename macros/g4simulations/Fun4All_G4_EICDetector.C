@@ -167,7 +167,7 @@ int Fun4All_G4_EICDetector(
     box->set_double_param("size_x", xsize);
     box->set_double_param("size_y", ysize);
     box->set_double_param("size_z", 2e-4);
-    box->set_double_param("place_z", 0.1+2e-4);       // shift box so we do not create particles in its center and shift by 10 so we can see the track of the incoming particle
+    box->set_double_param("place_z", 0.2);       // shift box so we do not create particles in its center and shift by 10 so we can see the track of the incoming particle
     box->set_string_param("material", "G4_Au");  // material of box
     box->SetActive();                            // it is an active volume - save G4Hits
     box->OverlapCheck(true);
