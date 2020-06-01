@@ -586,6 +586,8 @@ int Fun4All_G4_EICDetector(
   }
 
   se->run(nEvents);
+  PHG4Reco *g4 = (PHG4Reco *) se->getSubsysReco("PHG4RECO");
+  g4->Dump_GDML(outputFile + string(".gdml"));
 
   //-----
   // Exit
