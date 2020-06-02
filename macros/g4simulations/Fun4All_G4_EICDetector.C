@@ -45,7 +45,7 @@ R__LOAD_LIBRARY(libSynRadAna.so)
 using namespace std;
 
 int Fun4All_G4_EICDetector(
-                           const int nEvents = 1000,
+                           const int nEvents = 3,
 //                           const char * inputFile = "data/SynRad Example Particle log.csv",
 //                           const char * inputFile = "data/Particle log facet 18952 +4.5m.csv",
                            const char * inputFile = "data/23April2020_incidentFlux200- -200 cm.csv",
@@ -87,7 +87,7 @@ int Fun4All_G4_EICDetector(
 
   // Besides the above flags. One can further choose to further put in following particles in Geant4 simulation
   // Use multi-particle generator (PHG4SimpleEventGenerator), see the code block below to choose particle species and kinematics
-  const bool particles = false && !readhits;
+  const bool particles = true && !readhits;
   // or gun/ very simple single particle gun generator
   const bool usegun = false && !readhits;
   // Throw single Upsilons, may be embedded in Hijing by setting readhepmc flag also  (note, careful to set Z vertex equal to Hijing events)
@@ -305,7 +305,7 @@ int Fun4All_G4_EICDetector(
     {
       // toss low multiplicity dummy events
       PHG4SimpleEventGenerator *gen = new PHG4SimpleEventGenerator();
-      gen->add_particles("pi-",1); // mu+,e+,proton,pi+,Upsilon
+      gen->add_particles("mu-",1); // mu+,e+,proton,pi+,Upsilon
       //gen->add_particles("pi+",100); // 100 pion option
 
       if (readhepmc)
@@ -323,10 +323,10 @@ int Fun4All_G4_EICDetector(
         }
       gen->set_vertex_size_function(PHG4SimpleEventGenerator::Uniform);
       gen->set_vertex_size_parameters(0.0, 0.0);
-      gen->set_eta_range(-3, 3);
+      gen->set_eta_range(.1, .11);
       gen->set_phi_range(-1.0 * TMath::Pi(), 1.0 * TMath::Pi());
       //gen->set_pt_range(0.1, 50.0);
-      gen->set_pt_range(0.1, 20.0);
+      gen->set_pt_range(20, 20.0);
       gen->Embed(1);
       gen->Verbosity(0);
 
@@ -665,7 +665,7 @@ int Fun4All_G4_EICDetector(
     ana->AddNode("BH_FORWARD_PLUS");
     ana->AddNode("BH_FORWARD_NEG");
 
-    //    ana->Verbosity(2);
+        ana->Verbosity(20);
     se->registerSubsystem(ana);
   }
 
