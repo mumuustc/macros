@@ -10,9 +10,31 @@
 #include <g4mvtx/PHG4MvtxSubsystem.h>
 #include <g4mvtx/PHG4MvtxHitReco.h>
 #include <g4tpc/PHG4TpcSpaceChargeDistortion.h>
+#include <g4mvtx/PHG4MvtxDefs.h>
+#include <g4mvtx/PHG4MvtxDigitizer.h>
+#include <g4mvtx/PHG4MvtxSubsystem.h>
+#include <g4mvtx/PHG4MvtxHitReco.h>
+
+#include <g4tpc/PHG4TpcDigitizer.h>
+#include <g4tpc/PHG4TpcElectronDrift.h>
+#include <g4tpc/PHG4TpcPadPlane.h>
+#include <g4tpc/PHG4TpcPadPlaneReadout.h>
+#include <g4tpc/PHG4TpcSubsystem.h>
+
+#include <intt/InttClusterizer.h>
+#include <mvtx/MvtxClusterizer.h>
+#include <tpc/TpcClusterizer.h>
 #include "GlobalVariables.C"
 R__LOAD_LIBRARY(libg4eval.so)
 R__LOAD_LIBRARY(libg4mvtx.so)
+R__LOAD_LIBRARY(libg4tpc.so)
+R__LOAD_LIBRARY(libg4intt.so)
+R__LOAD_LIBRARY(libg4mvtx.so)
+R__LOAD_LIBRARY(libg4eval.so)
+R__LOAD_LIBRARY(libintt.so)
+R__LOAD_LIBRARY(libmvtx.so)
+R__LOAD_LIBRARY(libtpc.so)
+R__LOAD_LIBRARY(libtrack_reco.so)
 #endif
 
 #include <vector>
@@ -284,134 +306,30 @@ double Svtx(PHG4Reco* g4Reco, double radius,
 
   //  int verbosity = 1;
 
-  // time projection chamber layers --------------------------------------------
 
-  // switch ONLY for backward compatibility with 40 layer hits files!
-  if (tpc_layers_40)
+
+  // The Tpc - always present!
+  //================================
+  gSystem->Load("libg4tpc.so");
+
+  PHG4TpcSubsystem* tpc = new PHG4TpcSubsystem("TPC");
+  tpc->SetActive();
+  tpc->SuperDetector("TPC");
+  tpc->set_double_param("steplimits", 1);
+  // By default uses "sPHENIX_TPC_Gas", defined in PHG4Reco. That is 90:10 Ne:C4
+
+  if (absorberactive)
   {
-    n_tpc_layer_inner = 8;
-    tpc_layer_thick_inner = 1.25;
-    tpc_layer_rphi_count_inner = 1152;
-    cout << "Using 8 inner_layers for backward comatibility" << endl;
+    tpc->SetAbsorberActive();
   }
+  tpc->OverlapCheck(overlapcheck);
 
-  PHG4CylinderSubsystem* cyl;
+  g4Reco->registerSubsystem(tpc);
 
-  radius = inner_cage_radius;
+  radius = 77. + 1.17;
 
-  double cage_length = 211.0;  // From TPC group, gives eta = 1.1 at 78 cm
-  double n_rad_length_cage = 1.13e-02;
-  double cage_thickness = 28.6 * n_rad_length_cage;  // Kapton X_0 = 28.6 cm  // mocks up Kapton + carbon fiber structure
+  radius += no_overlapp;
 
-  // inner field cage
-  cyl = new PHG4CylinderSubsystem("SVTXSUPPORT", n_maps_layer + n_intt_layer);
-  cyl->set_double_param("radius", radius);
-  cyl->set_int_param("lengthviarapidity", 0);
-  cyl->set_double_param("length", cage_length);
-  cyl->set_string_param("material", "G4_KAPTON");
-  cyl->set_double_param("thickness", cage_thickness);
-  cyl->SuperDetector("SVTXSUPPORT");
-  cyl->Verbosity(0);
-  g4Reco->registerSubsystem(cyl);
-
-  radius += cage_thickness;
-
-  // double inner_readout_radius = radius; 
-  //  if (inner_readout_radius < radius) inner_readout_radius = radius;
-  //
-  string tpcgas = "sPHENIX_TPC_Gas";  //  Ne(90%) CF4(10%) - defined in g4main/PHG4Reco.cc
-                                      //
-                                      //  // Layer of inert TPC gas from 20-30 cm
-                                      //  if (inner_readout_radius - radius > 0)
-                                      //  {
-                                      //    cyl = new PHG4CylinderSubsystem("SVTXSUPPORT", n_maps_layer + n_intt_layer + 1);
-                                      //    cyl->set_double_param("radius", radius);
-                                      //    cyl->set_int_param("lengthviarapidity", 0);
-                                      //    cyl->set_double_param("length", cage_length);
-                                      //    cyl->set_string_param("material", tpcgas.c_str());
-                                      //    cyl->set_double_param("thickness", inner_readout_radius - radius);
-                                      //    cyl->SuperDetector("SVTXSUPPORT");
-                                      //    g4Reco->registerSubsystem(cyl);
-                                      //  }
-                                      //
-                                      //  radius = inner_readout_radius;
-
-  double outer_radius = 78.;
-
-  // Active layers of the TPC (inner layers)
-
-  for (int ilayer = n_maps_layer + n_intt_layer; ilayer < (n_maps_layer + n_intt_layer + n_tpc_layer_inner); ++ilayer)
-  {
-    if (verbosity)
-      cout << "Create TPC gas layer " << ilayer << " with inner radius " << radius << " cm "
-           << " thickness " << tpc_layer_thick_inner - 0.01 << " length " << cage_length << endl;
-
-    cyl = new PHG4CylinderSubsystem("SVTX", ilayer);
-    cyl->set_double_param("radius", radius);
-    cyl->set_int_param("lengthviarapidity", 0);
-    cyl->set_double_param("length", cage_length);
-    cyl->set_string_param("material", tpcgas.c_str());
-    cyl->set_double_param("thickness", tpc_layer_thick_inner - 0.01);
-    cyl->SetActive();
-    cyl->SuperDetector("SVTX");
-    g4Reco->registerSubsystem(cyl);
-
-    radius += tpc_layer_thick_inner;
-  }
-
-  // Active layers of the TPC from 40-60 cm (mid layers)
-
-  for (int ilayer = n_maps_layer + n_intt_layer + n_tpc_layer_inner; ilayer < (n_maps_layer + n_intt_layer + n_tpc_layer_inner + n_tpc_layer_mid); ++ilayer)
-  {
-    if (verbosity)
-      cout << "Create TPC gas layer " << ilayer << " with inner radius " << radius << " cm "
-           << " thickness " << tpc_layer_thick_mid - 0.01 << " length " << cage_length << endl;
-
-    cyl = new PHG4CylinderSubsystem("SVTX", ilayer);
-    cyl->set_double_param("radius", radius);
-    cyl->set_int_param("lengthviarapidity", 0);
-    cyl->set_double_param("length", cage_length);
-    cyl->set_string_param("material", tpcgas.c_str());
-    cyl->set_double_param("thickness", tpc_layer_thick_mid - 0.01);
-    cyl->SetActive();
-    cyl->SuperDetector("SVTX");
-    g4Reco->registerSubsystem(cyl);
-
-    radius += tpc_layer_thick_mid;
-  }
-
-  // Active layers of the TPC from 60-80 cm (outer layers)
-
-  for (int ilayer = n_maps_layer + n_intt_layer + n_tpc_layer_inner + n_tpc_layer_mid; ilayer < (n_maps_layer + n_intt_layer + n_tpc_layer_inner + n_tpc_layer_mid + n_tpc_layer_outer); ++ilayer)
-  {
-    if (verbosity)
-      cout << "Create TPC gas layer " << ilayer << " with inner radius " << radius << " cm "
-           << " thickness " << tpc_layer_thick_outer - 0.01 << " length " << cage_length << endl;
-
-    cyl = new PHG4CylinderSubsystem("SVTX", ilayer);
-    cyl->set_double_param("radius", radius);
-    cyl->set_int_param("lengthviarapidity", 0);
-    cyl->set_double_param("length", cage_length);
-    cyl->set_string_param("material", tpcgas.c_str());
-    cyl->set_double_param("thickness", tpc_layer_thick_outer - 0.01);
-    cyl->SetActive();
-    cyl->SuperDetector("SVTX");
-    g4Reco->registerSubsystem(cyl);
-
-    radius += tpc_layer_thick_outer;
-  }
-
-  // outer field cage
-  cyl = new PHG4CylinderSubsystem("SVTXSUPPORT", n_maps_layer + n_intt_layer + n_gas_layer);
-  cyl->set_double_param("radius", radius);
-  cyl->set_int_param("lengthviarapidity", 0);
-  cyl->set_double_param("length", cage_length);
-  cyl->set_string_param("material", "G4_KAPTON");
-  cyl->set_double_param("thickness", cage_thickness);  // Kapton X_0 = 28.6 cm
-  cyl->SuperDetector("SVTXSUPPORT");
-  g4Reco->registerSubsystem(cyl);
-
-  radius += cage_thickness;
 
   return radius;
 }
@@ -458,16 +376,55 @@ void Svtx_Cells(int verbosity = 0)
   //======
   PHG4MvtxDigitizer* digimvtx = new PHG4MvtxDigitizer();
   digimvtx->Verbosity(0);
-  // https://ep-news.web.cern.ch/content/alice-its-upgrade-pixels-quarks
-  // use 100e threshold, * 3.62 eV/e-h = 362 eV
-//  const double scale =  0.95e-06;
-  const double scale = 362e-9;
-//  const double scale = 1e-9;
-
-  digimvtx->set_adc_scale(0, 1, scale);  // default set in code is 0.95e-06, which is 99 electrons
-  digimvtx->set_adc_scale(1, 1, scale);  // default set in code is 0.95e-06, which is 99 electrons
-  digimvtx->set_adc_scale(2, 1, scale);  // default set in code is 0.95e-06, which is 99 electrons
+  // energy deposit in 25 microns = 9.6 KeV = 1000 electrons collected after recombination
+  //digimvtx->set_adc_scale(0.95e-6);  // default set in code is 0.95e-06, which is 99 electrons
   se->registerSubsystem(digimvtx);
+
+
+
+
+
+  //=========================
+  // setup Tpc readout for filling cells
+  // g4tpc/PHG4TpcElectronDrift uses
+  // g4tpc/PHG4TpcPadPlaneReadout
+  //=========================
+
+  PHG4TpcPadPlane *padplane = new PHG4TpcPadPlaneReadout();
+  padplane->Verbosity(0);
+
+  PHG4TpcElectronDrift *edrift = new PHG4TpcElectronDrift();
+  edrift->Detector("TPC");
+  edrift->Verbosity(0);
+  // fudge factors to get drphi 150 microns (in mid and outer Tpc) and dz 500 microns cluster resolution
+  // They represent effects not due to ideal gas properties and ideal readout plane behavior
+  // defaults are 0.085 and 0.105, they can be changed here to get a different resolution
+  //edrift->set_double_param("added_smear_trans",0.085);
+  //edrift->set_double_param("added_smear_long",0.105);
+  edrift->registerPadPlane(padplane);
+  se->registerSubsystem(edrift);
+
+  // The pad plane readout default is set in PHG4TpcPadPlaneReadout
+  // We may want to change the number of inner layers, and can do that here
+  padplane->set_int_param("tpc_minlayer_inner", n_maps_layer + n_intt_layer);  // sPHENIX layer number of first Tpc readout layer
+  padplane->set_int_param("ntpc_layers_inner", n_tpc_layer_inner);
+  padplane->set_int_param("ntpc_phibins_inner", tpc_layer_rphi_count_inner);
+
+
+  // Tpc
+  //====
+  PHG4TpcDigitizer* digitpc = new PHG4TpcDigitizer();
+  digitpc->SetTpcMinLayer(n_maps_layer + n_intt_layer);
+  double ENC = 670.0;  // standard
+  digitpc->SetENC(ENC);
+  double ADC_threshold = 4.0 * ENC;
+  digitpc->SetADCThreshold(ADC_threshold);  // 4 * ENC seems OK
+  digitpc->Verbosity(0);
+  cout << " Tpc digitizer: Setting ENC to " << ENC << " ADC threshold to " << ADC_threshold
+       << " maps+Intt layers set to " << n_maps_layer + n_intt_layer << endl;
+
+  se->registerSubsystem(digitpc);
+
 
   return;
 }

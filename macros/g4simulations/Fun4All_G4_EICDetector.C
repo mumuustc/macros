@@ -45,7 +45,7 @@ R__LOAD_LIBRARY(libSynRadAna.so)
 using namespace std;
 
 int Fun4All_G4_EICDetector(
-                           const int nEvents = 10000,
+                           const int nEvents = 1000,
 //                           const char * inputFile = "data/SynRad Example Particle log.csv",
 //                           const char * inputFile = "data/Particle log facet 18952 +4.5m.csv",
                            const char * inputFile = "data/23April2020_incidentFlux200- -200 cm.csv",
@@ -612,7 +612,7 @@ int Fun4All_G4_EICDetector(
     ana->AddNode("PIPE");
     if (do_tracking)
     {
-      ana->AddNode("SVTX");
+      ana->AddNode("TPC");
       ana->AddNode("MVTX");
 
       ana->AddNode("EGEM_0");
