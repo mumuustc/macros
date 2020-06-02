@@ -416,7 +416,7 @@ void Svtx_Cells(int verbosity = 0)
   PHG4TpcDigitizer* digitpc = new PHG4TpcDigitizer();
   digitpc->SetTpcMinLayer(n_maps_layer + n_intt_layer);
   double ENC = 670.0;  // standard
-  digitpc->SetENC(ENC);
+  digitpc->SetENC(0);   // zero noise
   double ADC_threshold = 4.0 * ENC;
   digitpc->SetADCThreshold(ADC_threshold);  // 4 * ENC seems OK
   digitpc->Verbosity(0);
