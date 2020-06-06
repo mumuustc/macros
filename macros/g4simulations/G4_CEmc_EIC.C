@@ -32,38 +32,63 @@ namespace Enable
 
 namespace G4CEMC
 {
-  double cemcdepth = 9;
-  // tungs to scint width ratio of ~10:1
-  // corresponds to approx 2% sampling fraction
+//  Absorber: 80% W/ 20% Cu (ratio by weight) Effective X0 ~ 4.12 mm Thickness = 1.5 mm
+//
+//  Scintillator:  1.63 mm polystyrene
+//
+//  Gap and reflective coating:
+//
+//  Not sure about this but the surface of the scintillator seems to be coated with a white teflon like reflector.
+//  I would assume that the thickness is ~ 50 um on both sides for a total thickness of 100 um (0.1 mm)
+//
+//  Total number of layers = 67
+//  Total radiation length ~ 24.7 X0
+//
+//  Effective radiation length ~ 8.8 mm
+//  R_M ~ 25 mm (~ 2.88 x X0)
 
-  // 18 radiation lengths for 40 layers
-  double scint_width = 0.05;
-  double tungs_width = 0.245;
-  double electronics_width = 0.5;
+// tungs to scint width ratio of ~10:1
+// corresponds to approx 2% sampling fraction
 
-  int min_cemc_layer = 1;
-  int max_cemc_layer = 41;
+// 18 radiation lengths for 40 layers
+double scint_width = 1.63e-1;
+double tungs_width = 1.5e-1 * 80 / 19.35 / (80 / 19.35 + 20 / 8.96);
+double copper_width = 1.5e-1 * 20 / 8.96 / (80 / 19.35 + 20 / 8.96);
+double teflon_width = 50e-4;
+double electronics_width = 0.1;
 
-  double topradius = 106.8;  // cm
-  double bottomradius = 95;  // cm
-  double negrapidity = -1.5;
-  double posrapidity = 1.24;
-  // this is default set to -1.5<eta<1.24 for 2018 Letter of Intent
-  // if the user changes these, the z position of the
-  // calorimeter must be changed in the function CEmc(...)
+std::vector<std::pair<std::string, double> > absorber_config{
+    {"G4_TEFLON", teflon_width},
+    {"G4_W", tungs_width},
+    {"G4_Cu", copper_width},
+    {"G4_TEFLON", teflon_width}};
 
-  enum enu_Cemc_clusterizer
-  {
-    kCemcGraphClusterizer,
+// layer_radius to be filled at construction
+std::map <int, double> layer_radius;
 
-    kCemcTemplateClusterizer
-  };
+int min_cemc_layer = 1;
+int max_cemc_layer = 67;
 
-  //! template clusterizer, RawClusterBuilderTemplate, as developed by Sasha
-  //! Bazilevsky
-  enu_Cemc_clusterizer Cemc_clusterizer = kCemcTemplateClusterizer;
-  //! graph clusterizer, RawClusterBuilderGraph
-  // enu_Cemc_clusterizer Cemc_clusterizer = kCemcGraphClusterizer;
+double topradius = 106.8;  // cm
+double bottomradius = 95;  // cm
+double negrapidity = -1.5;
+double posrapidity = 1.24;
+// this is default set to -1.5<eta<1.24 for 2018 Letter of Intent
+// if the user changes these, the z position of the
+// calorimeter must be changed in the function CEmc(...)
+
+enum enu_Cemc_clusterizer
+{
+  kCemcGraphClusterizer,
+
+  kCemcTemplateClusterizer
+};
+
+//! template clusterizer, RawClusterBuilderTemplate, as developed by Sasha
+//! Bazilevsky
+enu_Cemc_clusterizer Cemc_clusterizer = kCemcTemplateClusterizer;
+//! graph clusterizer, RawClusterBuilderGraph
+// enu_Cemc_clusterizer Cemc_clusterizer = kCemcGraphClusterizer;
 }  // namespace G4CEMC
 
 void CEmcInit(const int nslats = 1)
@@ -113,6 +138,8 @@ double CEmc(PHG4Reco *g4Reco, double radius, const int crossings,
   double ztemp = 0;
   double layer_shift = 0;
 
+  int absorber_layer = 0;
+
   double height = 0;
   for (int thislayer = G4CEMC::min_cemc_layer; thislayer <= G4CEMC::max_cemc_layer;
        thislayer++)
@@ -120,37 +147,44 @@ double CEmc(PHG4Reco *g4Reco, double radius, const int crossings,
     // the length for a particular layer is determined from the bottom length
     double thislength = totalbottomlength + (height / TMath::Tan(theta1)) + (height / TMath::Tan(theta2));
 
-    cemc = new PHG4CylinderSubsystem("ABSORBER_CEMC", thislayer);
-    cemc->set_double_param("radius", radius);
-    cemc->set_string_param("material", "Spacal_W_Epoxy");
-    cemc->set_double_param("thickness", G4CEMC::tungs_width);
-    cemc->set_double_param("length", thislength);
-    cemc->set_int_param("lengthviarapidity", 0);
+    for (const auto &pair : G4CEMC::absorber_config)
+    {
+      const std::string material = pair.first;
+      const double material_thickness = pair.second;
 
-    // starts centered around IP
-    // shift backwards 30 cm for total 370 cm length to cover -1.5<eta<1.24
-    //cemc->set_double_param("place_z", -30);
+      cemc = new PHG4CylinderSubsystem("ABSORBER_CEMC", ++absorber_layer);
+      cemc->set_double_param("radius", radius);
+      cemc->set_string_param("material", material);
+      cemc->set_double_param("thickness", material_thickness);
+      cemc->set_double_param("length", thislength);
+      cemc->set_int_param("lengthviarapidity", 0);
 
-    //Modified by Barak, 12/12/19
-    ztemp = radius / TMath::Tan(theta2);
-    layer_shift = -1. * (ztemp - (thislength / 2.));
-    cemc->set_double_param("place_z", layer_shift);
+      // starts centered around IP
+      // shift backwards 30 cm for total 370 cm length to cover -1.5<eta<1.24
+      //cemc->set_double_param("place_z", -30);
 
-    cemc->SuperDetector("ABSORBER_CEMC");
-    if (absorberactive) cemc->SetActive();
-    cemc->OverlapCheck(overlapcheck);
+      //Modified by Barak, 12/12/19
+      ztemp = radius / TMath::Tan(theta2);
+      layer_shift = -1. * (ztemp - (thislength / 2.));
+      cemc->set_double_param("place_z", layer_shift);
 
-    g4Reco->registerSubsystem(cemc);
+      cemc->SuperDetector("ABSORBER_CEMC");
+      if (absorberactive) cemc->SetActive();
+      cemc->OverlapCheck(overlapcheck);
 
-    radius += G4CEMC::tungs_width;
-    radius += no_overlapp;
+      g4Reco->registerSubsystem(cemc);
 
-    height += G4CEMC::tungs_width;
-    height += no_overlapp;  //Added by Barak, 12/13/19
+      radius += material_thickness;
+      radius += no_overlapp;
 
-    //Added by Barak, 12/13/19
-    thislength = totalbottomlength + (height / TMath::Tan(theta1)) + (height / TMath::Tan(theta2));
+      height += material_thickness;
+      height += no_overlapp;  //Added by Barak, 12/13/19
 
+      //Added by Barak, 12/13/19
+      thislength = totalbottomlength + (height / TMath::Tan(theta1)) + (height / TMath::Tan(theta2));
+    }
+
+    G4CEMC::layer_radius[thislayer] = radius;
     cemc = new PHG4CylinderSubsystem("CEMC", thislayer);
     cemc->set_double_param("radius", radius);
     cemc->set_string_param("material", "PMMA");
@@ -216,8 +250,7 @@ void CEMC_Cells(int verbosity = 0)
   for (int i = G4CEMC::min_cemc_layer; i <= G4CEMC::max_cemc_layer; i++)
   {
     //Added by Barak, 12/13/19
-    radius += (G4CEMC::tungs_width + no_overlapp);
-    if (i > 1) radius += (G4CEMC::scint_width + no_overlapp);
+    radius = G4CEMC::layer_radius[i];
 
     cemc_cells->cellsize(i, 2. * M_PI / 256. * radius, 2. * M_PI / 256. * radius);
   }
@@ -237,24 +270,24 @@ void CEMC_Towers(int verbosity = 0)
   se->registerSubsystem(CemcTowerBuilder);
 
   const double photoelectron_per_GeV = 500;  // 500 photon per total GeV deposition
-  // just set a 4% sampling fraction - already tuned by tungs/scint width ratio
-  double sampling_fraction = 4e-02;
+  double sampling_fraction = 12e-02;
+
   RawTowerDigitizer *CemcTowerDigitizer = new RawTowerDigitizer("EmcRawTowerDigitizer");
   CemcTowerDigitizer->Detector("CEMC");
   CemcTowerDigitizer->Verbosity(verbosity);
-  CemcTowerDigitizer->set_digi_algorithm(RawTowerDigitizer::kSimple_photon_digitization);
+  CemcTowerDigitizer->set_digi_algorithm(RawTowerDigitizer::kNo_digitalization);
   CemcTowerDigitizer->set_pedstal_central_ADC(0);
-  CemcTowerDigitizer->set_pedstal_width_ADC(8);  // eRD1 test beam setting
+  CemcTowerDigitizer->set_pedstal_width_ADC(0);  // eRD1 test beam setting
   CemcTowerDigitizer->set_photonelec_ADC(1);     // not simulating ADC discretization error
   CemcTowerDigitizer->set_photonelec_yield_visible_GeV(photoelectron_per_GeV / sampling_fraction);
-  CemcTowerDigitizer->set_zero_suppression_ADC(16);  // eRD1 test beam setting
+  CemcTowerDigitizer->set_zero_suppression_ADC(0);  // eRD1 test beam setting
   se->registerSubsystem(CemcTowerDigitizer);
 
   RawTowerCalibration *CemcTowerCalibration = new RawTowerCalibration("EmcRawTowerCalibration");
   CemcTowerCalibration->Detector("CEMC");
   CemcTowerCalibration->Verbosity(verbosity);
   CemcTowerCalibration->set_calib_algorithm(RawTowerCalibration::kSimple_linear_calibration);
-  CemcTowerCalibration->set_calib_const_GeV_ADC(1. / photoelectron_per_GeV / 0.9715);
+  CemcTowerCalibration->set_calib_const_GeV_ADC(1. / sampling_fraction);
   CemcTowerCalibration->set_pedstal_ADC(0);
 
   se->registerSubsystem(CemcTowerCalibration);

@@ -92,14 +92,14 @@ int Fun4All_G4_EICDetector(
   bool do_bbc = true;
 
   // whether to simulate the Be section of the beam pipe
-  Enable::PIPE = true;
+  Enable::PIPE = false;
   // EIC beam pipe extension beyond the Be-section can be turned on with use_forward_pipes = true in G4_Pipe_EIC.C
 
-  Enable::EGEM = true;
-  Enable::FGEM = true;
-  Enable::MVTX = true;
-  Enable::TPC = true;
-  Enable::TRACKING = true;
+  Enable::EGEM = false;
+  Enable::FGEM = false;
+  Enable::MVTX = false;
+  Enable::TPC = false;
+  Enable::TRACKING = false;
   bool do_tracking_cell = Enable::TRACKING && true;
   bool do_tracking_track = do_tracking_cell && true;
   bool do_tracking_eval = do_tracking_track && true;
@@ -111,47 +111,47 @@ int Fun4All_G4_EICDetector(
   bool do_cemc_cluster = do_cemc_twr && true;
   bool do_cemc_eval = do_cemc_cluster && true;
 
-  Enable::HCALIN = true;
+  Enable::HCALIN = false;
   bool do_hcalin_cell = Enable::HCALIN && true;
   bool do_hcalin_twr = do_hcalin_cell && true;
   bool do_hcalin_cluster = do_hcalin_twr && true;
   bool do_hcalin_eval = do_hcalin_cluster && true;
 
-  Enable::MAGNET = true;
+  Enable::MAGNET = false;
 
-  Enable::HCALOUT = true;
+  Enable::HCALOUT = false;
   bool do_hcalout_cell = Enable::HCALOUT && true;
   bool do_hcalout_twr = do_hcalout_cell && true;
   bool do_hcalout_cluster = do_hcalout_twr && true;
   bool do_hcalout_eval = do_hcalout_cluster && true;
 
   // EICDetector geometry - barrel
-  Enable::DIRC = true;
+  Enable::DIRC = false;
 
   // EICDetector geometry - 'hadron' direction
-  Enable::RICH = true;
-  Enable::AEROGEL = true;
+  Enable::RICH = false;
+  Enable::AEROGEL = false;
 
-  Enable::FEMC = true;
+  Enable::FEMC = false;
   bool do_FEMC_cell = Enable::FEMC && true;
   bool do_FEMC_twr = do_FEMC_cell && true;
   bool do_FEMC_cluster = do_FEMC_twr && true;
   bool do_FEMC_eval = do_FEMC_cluster && true;
 
-  Enable::FHCAL = true;
+  Enable::FHCAL = false;
   bool do_FHCAL_cell = Enable::FHCAL && true;
   bool do_FHCAL_twr = do_FHCAL_cell && true;
   bool do_FHCAL_cluster = do_FHCAL_twr && true;
   bool do_FHCAL_eval = do_FHCAL_cluster && true;
 
   // EICDetector geometry - 'electron' direction
-  Enable::EEMC = true;
+  Enable::EEMC = false;
   bool do_EEMC_cell = Enable::EEMC && true;
   bool do_EEMC_twr = do_EEMC_cell && true;
   bool do_EEMC_cluster = do_EEMC_twr && true;
   bool do_EEMC_eval = do_EEMC_cluster && true;
 
-  Enable::PLUGDOOR = true;
+  Enable::PLUGDOOR = false;
 
   // Other options
   bool do_global = true;
@@ -192,7 +192,7 @@ int Fun4All_G4_EICDetector(
   int absorberactive = 0;  // set to 1 to make all absorbers active volumes
   //  const string magfield = "1.5"; // alternatively to specify a constant magnetic field, give a float number, which will be translated to solenoidal field in T, if string use as fieldmap name (including path)
   const string magfield = string(getenv("CALIBRATIONROOT")) + string("/Field/Map/sPHENIX.2d.root");  // default map from the calibration database
-  const float magfield_rescale = -1.4 / 1.5;                                                         // scale the map to a 1.4 T field. Reverse field sign to get around a bug in RAVE
+  const float magfield_rescale = 0 / 1.5;                                                         // scale the map to a 1.4 T field. Reverse field sign to get around a bug in RAVE
 
   //---------------
   // Fun4All server
@@ -200,7 +200,7 @@ int Fun4All_G4_EICDetector(
 
   Fun4AllServer *se = Fun4AllServer::instance();
   // se->Verbosity(01); // uncomment for batch production running with minimal output messages
-  // se->Verbosity(Fun4AllServer::VERBOSITY_SOME); // uncomment for some info for interactive running
+   se->Verbosity(Fun4AllServer::VERBOSITY_SOME); // uncomment for some info for interactive running
 
   // just if we set some flags somewhere in this macro
   recoConsts *rc = recoConsts::instance();
@@ -288,7 +288,7 @@ int Fun4All_G4_EICDetector(
   {
     // toss low multiplicity dummy events
     PHG4SimpleEventGenerator *gen = new PHG4SimpleEventGenerator();
-    gen->add_particles("pi-", 1);  // mu+,e+,proton,pi+,Upsilon
+    gen->add_particles("e-", 1);  // mu+,e+,proton,pi+,Upsilon
     //gen->add_particles("pi+",100); // 100 pion option
 
     if (readhepmc)
@@ -306,10 +306,10 @@ int Fun4All_G4_EICDetector(
     }
     gen->set_vertex_size_function(PHG4SimpleEventGenerator::Uniform);
     gen->set_vertex_size_parameters(0.0, 0.0);
-    gen->set_eta_range(-3, 3);
+    gen->set_eta_range(-.1, .1);
     gen->set_phi_range(-1.0 * TMath::Pi(), 1.0 * TMath::Pi());
     //gen->set_pt_range(0.1, 50.0);
-    gen->set_pt_range(0.1, 20.0);
+    gen->set_pt_range(5, 5.0);
     gen->Embed(1);
     gen->Verbosity(0);
 

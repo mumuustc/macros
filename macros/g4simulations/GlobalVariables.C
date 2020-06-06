@@ -1,5 +1,5 @@
 #pragma once
-static bool overlapcheck = false;
+static bool overlapcheck = true;
 static double no_overlapp = 0.0001;  // added to radii to avoid overlapping volumes
 
 namespace Enable
