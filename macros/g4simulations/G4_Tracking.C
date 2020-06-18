@@ -4,7 +4,6 @@
 
 #include <fun4all/Fun4AllServer.h>
 
-#include <g4eval/TrkrEvaluator.h>
 #include <g4eval/SvtxEvaluator.h>
 
 #include <g4intt/PHG4InttDefs.h>
@@ -14,6 +13,10 @@
 #include <g4intt/PHG4InttDefs.h>
 
 #include <g4main/PHG4Reco.h>
+
+#include <g4micromegas/PHG4MicromegasDigitizer.h>
+#include <g4micromegas/PHG4MicromegasHitReco.h>
+#include <g4micromegas/PHG4MicromegasSubsystem.h>
 
 #include <g4mvtx/PHG4MvtxDefs.h>
 #include <g4mvtx/PHG4MvtxDigitizer.h>
@@ -27,6 +30,7 @@
 #include <g4tpc/PHG4TpcSubsystem.h>
 
 #include <intt/InttClusterizer.h>
+#include <micromegas/MicromegasClusterizer.h>
 #include <mvtx/MvtxClusterizer.h>
 #include <tpc/TpcClusterizer.h>
 
@@ -43,12 +47,14 @@
 R__LOAD_LIBRARY(libg4tpc.so)
 R__LOAD_LIBRARY(libg4intt.so)
 R__LOAD_LIBRARY(libg4mvtx.so)
+R__LOAD_LIBRARY(libg4micromegas.so)
 R__LOAD_LIBRARY(libg4eval.so)
 R__LOAD_LIBRARY(libintt.so)
 R__LOAD_LIBRARY(libmvtx.so)
 R__LOAD_LIBRARY(libtpc.so)
+R__LOAD_LIBRARY(libmicromegas.so)
 R__LOAD_LIBRARY(libtrack_reco.so)
-//R__LOAD_LIBRARY(libg4hough.so)
+
 #endif
 
 #include <vector>
@@ -56,10 +62,10 @@ R__LOAD_LIBRARY(libtrack_reco.so)
 // Tracking simulation setup parameters and flag - leave them alone!
 //==============================================
 
-////////////// MVTX 
+////////////// MVTX
 const int n_maps_layer = 3;  // must be 0-3, setting it to zero removes Mvtx completely, n < 3 gives the first n layers
 
-/////////////// INTT 
+/////////////// INTT
 int n_intt_layer = 4;  // must be 4 or 0, setting to zero removes INTT completely
 int laddertype[4] = {PHG4InttDefs::SEGMENTATION_PHI,
 		       PHG4InttDefs::SEGMENTATION_PHI,
@@ -76,12 +82,16 @@ enum enu_InttDeadMapType      // Dead map options for INTT
 };
 enu_InttDeadMapType InttDeadMapOption = kInttNoDeadMap;  // Choose Intt deadmap here
 
-///////////////// TPC 
+///////////////// TPC
 int n_tpc_layer_inner = 16;
 int tpc_layer_rphi_count_inner = 1152;
 int n_tpc_layer_mid = 16;
 int n_tpc_layer_outer = 16;
 int n_gas_layer = n_tpc_layer_inner + n_tpc_layer_mid + n_tpc_layer_outer;
+
+///////////////// Micromegas
+bool enable_micromegas = false;
+const int n_micromegas_layer = 2;
 
 // Tracking reconstruction setup parameters and flags
 //=====================================
@@ -116,40 +126,19 @@ double Tracking(PHG4Reco* g4Reco, double radius,
 
     // MAPS inner barrel layers
     //======================================================
-
-    // Y. Corrales Morales 4Feb2019
-    // New Mvtx configuration to give 2.0 mm clearance from sPHENIX beam-pipe (Walt 3 Jan 2018)
-    //TODO: Add function to estimate stave tilt angle from values given by Walt (Rmin, Rmid, Rmax and sensor width)
-    //TODO: Add default values in PHG4MvtxSubsystem or PHG4MvtxDetector
-    double maps_layer_radius[3] = {25.69, 33.735, 41.475};  // mm - numbers from Walt 3 Jan 2019 (Rmid)
-    double phi_tilt[3] = {0.295, 0.303, 0.298};             // radians - numbers calculated from values given by Walt 3 Jan 2019
-
-    // D. McGlinchey 6Aug2018 - type no longer is used, included here because I was too lazy to remove it from the code
-    // Y. Corrales Morales - removed, no longer used in the code
-    // int stave_type[3] = {0, 0, 0};
-    int staves_in_layer[3] = {12, 16, 20};  // Number of staves per layer in sPHENIX Mvtx
+    // YCM (2020-01-08): Using default values from PHG4MvtxSubsystem and PHG4MvtxDefs....
 
     PHG4MvtxSubsystem* mvtx = new PHG4MvtxSubsystem("MVTX");
     mvtx->Verbosity(verbosity);
 
     for (int ilayer = 0; ilayer < n_maps_layer; ilayer++)
     {
+      double radius_lyr = PHG4MvtxDefs::mvtxdat[ilayer][PHG4MvtxDefs::kRmd];
       if (verbosity)
-        cout << "Create Maps layer " << ilayer << " with radius " << maps_layer_radius[ilayer] << " mm, "
-             << " pixel size 30 x 30 microns "
-             << " active pixel thickness 0.0018 microns" << endl;
-      mvtx->set_double_param(ilayer,"layer_nominal_radius", maps_layer_radius[ilayer]);  // thickness in cm
-      mvtx->set_int_param(ilayer, "N_staves", staves_in_layer[ilayer]);                   // uses fixed number of staves regardless of radius, if set. Otherwise, calculates optimum number of staves
-
-      mvtx->set_double_param(ilayer,"phitilt", phi_tilt[ilayer]);
-
-      radius = maps_layer_radius[ilayer];
+        cout << "Create Maps layer " << ilayer << " with radius " << radius_lyr << " mm." << endl;
+      radius = radius_lyr;
     }
-    mvtx->set_string_param(PHG4MvtxDefs::GLOBAL ,"stave_geometry_file", string(getenv("CALIBRATIONROOT")) + string("/Tracking/geometry/mvtx_stave_v02.gdml"));
-    // The cell size is used only during pixilization of sensor hits, but it is convemient to set it now because the geometry object needs it
-    mvtx->set_double_param(PHG4MvtxDefs::ALPIDE_SEGMENTATION, "pixel_x", 0.0030);          // pitch in cm
-    mvtx->set_double_param(PHG4MvtxDefs::ALPIDE_SEGMENTATION, "pixel_z", 0.0030);          // length in cm
-    mvtx->set_double_param(PHG4MvtxDefs::ALPIDE_SEGMENTATION, "pixel_thickness", 0.0018);  // thickness in cm
+    mvtx->set_string_param(PHG4MvtxDefs::GLOBAL ,"stave_geometry_file", string(getenv("CALIBRATIONROOT")) + string("/Tracking/geometry/mvtx_stave_v1.gdml"));
     mvtx->SetActive(1);
     mvtx->OverlapCheck(maps_overlapcheck);
     g4Reco->registerSubsystem(mvtx);
@@ -223,9 +212,19 @@ double Tracking(PHG4Reco* g4Reco, double radius,
   g4Reco->registerSubsystem(tpc);
 
   radius = 77. + 1.17;
-
   radius += no_overlapp;
 
+  // micromegas
+  if( enable_micromegas )
+  {
+    const int mm_layer = n_maps_layer + n_intt_layer + n_gas_layer;
+    auto mm = new PHG4MicromegasSubsystem( "MICROMEGAS", mm_layer );
+    mm->SetActive();
+    mm->set_double_param("mm_length", 220);
+    mm->set_double_param("mm_radius", 82);
+    g4Reco->registerSubsystem(mm);
+  }
+  
   return radius;
 }
 
@@ -290,14 +289,16 @@ void Tracking_Cells(int verbosity = 0)
   //=========================
 
   PHG4TpcPadPlane *padplane = new PHG4TpcPadPlaneReadout();
+  padplane->Verbosity(0);
 
   PHG4TpcElectronDrift *edrift = new PHG4TpcElectronDrift();
   edrift->Detector("TPC");
+  edrift->Verbosity(0);
   // fudge factors to get drphi 150 microns (in mid and outer Tpc) and dz 500 microns cluster resolution
   // They represent effects not due to ideal gas properties and ideal readout plane behavior
-  // defaults are 0.12 and 0.15, they can be changed here to get a different resolution
-  edrift->set_double_param("added_smear_trans",0.12);
-  edrift->set_double_param("added_smear_long",0.15);
+  // defaults are 0.085 and 0.105, they can be changed here to get a different resolution
+  //edrift->set_double_param("added_smear_trans",0.085);
+  //edrift->set_double_param("added_smear_long",0.105);
   edrift->registerPadPlane(padplane);
   se->registerSubsystem(edrift);
 
@@ -307,6 +308,28 @@ void Tracking_Cells(int verbosity = 0)
   padplane->set_int_param("ntpc_layers_inner", n_tpc_layer_inner);
   padplane->set_int_param("ntpc_phibins_inner", tpc_layer_rphi_count_inner);
 
+  // micromegas
+  if( enable_micromegas )
+  {
+
+    // micromegas
+    auto reco = new PHG4MicromegasHitReco;
+    reco->Verbosity(0);
+
+    static constexpr double radius = 82;
+    static constexpr double tile_length = 50;
+    static constexpr double tile_width = 25;
+
+    // 12 tiles at mid rapidity, one in front of each TPC sector
+    static constexpr int ntiles = 12;
+    MicromegasTile::List tiles;
+    for( int i = 0; i < ntiles; ++i )
+    { tiles.push_back( {{ 2.*M_PI*(0.5+i)/ntiles, 0, tile_width/radius, tile_length }} ); }
+    reco->set_tiles( tiles );
+
+    se->registerSubsystem( reco );
+    
+  }
   return;
 }
 
@@ -430,12 +453,16 @@ void Tracking_Clus(int verbosity = 0)
   digitpc->SetENC(ENC);
   double ADC_threshold = 4.0 * ENC;
   digitpc->SetADCThreshold(ADC_threshold);  // 4 * ENC seems OK
-
+  digitpc->Verbosity(0);
   cout << " Tpc digitizer: Setting ENC to " << ENC << " ADC threshold to " << ADC_threshold
        << " maps+Intt layers set to " << n_maps_layer + n_intt_layer << endl;
 
   se->registerSubsystem(digitpc);
 
+  // micromegas
+  if(enable_micromegas)
+  { se->registerSubsystem( new PHG4MicromegasDigitizer ); }
+  
   //-------------
   // Cluster Hits
   //-------------
@@ -465,6 +492,10 @@ void Tracking_Clus(int verbosity = 0)
   tpcclusterizer->Verbosity(0);
   se->registerSubsystem(tpcclusterizer);
 
+  // Micromegas
+  if(enable_micromegas)
+  { se->registerSubsystem( new MicromegasClusterizer ); }
+  
 }
 
 void Tracking_Reco(int verbosity = 0)
@@ -511,17 +542,17 @@ void Tracking_Reco(int verbosity = 0)
 	    init_zvtx->set_min_zvtx_tracks(init_vertexing_min_zvtx_tracks);
 	    init_zvtx->Verbosity(0);
 	    se->registerSubsystem(init_zvtx);
-	} 
-      
+	}
+
       // find seed tracks using a subset of TPC layers
       int min_layers = 4;
       int nlayers_seeds = 12;
-      PHHoughSeeding* track_seed = new PHHoughSeeding("PHHoughSeeding", n_maps_layer, n_intt_layer, n_gas_layer, nlayers_seeds, min_layers);
+      auto track_seed = new PHHoughSeeding("PHHoughSeeding", n_maps_layer, n_intt_layer, n_gas_layer, nlayers_seeds, min_layers);
       track_seed->Verbosity(0);
       se->registerSubsystem(track_seed);
 
       // Find all clusters associated with each seed track
-      PHGenFitTrkProp* track_prop = new PHGenFitTrkProp("PHGenFitTrkProp", n_maps_layer, n_intt_layer, n_gas_layer);
+      auto track_prop = new PHGenFitTrkProp("PHGenFitTrkProp", n_maps_layer, n_intt_layer, n_gas_layer, enable_micromegas ? n_micromegas_layer:0);
       track_prop->Verbosity(0);
       se->registerSubsystem(track_prop);
       for(int i = 0;i<n_intt_layer;i++)
@@ -541,10 +572,10 @@ void Tracking_Reco(int verbosity = 0)
 
       PHInitVertexing* init_vtx  = new PHTruthVertexing("PHTruthVertexing");
       init_vtx->Verbosity(0);
-      se->registerSubsystem(init_vtx);     
+      se->registerSubsystem(init_vtx);
 
       // For each truth particle, create a track and associate clusters with it using truth information
-      PHTruthTrackSeeding* pat_rec = new PHTruthTrackSeeding("PHTruthTrackSeeding"); 
+      PHTruthTrackSeeding* pat_rec = new PHTruthTrackSeeding("PHTruthTrackSeeding");
       pat_rec->Verbosity(0);
       se->registerSubsystem(pat_rec);
     }

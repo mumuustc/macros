@@ -27,6 +27,7 @@
 #include "G4_Jets.C"
 #include "G4_HIJetReco.C"
 #include "G4_TopoClusterReco.C"
+#include "G4_ParticleFlow.C"
 #include "G4_DSTReader.C"
 #include "DisplayOn.C"
 R__LOAD_LIBRARY(libfun4all.so)
@@ -48,7 +49,7 @@ int Fun4All_G4_sPHENIX(
     const int nEvents = 300,
     const char *inputFile = "phpythia8.cfg",
     const char *outputFile = "G4sPHENIX.root",
-    const char *embed_input_file = "/sphenix/data/data02/review_2017-08-02/sHijing/fm_0-4.list")
+    const char *embed_input_file = "https://www.phenix.bnl.gov/WWW/publish/phnxbld/sPHENIX/files/sPHENIX_G4Hits_sHijing_9-11fm_00000_00010.root")
 {
 
   //===============
@@ -152,8 +153,10 @@ int Fun4All_G4_sPHENIX(
   // simulations which don't particularly care about jets)
   bool do_HIjetreco = false && do_cemc_twr && do_hcalin_twr && do_hcalout_twr;
 
-  // 3-D topoCluster reconstruction in both HCal layers -- requires towers from both
-  bool do_topoCluster = false && do_hcalin_twr && do_hcalout_twr;
+  // 3-D topoCluster reconstruction, potentially in all calorimeter layers
+  bool do_topoCluster = false && do_cemc_twr && do_hcalin_twr && do_hcalout_twr;
+  // particle flow jet reconstruction - needs topoClusters!
+  bool do_particle_flow = false && do_topoCluster;
 
   bool do_dst_compress = false;
 
@@ -425,6 +428,13 @@ int Fun4All_G4_sPHENIX(
   if (do_hcalout_twr) HCALOuter_Towers();
   if (do_hcalout_cluster) HCALOuter_Clusters();
 
+  // if enabled, do topoClustering early, upstream of any possible jet reconstruction
+  if (do_topoCluster)
+  {
+    gROOT->LoadMacro("G4_TopoClusterReco.C");
+    TopoClusterReco();
+  }
+
   if (do_femc_twr) FEMC_Towers();
   if (do_femc_cluster) FEMC_Clusters();
 
@@ -480,10 +490,9 @@ int Fun4All_G4_sPHENIX(
     HIJetReco();
   }
 
-  if (do_topoCluster)
-  {
-    gROOT->LoadMacro("G4_TopoClusterReco.C");
-    TopoClusterReco();
+  if (do_particle_flow) {
+    gROOT->LoadMacro("G4_ParticleFlow.C");
+    ParticleFlow();
   }
 
   //----------------------
@@ -529,8 +538,9 @@ int Fun4All_G4_sPHENIX(
     gSystem->Load("libg4dst.so");
 
     Fun4AllDstInputManager *in1 = new Fun4AllNoSyncDstInputManager("DSTinEmbed");
-    //      in1->AddFile(embed_input_file); // if one use a single input file
-    in1->AddListFile(embed_input_file);  // RecommendedL: if one use a text list of many input files
+    in1->AddFile(embed_input_file); // if one use a single input file
+//    in1->AddListFile(embed_input_file);  // Recommended: if one use a text list of many input files
+    in1->Repeat(); // if file(or filelist) is exhausted, start from beginning
     se->registerInputManager(in1);
   }
 
