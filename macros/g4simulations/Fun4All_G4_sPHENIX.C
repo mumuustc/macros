@@ -37,8 +37,8 @@ R__LOAD_LIBRARY(libPHPythia6.so)
 R__LOAD_LIBRARY(libPHPythia8.so)
 
 
-#include <hfmltrigger/HFMLTriggerHepMCTrigger.h>
-R__LOAD_LIBRARY(libHFMLTrigger.so)
+//#include <hfmltrigger/HFMLTriggerHepMCTrigger.h>
+//R__LOAD_LIBRARY(libHFMLTrigger.so)
 
 #endif
 
@@ -251,12 +251,12 @@ int Fun4All_G4_sPHENIX(
       se->registerSubsystem(pythia8);
 
 
-      assert (gSystem->Load("libHFMLTrigger") >= 0);
-      {
-        HFMLTriggerHepMCTrigger * trig = new HFMLTriggerHepMCTrigger("D0toPiKInAcceptance",string(outputFile) + string("_D0toPiKInAcceptance"));
-//        trig->Verbosity(1);
-        se -> registerSubsystem(trig);
-      }
+//      assert (gSystem->Load("libHFMLTrigger") >= 0);
+//      {
+//        HFMLTriggerHepMCTrigger * trig = new HFMLTriggerHepMCTrigger("D0toPiKInAcceptance",string(outputFile) + string("_D0toPiKInAcceptance"));
+////        trig->Verbosity(1);
+//        se -> registerSubsystem(trig);
+//      }
     }
 
     if (runpythia6)
