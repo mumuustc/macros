@@ -1,3 +1,21 @@
+#include <phool/PHRandomSeed.h>
+#include <fun4all/SubsysReco.h>
+#include <fun4all/Fun4AllServer.h>
+#include <fun4all/Fun4AllInputManager.h>
+#include <fun4all/Fun4AllDummyInputManager.h>
+#include <fun4all/Fun4AllOutputManager.h>
+#include <fun4all/Fun4AllDstInputManager.h>
+#include <phool/recoConsts.h>
+#include <phpythia6/PHPythia6.h>
+#include <phpythia8/PHPythia8.h>
+#include <phhepmc/Fun4AllHepMCOutputManager.h>
+
+R__LOAD_LIBRARY(libfun4all.so)
+R__LOAD_LIBRARY(libg4testbench.so)
+R__LOAD_LIBRARY(libphhepmc.so)
+R__LOAD_LIBRARY(libPHPythia6.so)
+R__LOAD_LIBRARY(libPHPythia8.so)
+
 int Fun4All_PythiaHepMC(
     const int nEvents = 1000,
     const char *inputFile = "phpythia8.cfg",
