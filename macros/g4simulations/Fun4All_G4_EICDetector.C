@@ -23,14 +23,14 @@ R__LOAD_LIBRARY(libfun4all.so)
 
 int Fun4All_G4_EICDetector(
     const int nEvents = 1,
-    const char *inputFile = "/sphenix/data/data02/review_2017-08-02/single_particle/spacal2d/fieldmap/G4Hits_sPHENIX_e-_eta0_8GeV-0002.root",
+    const char *inputFile = "/gpfs02/eic/DATA/PYTHIA/ep/YellowReport/TREES/pythia.ep.18x275.1Mevents.RadCor=0.Q2=0.00001-1.0.kT=1.0_300.root",
     const string &outputFile = "G4EICDetector.root")
 {
   //---------------
   // Fun4All server
   //---------------
   Fun4AllServer *se = Fun4AllServer::instance();
-  // se->Verbosity(01); // uncomment for batch production running with minimal output messages
+  se->Verbosity(01); // uncomment for batch production running with minimal output messages
   // se->Verbosity(Fun4AllServer::VERBOSITY_SOME); // uncomment for some info for interactive running
 
   // just if we set some flags somewhere in this macro
@@ -69,7 +69,7 @@ int Fun4All_G4_EICDetector(
   //   Input::SARTRE = true;
 
   // Simple multi particle generator in eta/phi/pt ranges
-  Input::SIMPLE = true;
+  Input::SIMPLE = false;
   Input::SIMPLE_VERBOSITY = 0;
   INPUTSIMPLE::AddParticle("pi-", 5);
   INPUTSIMPLE::set_eta_range(-3, 3);
@@ -95,7 +95,7 @@ int Fun4All_G4_EICDetector(
   // And/Or read generated particles from file
 
   // eic-smear output
-  //  Input::READEIC = true;
+  Input::READEIC = true;
   INPUTREADEIC::filename = inputFile;
 
   // HepMC2 files
