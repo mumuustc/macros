@@ -242,6 +242,7 @@ int Fun4All_G4_EICDetector(
       // this module is needed to read the EICTree style records into our G4 sims
       ReadSynRadFiles *eicr = new ReadSynRadFiles();
       eicr->OpenInputFile(inputFile);
+      eicr->set_reverseXZ();
       eicr->SetEntryPerEvent(1);
 //      eicr->Verbosity(1);
 
