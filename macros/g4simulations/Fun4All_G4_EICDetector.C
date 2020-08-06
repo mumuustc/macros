@@ -48,7 +48,7 @@ int Fun4All_G4_EICDetector(
                            const int nEvents = 1000,
 //                           const char * inputFile = "data/SynRad Example Particle log.csv",
 //                           const char * inputFile = "data/Particle log facet 18952 +4.5m.csv",
-                           const char * inputFile = "data/23April2020_incidentFlux200- -200 cm.csv",
+                           const char * inputFile = "data/14884.csv",
                            const char * outputFile = "G4EICDetector.root"
                            )
 {
