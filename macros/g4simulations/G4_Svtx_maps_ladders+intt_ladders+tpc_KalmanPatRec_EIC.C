@@ -6,13 +6,14 @@
 #include <g4eval/SvtxEvaluator.h>
 #include <g4main/PHG4Reco.h>
 #include <g4mvtx/PHG4MvtxDefs.h>
-#include <g4mvtx/PHG4MvtxSubsystem.h>
+#include <g4mvtx/PHG4EICMvtxSubsystem.h>
 #include <g4tpc/PHG4TpcSpaceChargeDistortion.h>
 #include <g4tpc/PHG4TpcDigitizer.h>
 #include <g4tpc/PHG4TpcElectronDrift.h>
 #include <g4tpc/PHG4TpcPadPlane.h>
 #include <g4tpc/PHG4TpcPadPlaneReadout.h>
 #include <g4tpc/PHG4TpcSubsystem.h>
+#include <g4tpc/PHG4TpcEndCapSubsystem.h>
 #include "GlobalVariables.C"
 R__LOAD_LIBRARY(libg4eval.so)
 R__LOAD_LIBRARY(libg4mvtx.so)
@@ -232,7 +233,7 @@ double Svtx(PHG4Reco* g4Reco, double radius,
 
     // Update EIC MAPS layer structure based on inner two layers of U. Birmingham tracker
 
-    PHG4MvtxSubsystem* mvtx = new PHG4MvtxSubsystem("MVTX");
+    PHG4EICMvtxSubsystem* mvtx = new PHG4EICMvtxSubsystem("MVTX");
     mvtx->Verbosity(verbosity);
 
     // H?kan Wennl?f <hwennlof@kth.se> :
@@ -308,6 +309,14 @@ double Svtx(PHG4Reco* g4Reco, double radius,
 
     g4Reco->registerSubsystem(tpc);
 
+  }
+
+  if (nDetectors < -100 || nDetectors > 100)
+  {
+    PHG4TpcEndCapSubsystem* tpc_endcap = new PHG4TpcEndCapSubsystem("TPC_ENDCAP");
+    tpc_endcap->SuperDetector("TPC_ENDCAP");
+    tpc_endcap->OverlapCheck(overlapcheck);
+    g4Reco->registerSubsystem(tpc_endcap);
   }
 
   return radius;
