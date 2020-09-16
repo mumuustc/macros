@@ -43,13 +43,14 @@ R__LOAD_LIBRARY(libPHSartre.so)
 using namespace std;
 
 int Fun4All_G4_EICDetector(
-                           const int nEvents = 110,
+                           const int nEvents = -110,
                            const char * inputFile = "/sphenix/data/data02/review_2017-08-02/single_particle/spacal2d/fieldmap/G4Hits_sPHENIX_e-_eta0_8GeV-0002.root",
                            const char * outputFile = "G4EICDetector.root"
                            )
 {
 
-  nDetectors = abs(nEvents);
+  nDetectors = (nEvents);
+  if (nDetectors<-100) nDetectors = -nDetectors;
 
   //===============
   // Input options
@@ -103,7 +104,7 @@ int Fun4All_G4_EICDetector(
   bool do_pipe = (nDetectors>1);
   // EIC beam pipe extension beyond the Be-section can be turned on with use_forward_pipes = true in G4_Pipe_EIC.C
 
-  bool do_tracking = (nDetectors>2);
+  bool do_tracking = true;
   bool do_tracking_cell = do_tracking && false;
   bool do_tracking_track = do_tracking_cell && true;
   bool do_tracking_eval = do_tracking_track && true; // in order to use this evaluation, please build this analysis module analysis/blob/master/Tracking/FastTrackingEval/
@@ -607,12 +608,14 @@ int Fun4All_G4_EICDetector(
     //-----------------
     // Event processing
     //-----------------
-    if (nEvents < 0)
+    if (nEvents < -100)
     {
       return 0;
     }
-    else if (nEvents > 0)
+    else
     {
+      cout <<"Inititiate Geometry scan"<<endl;
+
       PHG4Reco *g4 = (PHG4Reco *) se->getSubsysReco("PHG4RECO");
       g4->InitRun(se->topNode());
       g4->ApplyDisplayAction();

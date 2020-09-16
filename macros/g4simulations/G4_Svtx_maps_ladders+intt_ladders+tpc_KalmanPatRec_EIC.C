@@ -227,6 +227,8 @@ double Svtx(PHG4Reco* g4Reco, double radius,
             int verbosity = 0)
 {
   gSystem->Load("libg4mvtx.so");
+
+  if (nDetectors>3)
   if (n_maps_layer > 0)
   {
     bool maps_overlapcheck = false;  // set to true if you want to check for overlaps
@@ -292,6 +294,8 @@ double Svtx(PHG4Reco* g4Reco, double radius,
 
   //  int verbosity = 1;
 
+  cout <<"Constructing TPC with nDetectors="<<nDetectors<<endl;
+
   if (nDetectors>3)
   {
 
@@ -311,8 +315,10 @@ double Svtx(PHG4Reco* g4Reco, double radius,
 
   }
 
-  if (nDetectors < -100 || nDetectors > 100)
+  if (nDetectors == -1 || nDetectors > 100)
   {
+    cout <<"adding PHG4TpcEndCapSubsystem"<<endl;
+
     PHG4TpcEndCapSubsystem* tpc_endcap = new PHG4TpcEndCapSubsystem("TPC_ENDCAP");
     tpc_endcap->SuperDetector("TPC_ENDCAP");
     tpc_endcap->OverlapCheck(overlapcheck);
