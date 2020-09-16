@@ -43,7 +43,7 @@ R__LOAD_LIBRARY(libPHSartre.so)
 using namespace std;
 
 int Fun4All_G4_EICDetector(
-                           const int nEvents = 10,
+                           const int nEvents = 110,
                            const char * inputFile = "/sphenix/data/data02/review_2017-08-02/single_particle/spacal2d/fieldmap/G4Hits_sPHENIX_e-_eta0_8GeV-0002.root",
                            const char * outputFile = "G4EICDetector.root"
                            )
