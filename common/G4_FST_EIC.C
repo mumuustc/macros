@@ -34,7 +34,7 @@ void FSTSetup(PHG4Reco *g4Reco, const double min_eta = 1.245)
   make_LANL_FST_station("FST_2", g4Reco, 77, 5, 40);
   make_LANL_FST_station("FST_3", g4Reco, 101, 6, 40);
   make_LANL_FST_station("FST_4", g4Reco, 125, 6.5, 43);
-  //make_LANL_FST_station("FST_5", g4Reco, 280, 17, 41);
+  make_LANL_FST_station("FST_5", g4Reco, 280, 17, 141);
 }
 //-----------------------------------------------------------------------------------//
 int make_LANL_FST_station(string name, PHG4Reco *g4Reco,

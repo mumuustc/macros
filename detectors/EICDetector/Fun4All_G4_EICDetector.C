@@ -207,11 +207,11 @@ int Fun4All_G4_EICDetector(
   Enable::EGEM = true;
   Enable::FGEM = true;
   // barrel tracker
-  Enable::BARREL = false;
-  Enable::FST = false;
+  Enable::BARREL = true;
+  Enable::FST = true;
   // mvtx/tpc tracker
-  Enable::MVTX = true;
-  Enable::TPC = true;
+  Enable::MVTX = false;
+  Enable::TPC = false;
 
   Enable::TRACKING = true;
   Enable::TRACKING_EVAL = Enable::TRACKING && true;
@@ -249,7 +249,7 @@ int Fun4All_G4_EICDetector(
 
   // EICDetector geometry - 'hadron' direction
   Enable::RICH = true;
-  Enable::AEROGEL = true;
+  Enable::AEROGEL = false;
 
   Enable::FEMC = true;
   //  Enable::FEMC_ABSORBER = true;

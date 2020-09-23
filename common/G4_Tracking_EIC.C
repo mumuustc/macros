@@ -162,7 +162,7 @@ void Tracking_Reco()
   //-------------------------
   if (Enable::FST)
   {
-    for (int i = 0; i < 5; i++)
+    for (int i = 2; i <= 5; i++)
     {
       kalman->add_phg4hits(Form("G4HIT_FST_%d", i),           //      const std::string& phg4hitsNames,
                            PHG4TrackFastSim::Vertical_Plane,  //      const DETECTOR_TYPE phg4dettype,
@@ -173,6 +173,13 @@ void Tracking_Reco()
                            0);                                //      const float noise
     }
   }
+
+
+  // add tof-like projection for FST layer 5 at z = 280 cm
+  kalman -> add_zplane_state("FST_5", 280);
+
+
+
   //-------------------------
   // FEMC
   //-------------------------
@@ -220,6 +227,12 @@ void Tracking_Eval(const std::string &outputfile)
   PHG4TrackFastSimEval *fast_sim_eval = new PHG4TrackFastSimEval("FastTrackingEval");
   fast_sim_eval->set_trackmapname(TRACKING::TrackNodeName);
   fast_sim_eval->set_filename(outputfile);
+
+
+  // add tof-like projection for FST layer 5 at z = 280 cm
+  fast_sim_eval->AddProjection("FST_5");
+//  fast_sim_eval->Verbosity(3);
+
   se->registerSubsystem(fast_sim_eval);
 }
 #endif
