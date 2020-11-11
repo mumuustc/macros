@@ -3,7 +3,8 @@
 
 #include <g4decayer/EDecayType.hh>
 
-double no_overlapp = 0.0001;
+static bool overlapcheck = false;
+static double no_overlapp = 0.0001;  // added to radii to avoid overlapping volumes
 
 // These Input settings are needed in multiple Input selections
 // Putting those here avoids include file ordering problems

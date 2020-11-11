@@ -25,7 +25,7 @@
 R__LOAD_LIBRARY(libfun4all.so)
 
 int Fun4All_G4_EICDetector(
-    const int nEvents = 1,
+    const int nEvents = 10,
     const string &inputFile = "/sphenix/data/data02/review_2017-08-02/single_particle/spacal2d/fieldmap/G4Hits_sPHENIX_e-_eta0_8GeV-0002.root",
     const string &outputFile = "G4EICDetector.root",
     const string &embed_input_file = "https://www.phenix.bnl.gov/WWW/publish/phnxbld/sPHENIX/files/sPHENIX_G4Hits_sHijing_9-11fm_00000_00010.root",
@@ -125,9 +125,9 @@ int Fun4All_G4_EICDetector(
       INPUTGENERATOR::SimpleEventGenerator->set_vertex_distribution_mean(0., 0., 0.);
       INPUTGENERATOR::SimpleEventGenerator->set_vertex_distribution_width(0., 0., 5.);
     }
-    INPUTGENERATOR::SimpleEventGenerator->set_eta_range(-3, 3);
+    INPUTGENERATOR::SimpleEventGenerator->set_eta_range(1, 3.5);
     INPUTGENERATOR::SimpleEventGenerator->set_phi_range(-M_PI, M_PI);
-    INPUTGENERATOR::SimpleEventGenerator->set_pt_range(0.1, 20.);
+    INPUTGENERATOR::SimpleEventGenerator->set_pt_range(0.1, 12);
   }
   // Upsilons
   if (Input::UPSILON)
@@ -204,8 +204,8 @@ int Fun4All_G4_EICDetector(
   // EIC beam pipe extension beyond the Be-section:
   //G4PIPE::use_forward_pipes = true;
 
-  Enable::EGEM = true;
-  Enable::FGEM = true;
+  Enable::EGEM = true; //false;
+  Enable::FGEM = true; //false;
   // barrel tracker
   Enable::BARREL = true;
   Enable::FST = true;
@@ -226,14 +226,14 @@ int Fun4All_G4_EICDetector(
   Enable::CEMC_CELL = Enable::CEMC && true;
   Enable::CEMC_TOWER = Enable::CEMC_CELL && true;
   Enable::CEMC_CLUSTER = Enable::CEMC_TOWER && true;
-  Enable::CEMC_EVAL = Enable::CEMC_CLUSTER && true;
+  //Enable::CEMC_EVAL = Enable::CEMC_CLUSTER && true;
 
   Enable::HCALIN = true;
   //  Enable::HCALIN_ABSORBER = true;
   Enable::HCALIN_CELL = Enable::HCALIN && true;
   Enable::HCALIN_TOWER = Enable::HCALIN_CELL && true;
   Enable::HCALIN_CLUSTER = Enable::HCALIN_TOWER && true;
-  Enable::HCALIN_EVAL = Enable::HCALIN_CLUSTER && true;
+  //Enable::HCALIN_EVAL = Enable::HCALIN_CLUSTER && true;
 
   Enable::MAGNET = true;
 
@@ -242,7 +242,7 @@ int Fun4All_G4_EICDetector(
   Enable::HCALOUT_CELL = Enable::HCALOUT && true;
   Enable::HCALOUT_TOWER = Enable::HCALOUT_CELL && true;
   Enable::HCALOUT_CLUSTER = Enable::HCALOUT_TOWER && true;
-  Enable::HCALOUT_EVAL = Enable::HCALOUT_CLUSTER && true;
+  //Enable::HCALOUT_EVAL = Enable::HCALOUT_CLUSTER && true;
 
   // EICDetector geometry - barrel
   Enable::DIRC = true;
@@ -256,21 +256,21 @@ int Fun4All_G4_EICDetector(
   Enable::FEMC_CELL = Enable::FEMC && true;
   Enable::FEMC_TOWER = Enable::FEMC_CELL && true;
   Enable::FEMC_CLUSTER = Enable::FEMC_TOWER && true;
-  Enable::FEMC_EVAL = Enable::FEMC_CLUSTER && true;
+  //Enable::FEMC_EVAL = Enable::FEMC_CLUSTER && true;
 
   Enable::FHCAL = true;
   //  Enable::FHCAL_ABSORBER = true;
   Enable::FHCAL_CELL = Enable::FHCAL && true;
   Enable::FHCAL_TOWER = Enable::FHCAL_CELL && true;
   Enable::FHCAL_CLUSTER = Enable::FHCAL_TOWER && true;
-  Enable::FHCAL_EVAL = Enable::FHCAL_CLUSTER && true;
+  //Enable::FHCAL_EVAL = Enable::FHCAL_CLUSTER && true;
 
   // EICDetector geometry - 'electron' direction
   Enable::EEMC = true;
   Enable::EEMC_CELL = Enable::EEMC && true;
   Enable::EEMC_TOWER = Enable::EEMC_CELL && true;
   Enable::EEMC_CLUSTER = Enable::EEMC_TOWER && true;
-  Enable::EEMC_EVAL = Enable::EEMC_CLUSTER && true;
+  //Enable::EEMC_EVAL = Enable::EEMC_CLUSTER && true;
 
   Enable::PLUGDOOR = true;
 
@@ -283,10 +283,10 @@ int Fun4All_G4_EICDetector(
   // Select only one jet reconstruction- they currently use the same
   // output collections on the node tree!
   Enable::JETS = true;
-  Enable::JETS_EVAL = Enable::JETS && true;
+  //Enable::JETS_EVAL = Enable::JETS && true;
 
   Enable::FWDJETS = true;
-  Enable::FWDJETS_EVAL = Enable::FWDJETS && true;
+  //Enable::FWDJETS_EVAL = Enable::FWDJETS && true;
 
   // HI Jet Reco for jet simulations in Au+Au (default is false for
   // single particle / p+p simulations, or for Au+Au simulations which
@@ -426,7 +426,7 @@ int Fun4All_G4_EICDetector(
 
   if (Enable::FWDJETS) Jet_FwdReco();
 
-  string outputroot = outputFile;
+  string outputroot = outdir + "/" +outputFile;
   string remove_this = ".root";
   size_t pos = outputroot.find(remove_this);
   if (pos != string::npos)
@@ -495,6 +495,11 @@ int Fun4All_G4_EICDetector(
     cout <<"Run Geant4 command with following examples"<<endl;
     gROOT->ProcessLine("displaycmd()");
 
+    return 0;
+  }
+// if we use a negative number of events we go back to the command line here
+  if (nEvents < 0)
+  {
     return 0;
   }
   // if we run any of the particle generators and use 0 it'll run forever
