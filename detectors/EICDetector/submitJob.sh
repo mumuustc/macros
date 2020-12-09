@@ -21,7 +21,7 @@ echo "+Job_Type    = \"cas\"">>submitJob.con
 echo "">>submitJob.con
 echo "">>submitJob.con
 
-njobs=800
+njobs=2000
 ifile=1
 
 while [ $ifile -le $njobs ] 
@@ -36,7 +36,7 @@ do
 
      echo "root -l -b <<EOF ">>script_all/run_$ifile.csh
      echo -n ".x Fun4All_G4_EICDetector.C(">> script_all/run_$ifile.csh
-     echo -n "600, ">> script_all/run_$ifile.csh
+     echo -n "500, ">> script_all/run_$ifile.csh
      echo -n "\"/sphenix/data/data02/review_2017-08-02/single_particle/spacal2d/fieldmap/G4Hits_sPHENIX_e-_eta0_8GeV-0002.root\", ">> script_all/run_$ifile.csh
      echo -n "\"G4EICDetector_${ifile}.root\", ">> script_all/run_$ifile.csh
      echo -n "\"https://www.phenix.bnl.gov/WWW/publish/phnxbld/sPHENIX/files/sPHENIX_G4Hits_sHijing_9-11fm_00000_00010.root\", ">> script_all/run_$ifile.csh

@@ -170,9 +170,9 @@ void Tracking_Reco()
   float pitch=20e-4;
   if (Enable::FST)
   {
-    for (int i = 0; i < 5; i++)
+    for (int i = 0; i < 6; i++)
     {
-      if (i>=5)      pitch=1300e-4;
+      if (i>=5)      pitch=350e-4;   // 500/sqrt(2) um
       else if (i>=3) pitch=36.4e-4;
       else           pitch=20e-4;
 
@@ -189,7 +189,7 @@ void Tracking_Reco()
 
   // add tof-like projection for FST layer 5 at z = 280 cm
   kalman -> add_zplane_state("FST_4", 125);
-  //kalman -> add_zplane_state("FST_5", 280);
+  kalman -> add_zplane_state("FST_5", 280);
 
 
 
@@ -244,7 +244,7 @@ void Tracking_Eval(const std::string &outputfile)
 
 //  add tof-like projection for FST layer 5 at z = 280 cm
   fast_sim_eval->AddProjection("FST_4");
-//  fast_sim_eval->AddProjection("FST_5");
+  fast_sim_eval->AddProjection("FST_5");
 //  fast_sim_eval->Verbosity(3);
 
   se->registerSubsystem(fast_sim_eval);

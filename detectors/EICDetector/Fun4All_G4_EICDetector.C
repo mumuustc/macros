@@ -127,7 +127,7 @@ int Fun4All_G4_EICDetector(
     }
     INPUTGENERATOR::SimpleEventGenerator->set_eta_range(1, 3.5);
     INPUTGENERATOR::SimpleEventGenerator->set_phi_range(-M_PI, M_PI);
-    INPUTGENERATOR::SimpleEventGenerator->set_pt_range(0.1, 12);
+    INPUTGENERATOR::SimpleEventGenerator->set_pt_range(0.1, 20);
   }
   // Upsilons
   if (Input::UPSILON)
@@ -204,8 +204,8 @@ int Fun4All_G4_EICDetector(
   // EIC beam pipe extension beyond the Be-section:
   //G4PIPE::use_forward_pipes = true;
 
-  Enable::EGEM = true; //false;
-  Enable::FGEM = true; //false;
+  Enable::EGEM = false; //true; 
+  Enable::FGEM = false; //true; 
   // barrel tracker
   Enable::BARREL = true;
   Enable::FST = true;
